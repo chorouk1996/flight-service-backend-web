@@ -26,5 +26,5 @@ replay_pid*
 
 #target
 target
-
- .idea/
+workplace.xml
+.idea/*
