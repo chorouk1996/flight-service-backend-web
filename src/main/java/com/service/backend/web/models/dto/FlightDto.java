@@ -1,7 +1,8 @@
 package com.service.backend.web.models.dto;
 
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class FlightDto {
 
@@ -11,13 +12,15 @@ public class FlightDto {
 
     private String destination;
 
-    private LocalDate departureTime;
+    private LocalDateTime departureTime;
 
-    private LocalDate arrivalTime;
+    private LocalDateTime arrivalTime;
 
     private Double price;
 
     private Integer seats;
+
+    private List<BookingDto> booking;
 
 
     public Long getId() {
@@ -44,19 +47,19 @@ public class FlightDto {
         this.destination = destination;
     }
 
-    public LocalDate getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(LocalDate departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 
-    public LocalDate getArrivalTime() {
+    public LocalDateTime getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(LocalDate arrivalTime) {
+    public void setArrivalTime(LocalDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
@@ -74,5 +77,13 @@ public class FlightDto {
 
     public void setSeats(Integer seats) {
         this.seats = seats;
+    }
+
+    public List<BookingDto> getBooking() {
+        return booking;
+    }
+
+    public void setBooking(List<BookingDto> booking) {
+        this.booking = booking;
     }
 }

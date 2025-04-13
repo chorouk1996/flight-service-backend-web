@@ -2,6 +2,8 @@ package com.service.backend.web.controllers;
 
 
 import com.service.backend.web.models.dto.PassengerDto;
+import com.service.backend.web.services.inetrface.IPassengerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,8 @@ import java.util.List;
 @RequestMapping("/passenger")
 public class PassengerController {
 
+    @Autowired
+    IPassengerService passengerService;
     PassengerDto passenger = new PassengerDto();
     @GetMapping("/:id")
     public ResponseEntity<PassengerDto> getPassenger(@RequestParam Long id){
@@ -21,7 +25,7 @@ public class PassengerController {
 
     @GetMapping("/all")
     public ResponseEntity<List<PassengerDto>> getAllPassenger(){
-        return new ResponseEntity<>(List.of(passenger), HttpStatus.OK);
+        return new ResponseEntity<>(passengerService.getAllPassenger(), HttpStatus.OK);
     }
 
     @PostMapping()

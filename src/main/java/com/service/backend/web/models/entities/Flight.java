@@ -1,28 +1,38 @@
 package com.service.backend.web.models.entities;
 
-import jakarta.persistence.Entity;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
-@Entity
+@Entity(name = "Flight")
 public class Flight {
 
     @Id
+    @GeneratedValue
     private Long id;
 
+    @Column
     private String origin;
 
+    @Column
     private String destination;
 
-    private LocalDate departureTime;
+    @Column
+    private LocalDateTime departureTime;
 
-    private LocalDate arrivalTime;
+    @Column
+    private LocalDateTime arrivalTime;
 
+    @Column
     private Double price;
 
+    @Column
     private Integer seats;
 
+
+    @OneToMany(mappedBy = "flight")
+    private List<Booking> booking;
 
     public Long getId() {
         return id;
@@ -48,19 +58,19 @@ public class Flight {
         this.destination = destination;
     }
 
-    public LocalDate getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(LocalDate departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 
-    public LocalDate getArrivalTime() {
+    public LocalDateTime getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(LocalDate arrivalTime) {
+    public void setArrivalTime(LocalDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
@@ -78,5 +88,13 @@ public class Flight {
 
     public void setSeats(Integer seats) {
         this.seats = seats;
+    }
+
+    public List<Booking> getBooking() {
+        return booking;
+    }
+
+    public void setBooking(List<Booking> booking) {
+        this.booking = booking;
     }
 }

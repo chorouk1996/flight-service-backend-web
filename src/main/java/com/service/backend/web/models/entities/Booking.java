@@ -1,25 +1,34 @@
 package com.service.backend.web.models.entities;
 
-import jakarta.persistence.Entity;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
+@Entity(name = "Booking")
 public class Booking {
     @Id
+    @GeneratedValue
     private Long id;
 
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="user_id")
     private User user;
 
+    @JoinColumn(name="flight_id")
+    @ManyToOne(cascade = CascadeType.ALL)
     private Flight flight;
 
-    private LocalDate bookingDate;
+    @Column
+    private LocalDateTime bookingDate;
 
+    @Column
     private String status;
 
+    @OneToMany(mappedBy = "booking",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Passenger> passengers;
+
 
 
     public Long getId() {
@@ -46,11 +55,11 @@ public class Booking {
         this.flight = flight;
     }
 
-    public LocalDate getBookingDate() {
+    public LocalDateTime getBookingDate() {
         return bookingDate;
     }
 
-    public void setBookingDate(LocalDate bookingDate) {
+    public void setBookingDate(LocalDateTime bookingDate) {
         this.bookingDate = bookingDate;
     }
 

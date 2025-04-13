@@ -1,6 +1,8 @@
 package com.service.backend.web.models.dto;
 
 
+import java.util.List;
+
 public class UserDto {
 
     private Long id;
@@ -13,6 +15,7 @@ public class UserDto {
 
     private String role;
 
+    private List<BookingDto> booking;
 
     public Long getId() {
         return id;
@@ -52,5 +55,13 @@ public class UserDto {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public List<BookingDto> getBooking() {
+        return booking;
+    }
+
+    public void setBooking(List<BookingDto> booking) {
+        this.booking = booking;
     }
 }

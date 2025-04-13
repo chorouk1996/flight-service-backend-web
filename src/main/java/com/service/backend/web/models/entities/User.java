@@ -1,22 +1,30 @@
 package com.service.backend.web.models.entities;
 
-import jakarta.persistence.Entity;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
 
-@Entity
+import java.util.List;
+
+@Entity(name = "Users")
 public class User {
 
     @Id
+    @GeneratedValue
     private Long id;
 
+    @Column
     private String name;
 
+    @Column
     private String email;
 
+    @Column
     private String password;
 
+    @Column
     private String role;
 
+    @OneToMany(mappedBy = "user")
+    private List<Booking> booking;
 
     public Long getId() {
         return id;
@@ -56,5 +64,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public List<Booking> getBooking() {
+        return booking;
+    }
+
+    public void setBooking(List<Booking> booking) {
+        this.booking = booking;
     }
 }

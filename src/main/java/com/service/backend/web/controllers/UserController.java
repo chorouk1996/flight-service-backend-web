@@ -2,6 +2,8 @@ package com.service.backend.web.controllers;
 
 
 import com.service.backend.web.models.dto.UserDto;
+import com.service.backend.web.services.inetrface.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,8 @@ import java.util.List;
 public class UserController {
 
     UserDto user = new UserDto();
+    @Autowired
+    private IUserService userService ;
     @GetMapping("/:id")
     public ResponseEntity<UserDto> getUser(@RequestParam Long id){
         return new ResponseEntity<>(user, HttpStatus.OK);
@@ -21,7 +25,7 @@ public class UserController {
 
     @GetMapping("/all")
     public ResponseEntity<List<UserDto>> getAllUser(){
-        return new ResponseEntity<>(List.of(user), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getAllUser(), HttpStatus.OK);
     }
 
     @PostMapping()

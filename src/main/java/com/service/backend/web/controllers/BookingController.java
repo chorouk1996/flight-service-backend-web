@@ -2,6 +2,9 @@ package com.service.backend.web.controllers;
 
 
 import com.service.backend.web.models.dto.BookingDto;
+import com.service.backend.web.services.implementation.BookingService;
+import com.service.backend.web.services.implementation.FlightService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,6 +16,8 @@ import java.util.List;
 @RequestMapping("/booking")
 public class BookingController {
 
+    @Autowired
+    BookingService bookingService;
     BookingDto booking = new BookingDto();
     @GetMapping("/:id")
     public ResponseEntity<BookingDto> getBooking(@RequestParam Long id){
@@ -21,7 +26,7 @@ public class BookingController {
 
     @GetMapping("/all")
     public ResponseEntity<List<BookingDto>> getAllBooking(){
-        return new ResponseEntity<>(List.of(booking), HttpStatus.OK);
+        return new ResponseEntity<>(bookingService.getAllBooking(), HttpStatus.OK);
     }
 
     @PostMapping()

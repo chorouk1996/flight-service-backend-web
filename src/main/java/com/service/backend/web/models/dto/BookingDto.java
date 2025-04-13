@@ -1,7 +1,7 @@
 package com.service.backend.web.models.dto;
 
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class BookingDto {
@@ -11,7 +11,7 @@ public class BookingDto {
 
     private FlightDto flight;
 
-    private LocalDate bookingDate;
+    private LocalDateTime bookingDate;
 
     private String status;
 
@@ -42,11 +42,11 @@ public class BookingDto {
         this.flight = flight;
     }
 
-    public LocalDate getBookingDate() {
+    public LocalDateTime getBookingDate() {
         return bookingDate;
     }
 
-    public void setBookingDate(LocalDate bookingDate) {
+    public void setBookingDate(LocalDateTime bookingDate) {
         this.bookingDate = bookingDate;
     }
 

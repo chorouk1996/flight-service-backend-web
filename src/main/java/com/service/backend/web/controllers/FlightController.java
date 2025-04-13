@@ -2,6 +2,8 @@ package com.service.backend.web.controllers;
 
 
 import com.service.backend.web.models.dto.FlightDto;
+import com.service.backend.web.services.implementation.FlightService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,8 @@ import java.util.List;
 @RequestMapping("/flight")
 public class FlightController {
 
+    @Autowired
+    FlightService flightService;
     FlightDto flight = new FlightDto();
     @GetMapping("/:id")
     public ResponseEntity<FlightDto> getFlight(@RequestParam Long id){
@@ -21,7 +25,7 @@ public class FlightController {
 
     @GetMapping("/all")
     public ResponseEntity<List<FlightDto>> getAllFlight(){
-        return new ResponseEntity<>(List.of(flight), HttpStatus.OK);
+        return new ResponseEntity<>(flightService.getAllFlight(), HttpStatus.OK);
     }
 
     @PostMapping()

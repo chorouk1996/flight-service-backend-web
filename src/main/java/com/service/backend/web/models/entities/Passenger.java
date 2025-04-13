@@ -1,18 +1,22 @@
 package com.service.backend.web.models.entities;
 
-import jakarta.persistence.Entity;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
 
-@Entity
+@Entity(name = "Passenger")
 public class Passenger {
 
     @Id
+    @GeneratedValue
     private Long id;
 
+    @Column
     private String name;
 
+    @Column
     private Integer age;
 
+    @ManyToOne
+    @JoinColumn(name="booking_id")
     private Booking booking;
 
     public Long getId() {
