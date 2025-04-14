@@ -18,8 +18,8 @@ public class PassengerController {
     @Autowired
     IPassengerService passengerService;
     PassengerDto passenger = new PassengerDto();
-    @GetMapping("/:id")
-    public ResponseEntity<PassengerDto> getPassenger(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity<PassengerDto> getPassenger(@PathVariable Long id){
         return new ResponseEntity<>(passenger, HttpStatus.OK);
     }
 

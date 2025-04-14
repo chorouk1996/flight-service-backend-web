@@ -2,10 +2,11 @@ package com.service.backend.web.models.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "Users")
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.service.backend.web.services.helper.BookingServiceHelper.mapBookingDtoToEntity;
 
 @Component
 public class TestCommandLineRunner implements CommandLineRunner {
@@ -34,7 +33,7 @@ public class TestCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        UserDto user = new UserDto();
+      /*  UserDto user = new UserDto();
         user.setEmail("amahri.chorouk@gmail.com");
         user.setName("chorouk");
         user.setRole("admin");
@@ -66,6 +65,6 @@ public class TestCommandLineRunner implements CommandLineRunner {
         booking.setPassengers(List.of(passenger));
         booking.setUser(user);
         bookingService.addBooking(booking);
-
+*/
     }
 }

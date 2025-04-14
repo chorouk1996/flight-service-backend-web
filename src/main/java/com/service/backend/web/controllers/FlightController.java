@@ -18,8 +18,8 @@ public class FlightController {
     @Autowired
     FlightService flightService;
     FlightDto flight = new FlightDto();
-    @GetMapping("/:id")
-    public ResponseEntity<FlightDto> getFlight(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity<FlightDto> getFlight(@PathVariable Long id){
         return new ResponseEntity<>(flight, HttpStatus.OK);
     }
 

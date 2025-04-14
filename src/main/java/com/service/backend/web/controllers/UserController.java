@@ -18,8 +18,8 @@ public class UserController {
     UserDto user = new UserDto();
     @Autowired
     private IUserService userService ;
-    @GetMapping("/:id")
-    public ResponseEntity<UserDto> getUser(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getUser(@PathVariable Long id){
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
