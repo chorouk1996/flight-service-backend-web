@@ -1,13 +1,11 @@
 package com.service.backend.web.services.implementation;
 
 import com.service.backend.web.models.dto.UserDto;
-import com.service.backend.web.models.entities.User;
 import com.service.backend.web.repositories.UserRepository;
-import com.service.backend.web.services.helper.UserServiceHelper;
-import com.service.backend.web.services.inetrface.IUserService;
+import com.service.backend.web.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import static com.service.backend.web.services.helper.UserServiceHelper.*;
+import static com.service.backend.web.services.mapper.UserMapper.*;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package com.service.backend.web.controllers;
 
 
 import com.service.backend.web.models.dto.PassengerDto;
-import com.service.backend.web.services.inetrface.IPassengerService;
+import com.service.backend.web.services.interfaces.IPassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

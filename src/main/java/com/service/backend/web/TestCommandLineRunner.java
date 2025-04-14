@@ -1,19 +1,12 @@
 package com.service.backend.web;
 
-import com.service.backend.web.models.dto.BookingDto;
-import com.service.backend.web.models.dto.FlightDto;
-import com.service.backend.web.models.dto.PassengerDto;
-import com.service.backend.web.models.dto.UserDto;
-import com.service.backend.web.services.inetrface.IBookingService;
-import com.service.backend.web.services.inetrface.IFlightService;
-import com.service.backend.web.services.inetrface.IPassengerService;
-import com.service.backend.web.services.inetrface.IUserService;
+import com.service.backend.web.services.interfaces.IBookingService;
+import com.service.backend.web.services.interfaces.IFlightService;
+import com.service.backend.web.services.interfaces.IPassengerService;
+import com.service.backend.web.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Component

@@ -1,7 +1,6 @@
-package com.service.backend.web.services.inetrface;
+package com.service.backend.web.services.interfaces;
 
 import com.service.backend.web.models.dto.UserDto;
-import com.service.backend.web.models.entities.User;
 
 import java.util.List;
 

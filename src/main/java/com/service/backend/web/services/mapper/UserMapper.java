@@ -1,4 +1,4 @@
-package com.service.backend.web.services.helper;
+package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.UserDto;
 import com.service.backend.web.models.entities.User;
@@ -6,7 +6,11 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class UserServiceHelper  {
+public final class UserMapper {
+
+    private UserMapper()  {
+        throw new UnsupportedOperationException("Don't instantiate this  Utility class");
+    }
 
     public static UserDto mapUserEntityToDto(User user) {
         UserDto dto = new UserDto();

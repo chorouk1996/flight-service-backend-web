@@ -1,17 +1,20 @@
-package com.service.backend.web.services.helper;
+package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.BookingDto;
 import com.service.backend.web.models.entities.Booking;
 import org.springframework.stereotype.Service;
 
-import static com.service.backend.web.services.helper.FlightServiceHelper.mapFlightDtoToEntity;
-import static com.service.backend.web.services.helper.FlightServiceHelper.mapFlightEntityToDto;
-import static com.service.backend.web.services.helper.PassengerServiceHelper.mapPassengerDtoToEntity;
-import static com.service.backend.web.services.helper.UserServiceHelper.mapUserDtoToEntity;
+import static com.service.backend.web.services.mapper.FlightMapper.mapFlightDtoToEntity;
+import static com.service.backend.web.services.mapper.FlightMapper.mapFlightEntityToDto;
+import static com.service.backend.web.services.mapper.PassengerMapper.mapPassengerDtoToEntity;
+import static com.service.backend.web.services.mapper.UserMapper.mapUserDtoToEntity;
 
 @Service
-public  class BookingServiceHelper  {
+public  class BookingMapper {
 
+    private BookingMapper() {
+        throw new UnsupportedOperationException("Don't instantiate this  Utility class");
+    };
 
     public static BookingDto  mapBookingEntityToDto(Booking booking){
         BookingDto dto = new BookingDto();
@@ -19,8 +22,8 @@ public  class BookingServiceHelper  {
         dto.setStatus(booking.getStatus());
         dto.setBookingDate(booking.getBookingDate());
         dto.setFlight(mapFlightEntityToDto(booking.getFlight()));
-        dto.setUser(UserServiceHelper.mapUserEntityToDto(booking.getUser()));
-        dto.setPassengers(booking.getPassengers().stream().map(pass ->PassengerServiceHelper.mapPassengerEntityToDto(pass)).toList());
+        dto.setUser(UserMapper.mapUserEntityToDto(booking.getUser()));
+        dto.setPassengers(booking.getPassengers().stream().map(pass -> PassengerMapper.mapPassengerEntityToDto(pass)).toList());
         return dto;
     }
 

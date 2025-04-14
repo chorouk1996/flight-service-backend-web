@@ -1,4 +1,4 @@
-package com.service.backend.web.services.helper;
+package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.FlightDto;
 import com.service.backend.web.models.entities.Flight;
@@ -6,10 +6,11 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class FlightServiceHelper  {
+public class FlightMapper {
 
-    private FlightServiceHelper(){}
-
+    private FlightMapper() {
+        throw new UnsupportedOperationException("Don't instantiate this  Utility class");
+    }
     public static FlightDto mapFlightEntityToDto(Flight flight) {
         FlightDto dto = new FlightDto();
         dto.setId(flight.getId());

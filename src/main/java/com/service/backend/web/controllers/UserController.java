@@ -2,7 +2,7 @@ package com.service.backend.web.controllers;
 
 
 import com.service.backend.web.models.dto.UserDto;
-import com.service.backend.web.services.inetrface.IUserService;
+import com.service.backend.web.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
