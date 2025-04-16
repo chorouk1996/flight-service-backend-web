@@ -7,6 +7,7 @@ import com.service.backend.web.repositories.UserRepository;
 import com.service.backend.web.services.interfaces.IUserService;
 import com.service.backend.web.services.mapper.UserMapper;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,8 +41,13 @@ public class UserService implements IUserService {
     @Override
     public String authenticate(AuthentUserRequest user) throws NoSuchAlgorithmException {
         Authentication auth = manager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
-        if(auth.isAuthenticated()){
-            return jwtService.generateToken(user.getEmail());
+        try {
+            if(auth.isAuthenticated()){
+                return jwtService.generateToken(user.getEmail());
+            }
+        }
+        catch(BadCredentialsException badCredentialsException){
+            return "Bad Credentials";
         }
         return null;
     }
