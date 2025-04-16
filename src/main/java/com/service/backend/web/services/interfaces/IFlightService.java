@@ -7,8 +7,8 @@ import java.util.List;
 public interface IFlightService {
 
 
-    public FlightDto addFlight(FlightDto flight);
+     FlightDto addFlight(FlightDto flight);
 
-    public List<FlightDto> getAllFlight();
+     List<FlightDto> getAllFlight();
 
 }

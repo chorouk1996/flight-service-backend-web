@@ -1,5 +1,9 @@
 package com.service.backend.web;
 
+import com.service.backend.web.models.dto.BookingDto;
+import com.service.backend.web.models.dto.FlightDto;
+import com.service.backend.web.models.dto.PassengerDto;
+import com.service.backend.web.models.dto.UserDto;
 import com.service.backend.web.services.interfaces.IBookingService;
 import com.service.backend.web.services.interfaces.IFlightService;
 import com.service.backend.web.services.interfaces.IPassengerService;
@@ -8,11 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Component
 public class TestCommandLineRunner implements CommandLineRunner {
 
-    @Autowired
+
+  /*@Autowired
     private  IUserService userService ;
 
     @Autowired
@@ -23,10 +32,10 @@ public class TestCommandLineRunner implements CommandLineRunner {
 
     @Autowired
     private  IBookingService bookingService;
-
+*/
     @Override
     public void run(String... args) throws Exception {
-      /*  UserDto user = new UserDto();
+    /*    UserDto user = new UserDto();
         user.setEmail("amahri.chorouk@gmail.com");
         user.setName("chorouk");
         user.setRole("admin");
@@ -55,9 +64,11 @@ public class TestCommandLineRunner implements CommandLineRunner {
         passenger.setBooking(booking);
         passenger.setName("chorouk");
 
-        booking.setPassengers(List.of(passenger));
+        booking.setPassengers(new ArrayList(List.of(passenger)));
         booking.setUser(user);
         bookingService.addBooking(booking);
 */
     }
+
+
 }

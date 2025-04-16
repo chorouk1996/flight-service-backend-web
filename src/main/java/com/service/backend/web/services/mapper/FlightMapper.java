@@ -2,10 +2,8 @@ package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.FlightDto;
 import com.service.backend.web.models.entities.Flight;
-import org.springframework.stereotype.Service;
 
 
-@Service
 public class FlightMapper {
 
     private FlightMapper() {

@@ -2,11 +2,9 @@ package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.PassengerDto;
 import com.service.backend.web.models.entities.Passenger;
-import org.springframework.stereotype.Service;
 
 import static com.service.backend.web.services.mapper.BookingMapper.mapBookingEntityToDto;
 
-@Service
 public class PassengerMapper {
 
     private PassengerMapper()  {

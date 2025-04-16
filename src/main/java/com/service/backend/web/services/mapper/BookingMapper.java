@@ -9,7 +9,7 @@ import static com.service.backend.web.services.mapper.FlightMapper.mapFlightEnti
 import static com.service.backend.web.services.mapper.PassengerMapper.mapPassengerDtoToEntity;
 import static com.service.backend.web.services.mapper.UserMapper.mapUserDtoToEntity;
 
-@Service
+
 public  class BookingMapper {
 
     private BookingMapper() {
@@ -23,7 +23,7 @@ public  class BookingMapper {
         dto.setBookingDate(booking.getBookingDate());
         dto.setFlight(mapFlightEntityToDto(booking.getFlight()));
         dto.setUser(UserMapper.mapUserEntityToDto(booking.getUser()));
-        dto.setPassengers(booking.getPassengers().stream().map(pass -> PassengerMapper.mapPassengerEntityToDto(pass)).toList());
+        dto.setPassengers(booking.getPassengers().stream().map(PassengerMapper::mapPassengerEntityToDto).toList());
         return dto;
     }
 
@@ -34,7 +34,7 @@ public  class BookingMapper {
         booking.setBookingDate(dto.getBookingDate());
         booking.setFlight(mapFlightDtoToEntity(dto.getFlight()));
         booking.setUser(mapUserDtoToEntity(dto.getUser()));
-        booking.setPassengers(dto.getPassengers().stream().map(pass->mapPassengerDtoToEntity(pass)).toList());
+        booking.setPassengers(dto.getPassengers().stream().map(PassengerMapper::mapPassengerDtoToEntity).toList());
 
         return booking;
     }

@@ -1,11 +1,11 @@
 package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.UserDto;
+import com.service.backend.web.models.dto.requests.CreateUserRequest;
+import com.service.backend.web.models.dto.responses.CreateUserResponse;
 import com.service.backend.web.models.entities.User;
-import org.springframework.stereotype.Service;
 
 
-@Service
 public final class UserMapper {
 
     private UserMapper()  {
@@ -21,6 +21,24 @@ public final class UserMapper {
         return dto;
     }
 
+    public static User mapCreateUserRequestToEntity(CreateUserRequest userRequest) {
+        User user = new User();
+        user.setName(userRequest.getName());
+        user.setPassword(userRequest.getPassword());
+        user.setEmail(userRequest.getEmail());
+        user.setRole(userRequest.getRole());
+        return user;
+    }
+
+    public static CreateUserResponse mapEntityToCreateUserResponse(User user) {
+        CreateUserResponse userResponse = new CreateUserResponse();
+        userResponse.setId(user.getId());
+        userResponse.setName(user.getName());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setRole(user.getRole());
+        return userResponse;
+    }
+
     public static User mapUserDtoToEntity(UserDto dto) {
         User user = new User();
         user.setId(dto.getId());
@@ -29,4 +47,6 @@ public final class UserMapper {
         user.setRole(dto.getRole());
         return user;
     }
+
+
 }

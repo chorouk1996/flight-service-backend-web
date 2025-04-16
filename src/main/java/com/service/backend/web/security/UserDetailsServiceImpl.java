@@ -1,4 +1,4 @@
-package com.service.backend.web.configuration;
+package com.service.backend.web.security;
 
 import com.service.backend.web.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
