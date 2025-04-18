@@ -26,7 +26,7 @@ public class PassengerController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<PassengerDto>> getAllPassenger() {
         return new ResponseEntity<>(passengerService.getAllPassenger(), HttpStatus.OK);
     }

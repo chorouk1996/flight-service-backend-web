@@ -37,6 +37,9 @@ public class JwtService {
 
     }
 
+    public String refreshToken(String token){
+            return  generateToken(extractUsername(token));
+    }
     public SecretKey getKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }

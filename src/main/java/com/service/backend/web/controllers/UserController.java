@@ -25,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping()
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public CreateUserResponse addUser(@RequestBody CreateUserRequest user) {
         return userService.addUser(user);
     }

@@ -2,6 +2,7 @@ package com.service.backend.web.services.implementation;
 
 import com.service.backend.web.models.dto.requests.AuthentUserRequest;
 import com.service.backend.web.models.dto.requests.CreateUserRequest;
+import com.service.backend.web.models.dto.responses.AuthenticationResponse;
 import com.service.backend.web.models.dto.responses.CreateUserResponse;
 import com.service.backend.web.repositories.UserRepository;
 import com.service.backend.web.services.interfaces.IUserService;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 import static com.service.backend.web.services.mapper.UserMapper.*;
 import static com.service.backend.web.services.mapper.UserMapper.mapEntityToCreateUserResponse;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 
@@ -39,7 +39,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public String authenticate(AuthentUserRequest user) throws NoSuchAlgorithmException {
+    public String authenticate(AuthentUserRequest user) {
         Authentication auth = manager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
         try {
 
@@ -52,6 +52,13 @@ public class UserService implements IUserService {
         }
         return null;
     }
+
+    @Override
+    public String refreshToken(AuthenticationResponse authenticationRequest) {
+
+        return jwtService.refreshToken(authenticationRequest.getToken());
+    }
+
 
     public UserService(UserRepository userRepository, AuthenticationManager manager, JwtService jwtService) {
         this.userRepository = userRepository;

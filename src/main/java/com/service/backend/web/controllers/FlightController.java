@@ -31,13 +31,13 @@ public class FlightController {
     }
 
     @PostMapping()
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<FlightDto> addFlight(@RequestBody FlightDto flight) {
         return new ResponseEntity<>(flight, HttpStatus.OK);
     }
 
     @PutMapping()
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<FlightDto> updateFlight(@RequestBody FlightDto flight) {
         return new ResponseEntity<>(flight, HttpStatus.OK);
     }

@@ -23,4 +23,8 @@ public class AuthenticationController {
         return new AuthenticationResponse(userService.authenticate(user));
     }
 
+    @PostMapping("/refresh")
+    public AuthenticationResponse loginUser(@RequestBody AuthenticationResponse token) throws NoSuchAlgorithmException {
+        return new AuthenticationResponse(userService.refreshToken(token));
+    }
 }
