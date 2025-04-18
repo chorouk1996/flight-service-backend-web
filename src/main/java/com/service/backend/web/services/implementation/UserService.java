@@ -42,6 +42,7 @@ public class UserService implements IUserService {
     public String authenticate(AuthentUserRequest user) throws NoSuchAlgorithmException {
         Authentication auth = manager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
         try {
+
             if(auth.isAuthenticated()){
                 return jwtService.generateToken(user.getEmail());
             }

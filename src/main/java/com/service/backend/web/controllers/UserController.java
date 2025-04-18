@@ -1,15 +1,12 @@
 package com.service.backend.web.controllers;
 
 
-import com.service.backend.web.models.dto.requests.AuthentUserRequest;
 import com.service.backend.web.models.dto.requests.CreateUserRequest;
-import com.service.backend.web.models.dto.responses.AuthenticationResponse;
 import com.service.backend.web.models.dto.responses.CreateUserResponse;
 import com.service.backend.web.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -18,12 +15,6 @@ public class UserController {
 
     @Autowired
     private IUserService userService ;
-
-
-    @PostMapping("/login")
-    public AuthenticationResponse loginUser(@RequestBody AuthentUserRequest user) throws NoSuchAlgorithmException {
-        return new AuthenticationResponse(userService.authenticate(user));
-    }
 
 
     @GetMapping("/all")
