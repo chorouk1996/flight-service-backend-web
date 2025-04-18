@@ -6,6 +6,7 @@ import com.service.backend.web.services.interfaces.IPassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,23 +19,25 @@ public class PassengerController {
     @Autowired
     IPassengerService passengerService;
     PassengerDto passenger = new PassengerDto();
+
     @GetMapping("/{id}")
-    public ResponseEntity<PassengerDto> getPassenger(@PathVariable Long id){
+    public ResponseEntity<PassengerDto> getPassenger(@PathVariable Long id) {
         return new ResponseEntity<>(passenger, HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<PassengerDto>> getAllPassenger(){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<PassengerDto>> getAllPassenger() {
         return new ResponseEntity<>(passengerService.getAllPassenger(), HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<PassengerDto> addPassenger(@RequestBody PassengerDto passenger){
+    public ResponseEntity<PassengerDto> addPassenger(@RequestBody PassengerDto passenger) {
         return new ResponseEntity<>(passenger, HttpStatus.OK);
     }
 
     @PutMapping()
-    public ResponseEntity<PassengerDto> updatePassenger(@RequestBody PassengerDto passenger){
+    public ResponseEntity<PassengerDto> updatePassenger(@RequestBody PassengerDto passenger) {
         return new ResponseEntity<>(passenger, HttpStatus.OK);
     }
 }

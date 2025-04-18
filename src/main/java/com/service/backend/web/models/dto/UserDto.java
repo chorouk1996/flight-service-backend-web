@@ -1,6 +1,8 @@
 package com.service.backend.web.models.dto;
 
 
+import com.service.backend.web.models.enumerators.RoleEnum;
+
 import java.util.List;
 
 public class UserDto {
@@ -13,7 +15,7 @@ public class UserDto {
 
     private String password;
 
-    private String role;
+    private RoleEnum role;
 
     private List<BookingDto> booking;
 
@@ -49,11 +51,11 @@ public class UserDto {
         this.password = password;
     }
 
-    public String getRole() {
+    public RoleEnum getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(RoleEnum role) {
         this.role = role;
     }
 

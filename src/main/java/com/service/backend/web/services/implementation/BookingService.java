@@ -17,7 +17,7 @@ public class BookingService implements IBookingService {
 
     @Override
     public void addBooking(BookingDto booking) {
-         bookingRepository.save(mapBookingDtoToEntity(booking));
+        bookingRepository.save(mapBookingDtoToEntity(booking));
     }
 
     @Override

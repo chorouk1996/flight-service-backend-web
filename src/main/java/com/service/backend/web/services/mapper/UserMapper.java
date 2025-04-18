@@ -4,6 +4,7 @@ import com.service.backend.web.models.dto.UserDto;
 import com.service.backend.web.models.dto.requests.CreateUserRequest;
 import com.service.backend.web.models.dto.responses.CreateUserResponse;
 import com.service.backend.web.models.entities.User;
+import com.service.backend.web.models.enumerators.RoleEnum;
 
 
 public final class UserMapper {
@@ -26,7 +27,7 @@ public final class UserMapper {
         user.setName(userRequest.getName());
         user.setPassword(userRequest.getPassword());
         user.setEmail(userRequest.getEmail());
-        user.setRole(userRequest.getRole());
+        user.setRole(RoleEnum.valueOf(userRequest.getRole()));
         return user;
     }
 
@@ -35,7 +36,7 @@ public final class UserMapper {
         userResponse.setId(user.getId());
         userResponse.setName(user.getName());
         userResponse.setEmail(user.getEmail());
-        userResponse.setRole(user.getRole());
+        userResponse.setRole(user.getRole().name());
         return userResponse;
     }
 

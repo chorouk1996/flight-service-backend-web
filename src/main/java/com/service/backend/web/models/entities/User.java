@@ -1,5 +1,6 @@
 package com.service.backend.web.models.entities;
 
+import com.service.backend.web.models.enumerators.RoleEnum;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -22,7 +23,8 @@ public class User implements Serializable {
     private String password;
 
     @Column
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
 
     @OneToMany(mappedBy = "user")
     private List<Booking> booking;
@@ -59,11 +61,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getRole() {
+    public RoleEnum getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(RoleEnum role) {
         this.role = role;
     }
 

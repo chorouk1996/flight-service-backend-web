@@ -13,14 +13,13 @@ public class UserDetailsImpl implements UserDetails {
     User user;
 
 
-
-     UserDetailsImpl(User user){
+    UserDetailsImpl(User user) {
         this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(user.getRole()));
+        return Collections.singleton(new SimpleGrantedAuthority(user.getRole().name()));
     }
 
     @Override
