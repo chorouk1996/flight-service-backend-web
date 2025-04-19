@@ -1,5 +1,7 @@
-package com.service.backend.web.security;
+package com.service.backend.web.filters;
 
+import com.service.backend.web.exceptions.FunctionalException;
+import com.service.backend.web.security.UserDetailsServiceImpl;
 import com.service.backend.web.services.implementation.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,13 +34,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String authToken = request.getHeader("Authorization");
         if (authToken != null && authToken.startsWith("Bearer ")) {
             String token = authToken.substring(7);
-            username = jwtService.extractUsername(token);
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null && jwtService.isValid(token)) {
-                UserDetails user = userDetailsImpl.loadUserByUsername(username);
-                Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(auth);
+            try {
+                username = jwtService.extractUsername(token);
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null && jwtService.isValid(token)) {
+                    UserDetails user = userDetailsImpl.loadUserByUsername(username);
+                    Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(auth);
 
+                }
             }
+            catch(FunctionalException exception){
+                exception.getFunctionalExceptionDto().setPath(request.getRequestURI());
+                throw exception;
+            }
+
 
         }
         filterChain.doFilter(request, response);

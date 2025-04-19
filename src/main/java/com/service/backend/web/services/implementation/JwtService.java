@@ -1,13 +1,19 @@
 package com.service.backend.web.services.implementation;
 
+import com.service.backend.web.exceptions.FunctionalException;
+import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,10 +62,20 @@ public class JwtService {
     }
 
     private Claims getClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return  Jwts.parser()
+                    .verifyWith(getKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        }
+        catch(ExpiredJwtException e){
+            FunctionalExceptionDto ex = new FunctionalExceptionDto();
+            ex.setMessage("Your Token Expired, request a new one");
+            ex.setStatus(HttpStatus.UNAUTHORIZED);
+            ex.setTimestamp(LocalDateTime.now());
+            ex.setError("TOKEN_EXPIRED");
+            throw new FunctionalException(ex);
+        }
     }
 }
