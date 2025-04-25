@@ -33,9 +33,9 @@ public class FlightDto {
 
     private String aircraftType ;
 
-    private Double baggagePolicy;
+    private String baggagePolicy;
 
-
+    private Long durationMinutes;
     private FlightStatusEnum flightStatus ;
 
 
@@ -119,11 +119,11 @@ public class FlightDto {
         this.aircraftType = aircraftType;
     }
 
-    public Double getBaggagePolicy() {
+    public String getBaggagePolicy() {
         return baggagePolicy;
     }
 
-    public void setBaggagePolicy(Double baggagePolicy) {
+    public void setBaggagePolicy(String baggagePolicy) {
         this.baggagePolicy = baggagePolicy;
     }
 
@@ -133,5 +133,13 @@ public class FlightDto {
 
     public void setFlightStatus(FlightStatusEnum flightStatus) {
         this.flightStatus = flightStatus;
+    }
+
+    public Long getDurationMinutes() {
+        return durationMinutes;
+    }
+
+    public void setDurationMinutes(Long durationMinutes) {
+        this.durationMinutes = durationMinutes;
     }
 }

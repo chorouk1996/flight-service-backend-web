@@ -17,7 +17,18 @@ public class SearchFlightRequest {
     @JsonProperty("destinationCity")
     private String destination_city;
 
+    @JsonProperty("departureDate")
     private LocalDateTime date;
+
+    @JsonProperty("airline")
+    private String airline;
+
+    @JsonProperty("aircraft")
+    private String aircraft;
+
+    @JsonProperty("status")
+    private String status;
+
 
 
     public String getDeparture_city() {
@@ -42,5 +53,29 @@ public class SearchFlightRequest {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public String getAirline() {
+        return airline;
+    }
+
+    public void setAirline(String airline) {
+        this.airline = airline;
+    }
+
+    public String getAircraft() {
+        return aircraft;
+    }
+
+    public void setAircraft(String aircraft) {
+        this.aircraft = aircraft;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -41,7 +41,7 @@ public class Flight {
     private String aircraftType ;
 
     @Column
-    private Double baggagePolicy;
+    private String baggagePolicy;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -138,11 +138,11 @@ public class Flight {
         this.aircraftType = aircraftType;
     }
 
-    public Double getBaggagePolicy() {
+    public String getBaggagePolicy() {
         return baggagePolicy;
     }
 
-    public void setBaggagePolicy(Double baggagePolicy) {
+    public void setBaggagePolicy(String baggagePolicy) {
         this.baggagePolicy = baggagePolicy;
     }
 
