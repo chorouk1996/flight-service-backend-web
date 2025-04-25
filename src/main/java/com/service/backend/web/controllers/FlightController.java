@@ -4,6 +4,7 @@ package com.service.backend.web.controllers;
 import com.service.backend.web.models.dto.FlightDto;
 import com.service.backend.web.models.dto.requests.SearchFlightRequest;
 import com.service.backend.web.services.implementation.FlightService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,7 @@ public class FlightController {
 
 
     @PostMapping("/search")
-    public List<FlightDto> searchFlight(@RequestBody SearchFlightRequest searchCriteria) {
+    public List<FlightDto> searchFlight(@RequestBody @Valid SearchFlightRequest searchCriteria) {
         return flightService.searchFlight(searchCriteria);
     }
 }
