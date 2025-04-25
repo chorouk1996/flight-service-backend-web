@@ -1,6 +1,13 @@
 package com.service.backend.web.models.dto;
 
 
+import com.service.backend.web.models.entities.Booking;
+import com.service.backend.web.models.enumerators.FlightStatusEnum;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,6 +28,15 @@ public class FlightDto {
     private Integer seats;
 
     private List<BookingDto> booking;
+
+    private String airlineName ;
+
+    private String aircraftType ;
+
+    private Double baggagePolicy;
+
+
+    private FlightStatusEnum flightStatus ;
 
 
     public Long getId() {
@@ -85,5 +101,37 @@ public class FlightDto {
 
     public void setBooking(List<BookingDto> booking) {
         this.booking = booking;
+    }
+
+    public String getAirlineName() {
+        return airlineName;
+    }
+
+    public void setAirlineName(String airlineName) {
+        this.airlineName = airlineName;
+    }
+
+    public String getAircraftType() {
+        return aircraftType;
+    }
+
+    public void setAircraftType(String aircraftType) {
+        this.aircraftType = aircraftType;
+    }
+
+    public Double getBaggagePolicy() {
+        return baggagePolicy;
+    }
+
+    public void setBaggagePolicy(Double baggagePolicy) {
+        this.baggagePolicy = baggagePolicy;
+    }
+
+    public FlightStatusEnum getFlightStatus() {
+        return flightStatus;
+    }
+
+    public void setFlightStatus(FlightStatusEnum flightStatus) {
+        this.flightStatus = flightStatus;
     }
 }

@@ -2,6 +2,7 @@ package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.FlightDto;
 import com.service.backend.web.models.entities.Flight;
+import com.service.backend.web.models.enumerators.FlightStatusEnum;
 
 
 public class FlightMapper {
@@ -18,6 +19,10 @@ public class FlightMapper {
         dto.setArrivalTime(flight.getArrivalTime());
         dto.setPrice(flight.getPrice());
         dto.setSeats(flight.getSeats());
+        dto.setFlightStatus(FlightStatusEnum.valueOf(flight.getFlightStatus().name()));
+        dto.setAircraftType(flight.getAircraftType());
+        dto.setAirlineName(flight.getAirlineName());
+        dto.setBaggagePolicy(flight.getBaggagePolicy());
         return dto;
     }
 
@@ -30,6 +35,10 @@ public class FlightMapper {
         flight.setArrivalTime(dto.getArrivalTime());
         flight.setPrice(dto.getPrice());
         flight.setSeats(dto.getSeats());
+        flight.setFlightStatus(dto.getFlightStatus());
+        flight.setAircraftType(dto.getAircraftType());
+        flight.setAirlineName(dto.getAirlineName());
+        flight.setBaggagePolicy(dto.getBaggagePolicy());
         return flight;
     }
 }

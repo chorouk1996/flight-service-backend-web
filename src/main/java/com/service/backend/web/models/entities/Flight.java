@@ -1,5 +1,6 @@
 package com.service.backend.web.models.entities;
 
+import com.service.backend.web.models.enumerators.FlightStatusEnum;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,9 @@ public class Flight {
     @Id
     @GeneratedValue
     private Long id;
+
+    @Column
+    private String flightNumber;
 
     @Column
     private String origin;
@@ -30,6 +34,18 @@ public class Flight {
     @Column
     private Integer seats;
 
+    @Column
+    private String airlineName ;
+
+    @Column
+    private String aircraftType ;
+
+    @Column
+    private Double baggagePolicy;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private FlightStatusEnum flightStatus ;
 
     @OneToMany(mappedBy = "flight")
     private List<Booking> booking;
@@ -96,5 +112,45 @@ public class Flight {
 
     public void setBooking(List<Booking> booking) {
         this.booking = booking;
+    }
+
+    public String getFlightNumber() {
+        return flightNumber;
+    }
+
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
+    public String getAirlineName() {
+        return airlineName;
+    }
+
+    public void setAirlineName(String airlineName) {
+        this.airlineName = airlineName;
+    }
+
+    public String getAircraftType() {
+        return aircraftType;
+    }
+
+    public void setAircraftType(String aircraftType) {
+        this.aircraftType = aircraftType;
+    }
+
+    public Double getBaggagePolicy() {
+        return baggagePolicy;
+    }
+
+    public void setBaggagePolicy(Double baggagePolicy) {
+        this.baggagePolicy = baggagePolicy;
+    }
+
+    public FlightStatusEnum getFlightStatus() {
+        return flightStatus;
+    }
+
+    public void setFlightStatus(FlightStatusEnum flightStatus) {
+        this.flightStatus = flightStatus;
     }
 }
