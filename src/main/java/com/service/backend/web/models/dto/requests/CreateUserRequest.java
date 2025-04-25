@@ -1,10 +1,13 @@
 package com.service.backend.web.models.dto.requests;
 
+import jakarta.validation.constraints.Email;
+
 public class CreateUserRequest {
 
 
     private String name;
 
+    @Email
     private String email;
 
     private String password;

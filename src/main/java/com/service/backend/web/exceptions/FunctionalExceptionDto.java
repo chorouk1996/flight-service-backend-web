@@ -58,5 +58,15 @@ public class FunctionalExceptionDto {
         this.path = path;
     }
 
+    public FunctionalExceptionDto() {
+        super();
+    }
 
+    public FunctionalExceptionDto(String message,HttpStatus status){
+        super();
+        this.message = message;
+        this.status = status;
+        this.error = String.valueOf(status.value());
+        this.timestamp = LocalDateTime.now();
+    }
 }

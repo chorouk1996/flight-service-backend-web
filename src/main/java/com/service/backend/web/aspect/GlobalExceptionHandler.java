@@ -2,7 +2,6 @@ package com.service.backend.web.aspect;
 
 import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.exceptions.FunctionalExceptionDto;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -57,9 +56,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(exception = FunctionalException.class)
     @ResponseBody
-    public FunctionalException expiredJwtException(HttpServletRequest request,FunctionalException exception){
+    public FunctionalExceptionDto expiredJwtException(HttpServletRequest request,FunctionalException exception){
 
-        exception.getFunctionalExceptionDto().setPath(request.getPathInfo());
-        return exception;
+        exception.getFunctionalExceptionDto().setPath(request.getMethod()+" " + request.getRequestURI());
+        return exception.getFunctionalExceptionDto();
     }
 }

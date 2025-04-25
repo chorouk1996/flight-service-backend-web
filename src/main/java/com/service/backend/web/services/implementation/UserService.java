@@ -1,5 +1,7 @@
 package com.service.backend.web.services.implementation;
 
+import com.service.backend.web.exceptions.FunctionalException;
+import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import com.service.backend.web.models.dto.requests.AuthentUserRequest;
 import com.service.backend.web.models.dto.requests.CreateUserRequest;
 import com.service.backend.web.models.dto.responses.AuthenticationResponse;
@@ -7,6 +9,7 @@ import com.service.backend.web.models.dto.responses.CreateUserResponse;
 import com.service.backend.web.repositories.UserRepository;
 import com.service.backend.web.services.interfaces.IUserService;
 import com.service.backend.web.services.mapper.UserMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +32,8 @@ public class UserService implements IUserService {
     AuthenticationManager manager;
     @Override
     public CreateUserResponse addUser(CreateUserRequest user) {
+
+        if(doesUserExist(user.getEmail())) throw new FunctionalException(new FunctionalExceptionDto("This User already exist", HttpStatus.CONFLICT));
         user.setPassword(new BCryptPasswordEncoder(10).encode(user.getPassword()));
          return mapEntityToCreateUserResponse(userRepository.save(mapCreateUserRequestToEntity(user)));
     }
@@ -36,6 +41,10 @@ public class UserService implements IUserService {
     @Override
     public List<CreateUserResponse> getAllUser() {
         return userRepository.findAll().stream().map(UserMapper::mapEntityToCreateUserResponse).toList();
+    }
+
+    public boolean doesUserExist(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 
     @Override
