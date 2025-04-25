@@ -3,22 +3,22 @@ package com.service.backend.web.models.dto.requests;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class SearchFlightRequest {
 
 
     @NotBlank
     @JsonProperty("departureCity")
-    private String departure_city;
+    private String departureCity;
 
 
     @NotBlank
     @JsonProperty("destinationCity")
-    private String destination_city;
+    private String destinationCity;
 
     @JsonProperty("departureDate")
-    private LocalDateTime date;
+    private LocalDate date;
 
     @JsonProperty("airline")
     private String airline;
@@ -30,28 +30,32 @@ public class SearchFlightRequest {
     private String status;
 
 
+    @JsonProperty("sort")
+    private SortRequest sort;
+
+
 
     public String getDeparture_city() {
-        return departure_city;
+        return departureCity;
     }
 
     public void setDeparture_city(String departure_city) {
-        this.departure_city = departure_city;
+        this.departureCity = departure_city;
     }
 
     public String getDestination_city() {
-        return destination_city;
+        return destinationCity;
     }
 
     public void setDestination_city(String destination_city) {
-        this.destination_city = destination_city;
+        this.destinationCity = destination_city;
     }
 
-    public LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -77,5 +81,13 @@ public class SearchFlightRequest {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public SortRequest getSort() {
+        return sort;
+    }
+
+    public void setSort(SortRequest sort) {
+        this.sort = sort;
     }
 }
