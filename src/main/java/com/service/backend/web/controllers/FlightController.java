@@ -2,6 +2,7 @@ package com.service.backend.web.controllers;
 
 
 import com.service.backend.web.models.dto.FlightDto;
+import com.service.backend.web.models.dto.requests.SearchFlightRequest;
 import com.service.backend.web.services.implementation.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,17 +13,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/flight")
 public class FlightController {
 
     @Autowired
     FlightService flightService;
-    FlightDto flight = new FlightDto();
+
 
     @GetMapping("/{id}")
     public ResponseEntity<FlightDto> getFlight(@PathVariable Long id) {
-        return new ResponseEntity<>(flight, HttpStatus.OK);
+        return new ResponseEntity<>(flightService.getFlight(id), HttpStatus.OK);
     }
 
     @GetMapping("/all")
@@ -40,5 +41,11 @@ public class FlightController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<FlightDto> updateFlight(@RequestBody FlightDto flight) {
         return new ResponseEntity<>(flight, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/search")
+    public List<FlightDto> searchFlight(@RequestBody SearchFlightRequest searchCriteria) {
+        return flightService.searchFlight(searchCriteria);
     }
 }
