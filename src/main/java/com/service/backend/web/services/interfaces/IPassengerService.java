@@ -1,12 +1,17 @@
 package com.service.backend.web.services.interfaces;
 
 import com.service.backend.web.models.dto.PassengerDto;
+import com.service.backend.web.models.dto.requests.CreatePassengerRequest;
+import com.service.backend.web.models.entities.Passenger;
 
 import java.util.List;
 
 public interface IPassengerService {
 
-    public void addPassenger(PassengerDto passenger);
+     void addPassenger(PassengerDto passenger);
 
-    public List<PassengerDto> getAllPassenger();
+     List<PassengerDto> getAllPassenger();
+
+
+    List<Passenger> addAllPassenger(List<CreatePassengerRequest> passenger);
 }

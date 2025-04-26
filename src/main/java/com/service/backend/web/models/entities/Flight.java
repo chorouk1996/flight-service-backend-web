@@ -47,7 +47,7 @@ public class Flight {
     @Enumerated(EnumType.STRING)
     private FlightStatusEnum flightStatus ;
 
-    @OneToMany(mappedBy = "flight")
+    @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL)
     private List<Booking> booking;
 
     public Long getId() {

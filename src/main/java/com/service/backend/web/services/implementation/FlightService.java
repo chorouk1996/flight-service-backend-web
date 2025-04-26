@@ -38,8 +38,7 @@ public class FlightService implements IFlightService {
 
     @Override
     public FlightDto getFlight(Long id) {
-        flightRepository.getFlightById(id);
-        return null;
+        return  FlightMapper.mapFlightEntityToDto(flightRepository.getFlightById(id));
     }
 
     @Override

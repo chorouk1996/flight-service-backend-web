@@ -1,6 +1,8 @@
 package com.service.backend.web.models.dto;
 
 
+import com.service.backend.web.models.enumerators.BookingStatusEnum;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,7 +15,7 @@ public class BookingDto {
 
     private LocalDateTime bookingDate;
 
-    private String status;
+    private BookingStatusEnum status;
 
     private List<PassengerDto> passengerDtos;
 
@@ -50,11 +52,11 @@ public class BookingDto {
         this.bookingDate = bookingDate;
     }
 
-    public String getStatus() {
+    public BookingStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(BookingStatusEnum status) {
         this.status = status;
     }
 

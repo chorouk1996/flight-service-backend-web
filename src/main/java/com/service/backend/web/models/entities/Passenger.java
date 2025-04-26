@@ -10,8 +10,13 @@ public class Passenger {
     private Long id;
 
     @Column
-    private String name;
+    private String firstName;
 
+    @Column
+    private String lastName;
+
+    @Column
+    private String mail;
     @Column
     private Integer age;
 
@@ -27,13 +32,6 @@ public class Passenger {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Integer getAge() {
         return age;
@@ -49,5 +47,29 @@ public class Passenger {
 
     public void setBooking(Booking booking) {
         this.booking = booking;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 }

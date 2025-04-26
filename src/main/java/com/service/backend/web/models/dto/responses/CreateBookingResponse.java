@@ -1,36 +1,24 @@
-package com.service.backend.web.models.entities;
+package com.service.backend.web.models.dto.responses;
 
+import com.service.backend.web.models.dto.PassengerDto;
 import com.service.backend.web.models.enumerators.BookingStatusEnum;
-import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
-public class Booking {
-    @Id
-    @GeneratedValue
+public class CreateBookingResponse {
+
     private Long id;
 
+    private Long user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="user_id")
-    private User user;
+    private Long flight;
 
-    @JoinColumn(name="flight_id")
-    @ManyToOne
-    private Flight flight;
-
-    @Column
     private LocalDateTime bookingDate;
 
-    @Column
-    @Enumerated(EnumType.STRING)
     private BookingStatusEnum status;
 
-    @OneToMany(mappedBy = "booking",cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<Passenger> passengers;
-
+    private List<PassengerDto> passengers;
 
 
     public Long getId() {
@@ -41,19 +29,19 @@ public class Booking {
         this.id = id;
     }
 
-    public User getUser() {
+    public Long getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Long user) {
         this.user = user;
     }
 
-    public Flight getFlight() {
+    public Long getFlight() {
         return flight;
     }
 
-    public void setFlight(Flight flight) {
+    public void setFlight(Long flight) {
         this.flight = flight;
     }
 
@@ -73,11 +61,11 @@ public class Booking {
         this.status = status;
     }
 
-    public List<Passenger> getPassengers() {
+    public List<PassengerDto> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(List<Passenger> passengers) {
+    public void setPassengers(List<PassengerDto> passengers) {
         this.passengers = passengers;
     }
 }

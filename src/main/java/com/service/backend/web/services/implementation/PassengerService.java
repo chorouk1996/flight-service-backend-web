@@ -1,6 +1,8 @@
 package com.service.backend.web.services.implementation;
 
 import com.service.backend.web.models.dto.PassengerDto;
+import com.service.backend.web.models.dto.requests.CreatePassengerRequest;
+import com.service.backend.web.models.entities.Passenger;
 import com.service.backend.web.repositories.PassengerRepository;
 import com.service.backend.web.services.interfaces.IPassengerService;
 import com.service.backend.web.services.mapper.PassengerMapper;
@@ -25,6 +27,12 @@ public class PassengerService implements IPassengerService {
     @Override
     public List<PassengerDto> getAllPassenger() {
         return passengerRepository.findAll().stream().map(PassengerMapper::mapPassengerEntityToDto).toList();
+    }
+
+
+    @Override
+    public List<Passenger> addAllPassenger(List<CreatePassengerRequest> passengers) {
+        return passengerRepository.saveAll(passengers.stream().map(PassengerMapper::mapPassengerDtoToEntity).toList());
     }
 
     public PassengerService(@Autowired PassengerRepository passengerRepository) {
