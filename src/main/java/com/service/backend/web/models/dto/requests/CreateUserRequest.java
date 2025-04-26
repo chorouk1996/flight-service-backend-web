@@ -1,25 +1,40 @@
 package com.service.backend.web.models.dto.requests;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class CreateUserRequest {
 
 
-    private String name;
+    @NotBlank
+    private String firstName;
 
-    @Email
+    @NotBlank
+    private String lastName;
+
+    @Email @NotBlank
     private String email;
 
+    @Size(min = 8) @NotBlank
     private String password;
 
     private String role;
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {

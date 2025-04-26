@@ -1,13 +1,17 @@
 package com.service.backend.web.models.dto.requests;
 
 import com.service.backend.web.models.dto.PassengerDto;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
 public class CreateBookingRequest {
 
+    @NotNull
     private long flightId;
 
+    @NotEmpty
     private List<CreatePassengerRequest> passengers;
 
 
