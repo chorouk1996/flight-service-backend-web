@@ -1,62 +1,43 @@
-package com.service.backend.web.models.entities;
+package com.service.backend.web.models.dto.responses;
+
+
 
 import com.service.backend.web.models.enumerators.FlightStatusEnum;
-import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Entity
-public class Flight {
+public class CreateFlightResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column
     private String flightNumber;
 
-    @Column
     private String origin;
 
-    @Column
     private String destination;
 
-    @Column
     private LocalDateTime departureTime;
 
-    @Column
     private LocalDateTime arrivalTime;
 
-    @Column
     private Double price;
 
-    @Column
     private Integer seats;
 
-    @Column
-    private String airlineName ;
+    private String airlineName;
 
-    @Column
-    private String aircraftType ;
+    private String aircraftType;
 
-    @Column
     private String baggagePolicy;
 
-
-    @Column
-    @Enumerated(EnumType.STRING)
     private FlightStatusEnum flightStatus ;
 
-    @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL)
-    private List<Booking> booking;
 
-    public Long getId() {
-        return id;
+    public String getFlightNumber() {
+        return flightNumber;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
     }
 
     public String getOrigin() {
@@ -105,22 +86,6 @@ public class Flight {
 
     public void setSeats(Integer seats) {
         this.seats = seats;
-    }
-
-    public List<Booking> getBooking() {
-        return booking;
-    }
-
-    public void setBooking(List<Booking> booking) {
-        this.booking = booking;
-    }
-
-    public String getFlightNumber() {
-        return flightNumber;
-    }
-
-    public void setFlightNumber(String flightNumber) {
-        this.flightNumber = flightNumber;
     }
 
     public String getAirlineName() {

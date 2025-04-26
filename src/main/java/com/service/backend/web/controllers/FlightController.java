@@ -2,7 +2,10 @@ package com.service.backend.web.controllers;
 
 
 import com.service.backend.web.models.dto.FlightDto;
+import com.service.backend.web.models.dto.requests.CreateFlightRequest;
 import com.service.backend.web.models.dto.requests.SearchFlightRequest;
+import com.service.backend.web.models.dto.requests.UpdateFlightRequest;
+import com.service.backend.web.models.dto.responses.CreateFlightResponse;
 import com.service.backend.web.services.implementation.FlightService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +35,23 @@ public class FlightController {
         return new ResponseEntity<>(flightService.getAllFlight(), HttpStatus.OK);
     }
 
-    @PostMapping()
+    @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<FlightDto> addFlight(@RequestBody FlightDto flight) {
-        return new ResponseEntity<>(flight, HttpStatus.OK);
+    public CreateFlightResponse addFlight(@RequestBody CreateFlightRequest flight) {
+        return flightService.addFlight(flight);
     }
 
-    @PutMapping()
+    @PutMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<FlightDto> updateFlight(@RequestBody FlightDto flight) {
-        return new ResponseEntity<>(flight, HttpStatus.OK);
+    public CreateFlightResponse updateFlight(@RequestBody UpdateFlightRequest flight) {
+        return flightService.updateFlight(flight);
     }
 
+    @DeleteMapping("/{flightId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void deleteFlight(@PathVariable Long flightId) {
+         flightService.cancelFlight(flightId);
+    }
 
     @PostMapping("/search")
     public List<FlightDto> searchFlight(@RequestBody @Valid SearchFlightRequest searchCriteria) {

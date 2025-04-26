@@ -8,6 +8,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalUnit;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 
 public class FlightHelper {
@@ -20,5 +22,11 @@ public class FlightHelper {
 
     public static Long calculateDuration(LocalDateTime departureTime, LocalDateTime arrivalTime) {
         return Duration.between(departureTime,arrivalTime).toMinutes();
+    }
+
+    public static <T> void updateIfNotNull(Consumer<T> setAircraftType, Supplier<T> getAircraftType) {
+        if(getAircraftType.get()!= null){
+            setAircraftType.accept(getAircraftType.get());
+        }
     }
 }

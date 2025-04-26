@@ -1,62 +1,52 @@
-package com.service.backend.web.models.entities;
+package com.service.backend.web.models.dto.requests;
 
-import com.service.backend.web.models.enumerators.FlightStatusEnum;
-import jakarta.persistence.*;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Entity
-public class Flight {
+public class CreateFlightRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column
+    @NotBlank
     private String flightNumber;
 
-    @Column
+    @NotBlank
     private String origin;
 
-    @Column
+    @NotBlank
     private String destination;
 
-    @Column
+    @NotNull
     private LocalDateTime departureTime;
 
-    @Column
+    @NotNull
     private LocalDateTime arrivalTime;
 
-    @Column
+    @Min(1)
     private Double price;
 
-    @Column
+    @Min(1)
     private Integer seats;
 
-    @Column
-    private String airlineName ;
+    @NotBlank
+    private String airlineName;
 
-    @Column
-    private String aircraftType ;
+    @NotBlank
+    private String aircraftType;
 
-    @Column
+    @NotBlank
     private String baggagePolicy;
 
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private FlightStatusEnum flightStatus ;
-
-    @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL)
-    private List<Booking> booking;
-
-    public Long getId() {
-        return id;
+    public String getFlightNumber() {
+        return flightNumber;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
     }
 
     public String getOrigin() {
@@ -107,22 +97,6 @@ public class Flight {
         this.seats = seats;
     }
 
-    public List<Booking> getBooking() {
-        return booking;
-    }
-
-    public void setBooking(List<Booking> booking) {
-        this.booking = booking;
-    }
-
-    public String getFlightNumber() {
-        return flightNumber;
-    }
-
-    public void setFlightNumber(String flightNumber) {
-        this.flightNumber = flightNumber;
-    }
-
     public String getAirlineName() {
         return airlineName;
     }
@@ -145,13 +119,5 @@ public class Flight {
 
     public void setBaggagePolicy(String baggagePolicy) {
         this.baggagePolicy = baggagePolicy;
-    }
-
-    public FlightStatusEnum getFlightStatus() {
-        return flightStatus;
-    }
-
-    public void setFlightStatus(FlightStatusEnum flightStatus) {
-        this.flightStatus = flightStatus;
     }
 }

@@ -16,7 +16,8 @@ public final class UserMapper {
     public static UserDto mapUserEntityToDto(User user) {
         UserDto dto = new UserDto();
         dto.setId(user.getId());
-        dto.setName(user.getName());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
         dto.setEmail(user.getEmail());
         dto.setRole(user.getRole());
         return dto;
@@ -24,7 +25,8 @@ public final class UserMapper {
 
     public static User mapCreateUserRequestToEntity(CreateUserRequest userRequest) {
         User user = new User();
-        user.setName(userRequest.getName());
+        user.setFirstName(userRequest.getFirstName());
+        user.setLastName(userRequest.getLastName());
         user.setPassword(userRequest.getPassword());
         user.setEmail(userRequest.getEmail());
         user.setRole(RoleEnum.valueOf(userRequest.getRole()));
@@ -34,7 +36,8 @@ public final class UserMapper {
     public static CreateUserResponse mapEntityToCreateUserResponse(User user) {
         CreateUserResponse userResponse = new CreateUserResponse();
         userResponse.setId(user.getId());
-        userResponse.setName(user.getName());
+        userResponse.setFirstName(user.getFirstName());
+        userResponse.setLastName(user.getLastName());
         userResponse.setEmail(user.getEmail());
         userResponse.setRole(user.getRole().name());
         return userResponse;
@@ -43,7 +46,8 @@ public final class UserMapper {
     public static User mapUserDtoToEntity(UserDto dto) {
         User user = new User();
         user.setId(dto.getId());
-        user.setName(dto.getName());
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
         user.setRole(dto.getRole());
         return user;

@@ -3,12 +3,16 @@ package com.service.backend.web.services.implementation;
 import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import com.service.backend.web.models.dto.FlightDto;
+import com.service.backend.web.models.dto.requests.CreateFlightRequest;
 import com.service.backend.web.models.dto.requests.SearchFlightRequest;
+import com.service.backend.web.models.dto.requests.UpdateFlightRequest;
+import com.service.backend.web.models.dto.responses.CreateFlightResponse;
 import com.service.backend.web.models.entities.Flight;
 import com.service.backend.web.models.enumerators.FlightStatusEnum;
 import com.service.backend.web.models.enumerators.SortDirectionEnum;
 import com.service.backend.web.repositories.FlightCustomRepository;
 import com.service.backend.web.repositories.FlightRepository;
+import com.service.backend.web.services.helper.FlightHelper;
 import com.service.backend.web.services.interfaces.IFlightService;
 import com.service.backend.web.services.mapper.FlightMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import static com.service.backend.web.services.mapper.FlightMapper.mapFlightDtoToEntity;
-import static com.service.backend.web.services.mapper.FlightMapper.mapFlightEntityToDto;
+import static com.service.backend.web.services.mapper.FlightMapper.*;
 
 @Service
 public class FlightService implements IFlightService {
@@ -33,10 +36,32 @@ public class FlightService implements IFlightService {
     FlightCustomRepository flightCustomRepository;
 
     @Override
-    public FlightDto addFlight(FlightDto flight) {
+    public CreateFlightResponse addFlight(CreateFlightRequest flight) {
 
-        return mapFlightEntityToDto(flightRepository.save(mapFlightDtoToEntity(flight)));
+        return mapFlightEntityToCreateFlightResponse(flightRepository.save(mapCreateFlightRequestToEntity(flight)));
     }
+    @Override
+    public CreateFlightResponse updateFlight(UpdateFlightRequest flight) {
+        Flight oldFlight =  getFlightById(flight.getFlightId());
+
+        FlightHelper.updateIfNotNull(oldFlight::setAircraftType,flight::getAircraftType);
+        FlightHelper.updateIfNotNull(oldFlight::setFlightStatus,flight::getStatus);
+        FlightHelper.updateIfNotNull(oldFlight::setFlightNumber,flight::getFlightNumber);
+        FlightHelper.updateIfNotNull(oldFlight::setArrivalTime,flight::getArrivalTime);
+        FlightHelper.updateIfNotNull(oldFlight::setBaggagePolicy,flight::getBaggagePolicy);
+        FlightHelper.updateIfNotNull(oldFlight::setDepartureTime,flight::getDepartureTime);
+        FlightHelper.updateIfNotNull(oldFlight::setSeats,flight::getSeats);
+        FlightHelper.updateIfNotNull(oldFlight::setOrigin,flight::getOrigin);
+        FlightHelper.updateIfNotNull(oldFlight::setDestination,flight::getDestination);
+        FlightHelper.updateIfNotNull(oldFlight::setPrice,flight::getPrice);
+        FlightHelper.updateIfNotNull(oldFlight::setAirlineName,flight::getAirlineName);
+
+       return  mapFlightEntityToCreateFlightResponse(flightRepository.save(oldFlight));
+
+    }
+
+
+
 
     @Override
     public List<FlightDto> getAllFlight() {
@@ -51,7 +76,7 @@ public class FlightService implements IFlightService {
     }
 
     public Flight getAvailableFlightById(Long id) {
-        return flightRepository.getFlightByIdAndStatusNotAndDepartureTimeAfter(id,FlightStatusEnum.CANCELLED, LocalDateTime.now()).orElseThrow(
+        return flightRepository.getFlightByIdAndFlightStatusNotAndDepartureTimeAfter(id,FlightStatusEnum.CANCELLED, LocalDateTime.now()).orElseThrow(
                 ()-> {throw new FunctionalException(new FunctionalExceptionDto("Flight not found , departed or cancelled",HttpStatus.NOT_FOUND));}
 
         );
@@ -65,6 +90,13 @@ public class FlightService implements IFlightService {
     @Override
     public FlightDto getAvailableFlight(Long id) {
         return FlightMapper.mapFlightEntityToDto(getFlightById(id));
+    }
+
+    @Override
+    public void cancelFlight(Long flightId) {
+        Flight flight = getFlightById(flightId);
+        flight.setFlightStatus(FlightStatusEnum.CANCELLED);
+        flightRepository.save(flight);
     }
 
     public void decreaseSeat(Long flightId, int seat) {

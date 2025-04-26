@@ -38,6 +38,8 @@ public class FlightDto {
     private Long durationMinutes;
     private FlightStatusEnum flightStatus ;
 
+    private String flightNumber;
+
 
     public Long getId() {
         return id;
@@ -141,5 +143,13 @@ public class FlightDto {
 
     public void setDurationMinutes(Long durationMinutes) {
         this.durationMinutes = durationMinutes;
+    }
+
+    public String getFlightNumber() {
+        return flightNumber;
+    }
+
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
     }
 }

@@ -1,6 +1,8 @@
 package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.FlightDto;
+import com.service.backend.web.models.dto.requests.CreateFlightRequest;
+import com.service.backend.web.models.dto.responses.CreateFlightResponse;
 import com.service.backend.web.models.entities.Flight;
 import com.service.backend.web.models.enumerators.FlightStatusEnum;
 import com.service.backend.web.services.helper.FlightHelper;
@@ -24,9 +26,26 @@ public class FlightMapper {
         dto.setAircraftType(flight.getAircraftType());
         dto.setAirlineName(flight.getAirlineName());
         dto.setBaggagePolicy(flight.getBaggagePolicy());
+        dto.setFlightNumber(dto.getFlightNumber());
         dto.setDurationMinutes(FlightHelper.calculateDuration(flight.getDepartureTime(),flight.getArrivalTime()));
         return dto;
     }
+    public static CreateFlightResponse mapFlightEntityToCreateFlightResponse(Flight flight) {
+        CreateFlightResponse dto = new CreateFlightResponse();
+        dto.setOrigin(flight.getOrigin());
+        dto.setDestination(flight.getDestination());
+        dto.setDepartureTime(flight.getDepartureTime());
+        dto.setArrivalTime(flight.getArrivalTime());
+        dto.setPrice(flight.getPrice());
+        dto.setSeats(flight.getSeats());
+        dto.setFlightStatus(flight.getFlightStatus());
+        dto.setAircraftType(flight.getAircraftType());
+        dto.setAirlineName(flight.getAirlineName());
+        dto.setBaggagePolicy(flight.getBaggagePolicy());
+        dto.setFlightNumber(flight.getFlightNumber());
+        return dto;
+    }
+
 
     public static Flight mapFlightDtoToEntity(FlightDto dto) {
         Flight flight = new Flight();
@@ -41,6 +60,22 @@ public class FlightMapper {
         flight.setAircraftType(dto.getAircraftType());
         flight.setAirlineName(dto.getAirlineName());
         flight.setBaggagePolicy(dto.getBaggagePolicy());
+        return flight;
+    }
+
+    public static Flight mapCreateFlightRequestToEntity(CreateFlightRequest dto) {
+        Flight flight = new Flight();
+        flight.setOrigin(dto.getOrigin());
+        flight.setDestination(dto.getDestination());
+        flight.setDepartureTime(dto.getDepartureTime());
+        flight.setArrivalTime(dto.getArrivalTime());
+        flight.setPrice(dto.getPrice());
+        flight.setSeats(dto.getSeats());
+        flight.setFlightStatus(FlightStatusEnum.SCHEDULED);
+        flight.setAircraftType(dto.getAircraftType());
+        flight.setAirlineName(dto.getAirlineName());
+        flight.setBaggagePolicy(dto.getBaggagePolicy());
+        flight.setFlightNumber(dto.getFlightNumber());
         return flight;
     }
 

@@ -1,14 +1,19 @@
 package com.service.backend.web.services.interfaces;
 
 import com.service.backend.web.models.dto.FlightDto;
+import com.service.backend.web.models.dto.requests.CreateFlightRequest;
 import com.service.backend.web.models.dto.requests.SearchFlightRequest;
+import com.service.backend.web.models.dto.requests.UpdateFlightRequest;
+import com.service.backend.web.models.dto.responses.CreateFlightResponse;
 
 import java.util.List;
 
 public interface IFlightService {
 
 
-     FlightDto addFlight(FlightDto flight);
+     CreateFlightResponse addFlight(CreateFlightRequest flight);
+
+     CreateFlightResponse updateFlight(UpdateFlightRequest flight);
 
      List<FlightDto> getAllFlight();
 
@@ -18,4 +23,5 @@ public interface IFlightService {
 
      FlightDto getAvailableFlight(Long id);
 
+     void cancelFlight(Long flightId);
 }
