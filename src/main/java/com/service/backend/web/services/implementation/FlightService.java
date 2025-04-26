@@ -6,6 +6,7 @@ import com.service.backend.web.models.dto.FlightDto;
 import com.service.backend.web.models.dto.requests.CreateFlightRequest;
 import com.service.backend.web.models.dto.requests.SearchFlightRequest;
 import com.service.backend.web.models.dto.requests.UpdateFlightRequest;
+import com.service.backend.web.models.dto.requests.UpdateFlightStatusRequest;
 import com.service.backend.web.models.dto.responses.CreateFlightResponse;
 import com.service.backend.web.models.entities.Flight;
 import com.service.backend.web.models.enumerators.FlightStatusEnum;
@@ -18,12 +19,12 @@ import com.service.backend.web.services.mapper.FlightMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import static com.service.backend.web.services.mapper.FlightMapper.*;
 
@@ -41,9 +42,9 @@ public class FlightService implements IFlightService {
         return mapFlightEntityToCreateFlightResponse(flightRepository.save(mapCreateFlightRequestToEntity(flight)));
     }
     @Override
-    public CreateFlightResponse updateFlight(UpdateFlightRequest flight) {
-        Flight oldFlight =  getFlightById(flight.getFlightId());
-
+    public CreateFlightResponse updateFlight(Long id,UpdateFlightRequest flight) {
+        checkIfReasonExist(flight.getStatus(),flight.getDelayReason());
+        Flight oldFlight =  getFlightById(id);
         FlightHelper.updateIfNotNull(oldFlight::setAircraftType,flight::getAircraftType);
         FlightHelper.updateIfNotNull(oldFlight::setFlightStatus,flight::getStatus);
         FlightHelper.updateIfNotNull(oldFlight::setFlightNumber,flight::getFlightNumber);
@@ -60,7 +61,20 @@ public class FlightService implements IFlightService {
 
     }
 
+    @Override
+    public CreateFlightResponse updateFlightStatus(Long id, UpdateFlightStatusRequest request) {
+        Flight oldFlight =  getFlightById(id);
+        checkIfReasonExist(request.getStatus(),request.getDelayReason());
+        FlightHelper.updateIfNotNull(oldFlight::setFlightStatus,request::getStatus);
+       return  mapFlightEntityToCreateFlightResponse(flightRepository.save(oldFlight));
 
+    }
+
+    private void checkIfReasonExist(FlightStatusEnum status,String delayReason){
+        if((status == FlightStatusEnum.CANCELLED || status == FlightStatusEnum.DELAYED ) && !StringUtils.hasText(delayReason)){
+            throw new FunctionalException(new FunctionalExceptionDto("Delay reason must be provided when status is DELAYED or CANCELLED",HttpStatus.BAD_REQUEST));
+        }
+    }
 
 
     @Override
@@ -114,7 +128,12 @@ public class FlightService implements IFlightService {
         flightRepository.save(flight);
     }
     @Override
-    public List<FlightDto> searchFlight(SearchFlightRequest criteria) {
+    public List<FlightDto> userSearchFlight(SearchFlightRequest criteria) {
+        if( criteria.getStatus() == FlightStatusEnum.CANCELLED || criteria.getStatus() == FlightStatusEnum.DEPARTED) throw new FunctionalException(new FunctionalExceptionDto("Users are not allowed to access cancelled flight",HttpStatus.FORBIDDEN));
+        return  searchFlight(criteria);
+    }
+
+    private List<FlightDto> searchFlight(SearchFlightRequest criteria) {
         if (criteria.getSort() != null && criteria.getSort().getSortField().equals("duration")) {
             if (criteria.getSort().getSortDirection() == SortDirectionEnum.ASC)
                 return flightCustomRepository.findByCriteria(criteria).stream().map(FlightMapper::mapFlightEntityToDto).sorted(Comparator.comparingLong(FlightDto::getDurationMinutes)).toList();
@@ -123,6 +142,12 @@ public class FlightService implements IFlightService {
         }
         return flightCustomRepository.findByCriteria(criteria).stream().map(FlightMapper::mapFlightEntityToDto).toList();
     }
+
+    @Override
+    public List<FlightDto> adminSearchFlight(SearchFlightRequest criteria) {
+       return  searchFlight(criteria);
+    }
+
 
     public FlightService(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;

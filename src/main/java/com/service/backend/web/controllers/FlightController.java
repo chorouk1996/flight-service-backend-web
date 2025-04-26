@@ -35,26 +35,10 @@ public class FlightController {
         return new ResponseEntity<>(flightService.getAllFlight(), HttpStatus.OK);
     }
 
-    @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public CreateFlightResponse addFlight(@RequestBody CreateFlightRequest flight) {
-        return flightService.addFlight(flight);
-    }
 
-    @PutMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public CreateFlightResponse updateFlight(@RequestBody UpdateFlightRequest flight) {
-        return flightService.updateFlight(flight);
-    }
-
-    @DeleteMapping("/{flightId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public void deleteFlight(@PathVariable Long flightId) {
-         flightService.cancelFlight(flightId);
-    }
 
     @PostMapping("/search")
     public List<FlightDto> searchFlight(@RequestBody @Valid SearchFlightRequest searchCriteria) {
-        return flightService.searchFlight(searchCriteria);
+        return flightService.userSearchFlight(searchCriteria);
     }
 }

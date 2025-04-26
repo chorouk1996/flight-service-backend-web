@@ -16,7 +16,7 @@ public class PassengerMapper {
         dto.setAge(passenger.getAge());
         dto.setFirstName(passenger.getFirstName());
         dto.setLastName(passenger.getLastName());
-        dto.setMail(passenger.getMail());
+        dto.setEmail(passenger.getEmail());
         return dto;
     }
 
@@ -26,16 +26,16 @@ public class PassengerMapper {
         passenger.setAge(dto.getAge());
         passenger.setFirstName(dto.getFirstName());
         passenger.setLastName(dto.getLastName());
-        passenger.setMail(dto.getMail());
+        passenger.setEmail(dto.getEmail());
         return passenger;
     }
 
-    public static Passenger mapPassengerDtoToEntity(CreatePassengerRequest dto) {
+    public static Passenger mapCreatePassengerRequestToEntity(CreatePassengerRequest dto) {
         Passenger passenger = new Passenger();
         passenger.setAge(dto.getAge());
         passenger.setFirstName(dto.getFirstName());
         passenger.setLastName(dto.getLastName());
-        passenger.setMail(dto.getMail());
+        passenger.setEmail(dto.getEmail());
         return passenger;
     }
 

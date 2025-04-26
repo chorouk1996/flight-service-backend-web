@@ -43,6 +43,8 @@ public class FlightMapper {
         dto.setAirlineName(flight.getAirlineName());
         dto.setBaggagePolicy(flight.getBaggagePolicy());
         dto.setFlightNumber(flight.getFlightNumber());
+        dto.setDelayReason(flight.getDelayReason());
+
         return dto;
     }
 

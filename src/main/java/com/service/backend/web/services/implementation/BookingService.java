@@ -43,7 +43,7 @@ public class BookingService implements IBookingService {
 
         Booking bookingToAdd = new Booking();
         bookingToAdd.setFlight(FlightMapper.mapFlightDtoToEntity(flightService.getAvailableFlight(booking.getFlightId())));
-        List<Passenger> passenger = booking.getPassengers().stream().map(PassengerMapper::mapPassengerDtoToEntity).toList();
+        List<Passenger> passenger = booking.getPassengers().stream().map(PassengerMapper::mapCreatePassengerRequestToEntity).toList();
         passenger.forEach(pass -> pass.setBooking(bookingToAdd));
         bookingToAdd.setPassengers(passenger);
         flightService.decreaseSeat(booking.getFlightId(), booking.getPassengers().size());

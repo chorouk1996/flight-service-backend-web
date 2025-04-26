@@ -7,6 +7,7 @@ import com.service.backend.web.models.dto.responses.CreateBookingResponse;
 import com.service.backend.web.models.dto.responses.MyBookingResponse;
 import com.service.backend.web.security.UserDetailsImpl;
 import com.service.backend.web.services.implementation.BookingService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,13 +42,13 @@ public class BookingController {
     }
 
     @PostMapping()
-    public CreateBookingResponse addBooking(@RequestBody CreateBookingRequest booking) {
+    public CreateBookingResponse addBooking(@RequestBody @Valid CreateBookingRequest booking) {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
          return bookingService.addBooking(booking,user.getUsername());
     }
 
     @PutMapping()
-    public ResponseEntity<BookingDto> updateBooking(@RequestBody BookingDto booking) {
+    public ResponseEntity<BookingDto> updateBooking(@RequestBody @Valid BookingDto booking) {
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 

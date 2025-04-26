@@ -16,10 +16,13 @@ public class Passenger {
     private String lastName;
 
     @Column
-    private String mail;
+    private String email;
     @Column
     private Integer age;
 
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
     @ManyToOne
     @JoinColumn(name="booking_id")
     private Booking booking;
@@ -65,11 +68,19 @@ public class Passenger {
         this.lastName = lastName;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String mail) {
+        this.email = mail;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

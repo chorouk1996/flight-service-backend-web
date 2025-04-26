@@ -5,6 +5,7 @@ import com.service.backend.web.models.dto.requests.CreateUserRequest;
 import com.service.backend.web.models.dto.requests.PasswordUpdateRequest;
 import com.service.backend.web.models.dto.responses.CreateUserResponse;
 import com.service.backend.web.services.interfaces.IUserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -27,13 +28,13 @@ public class UserController {
 
     @PostMapping()
     @PreAuthorize("hasAuthority('ADMIN')")
-    public CreateUserResponse addUser(@RequestBody CreateUserRequest user) {
+    public CreateUserResponse addUser(@RequestBody @Valid CreateUserRequest user) {
         return userService.addUser(user);
     }
 
 
     @PutMapping("/updatePassword")
-    public void updatePassword(@RequestBody PasswordUpdateRequest user) {
+    public void updatePassword(@RequestBody @Valid PasswordUpdateRequest user) {
          userService.updatePassword(user);
     }
 

@@ -48,6 +48,9 @@ public class Flight {
     @Enumerated(EnumType.STRING)
     private FlightStatusEnum flightStatus ;
 
+    @Column
+    private String delayReason;
+
     @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL)
     private List<Booking> booking;
 
@@ -153,5 +156,13 @@ public class Flight {
 
     public void setFlightStatus(FlightStatusEnum flightStatus) {
         this.flightStatus = flightStatus;
+    }
+
+    public String getDelayReason() {
+        return delayReason;
+    }
+
+    public void setDelayReason(String delayReason) {
+        this.delayReason = delayReason;
     }
 }

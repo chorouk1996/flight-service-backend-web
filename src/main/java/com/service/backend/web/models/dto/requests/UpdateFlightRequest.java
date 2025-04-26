@@ -3,14 +3,10 @@ package com.service.backend.web.models.dto.requests;
 
 import com.service.backend.web.models.enumerators.FlightStatusEnum;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
 
 public class UpdateFlightRequest {
-
-    @NotBlank
-    private Long flightId;
 
     private String flightNumber;
 
@@ -38,13 +34,7 @@ public class UpdateFlightRequest {
 
     private FlightStatusEnum status;
 
-    public Long getFlightId() {
-        return flightId;
-    }
-
-    public void setFlightId(Long flightId) {
-        this.flightId = flightId;
-    }
+    private String delayReason;
 
     public String getFlightNumber() {
         return flightNumber;
@@ -132,5 +122,13 @@ public class UpdateFlightRequest {
 
     public void setStatus(FlightStatusEnum status) {
         this.status = status;
+    }
+
+    public String getDelayReason() {
+        return delayReason;
+    }
+
+    public void setDelayReason(String delayReason) {
+        this.delayReason = delayReason;
     }
 }

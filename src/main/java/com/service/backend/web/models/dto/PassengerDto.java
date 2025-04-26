@@ -11,7 +11,7 @@ public class PassengerDto {
 
     private Integer age;
 
-    private String mail;
+    private String email;
 
     public Long getId() {
         return id;
@@ -46,11 +46,11 @@ public class PassengerDto {
         this.lastName = lastName;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

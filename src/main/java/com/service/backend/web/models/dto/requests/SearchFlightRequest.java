@@ -1,6 +1,7 @@
 package com.service.backend.web.models.dto.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.service.backend.web.models.enumerators.FlightStatusEnum;
 import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
@@ -27,7 +28,7 @@ public class SearchFlightRequest {
     private String aircraft;
 
     @JsonProperty("status")
-    private String status;
+    private FlightStatusEnum status;
 
 
     @JsonProperty("sort")
@@ -75,13 +76,6 @@ public class SearchFlightRequest {
         this.aircraft = aircraft;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public SortRequest getSort() {
         return sort;
@@ -89,5 +83,29 @@ public class SearchFlightRequest {
 
     public void setSort(SortRequest sort) {
         this.sort = sort;
+    }
+
+    public String getDepartureCity() {
+        return departureCity;
+    }
+
+    public void setDepartureCity(String departureCity) {
+        this.departureCity = departureCity;
+    }
+
+    public String getDestinationCity() {
+        return destinationCity;
+    }
+
+    public void setDestinationCity(String destinationCity) {
+        this.destinationCity = destinationCity;
+    }
+
+    public FlightStatusEnum getStatus() {
+        return status;
+    }
+
+    public void setStatus(FlightStatusEnum status) {
+        this.status = status;
     }
 }

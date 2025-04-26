@@ -31,6 +31,8 @@ public class CreateFlightResponse {
 
     private FlightStatusEnum flightStatus ;
 
+    private String delayReason;
+
 
     public String getFlightNumber() {
         return flightNumber;
@@ -118,5 +120,13 @@ public class CreateFlightResponse {
 
     public void setFlightStatus(FlightStatusEnum flightStatus) {
         this.flightStatus = flightStatus;
+    }
+
+    public String getDelayReason() {
+        return delayReason;
+    }
+
+    public void setDelayReason(String delayReason) {
+        this.delayReason = delayReason;
     }
 }

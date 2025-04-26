@@ -6,6 +6,7 @@ import com.service.backend.web.models.dto.requests.AuthentUserRequest;
 import com.service.backend.web.models.dto.responses.AuthenticationResponse;
 import com.service.backend.web.services.interfaces.IUserService;
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ public class AuthenticationController {
     private IUserService userService;
 
     @PostMapping("")
-    public AuthenticationResponse loginUser(@RequestBody AuthentUserRequest user) throws NoSuchAlgorithmException {
+    public AuthenticationResponse loginUser(@RequestBody @Valid AuthentUserRequest user) throws NoSuchAlgorithmException {
         return new AuthenticationResponse(userService.authenticate(user));
     }
 

@@ -40,6 +40,7 @@ public class FlightDto {
 
     private String flightNumber;
 
+    private String delayReason;
 
     public Long getId() {
         return id;
@@ -151,5 +152,13 @@ public class FlightDto {
 
     public void setFlightNumber(String flightNumber) {
         this.flightNumber = flightNumber;
+    }
+
+    public String getDelayReason() {
+        return delayReason;
+    }
+
+    public void setDelayReason(String delayReason) {
+        this.delayReason = delayReason;
     }
 }

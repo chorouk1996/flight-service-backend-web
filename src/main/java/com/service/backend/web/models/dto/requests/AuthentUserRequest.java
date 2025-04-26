@@ -1,10 +1,14 @@
 package com.service.backend.web.models.dto.requests;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class AuthentUserRequest {
 
 
+    @NotBlank
     private String email;
 
+    @NotBlank
     private String password;
 
 

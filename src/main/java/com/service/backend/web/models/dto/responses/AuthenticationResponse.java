@@ -1,7 +1,10 @@
 package com.service.backend.web.models.dto.responses;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class AuthenticationResponse {
 
+    @NotBlank
     private String token;
 
 
