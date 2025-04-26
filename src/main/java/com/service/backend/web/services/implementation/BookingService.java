@@ -33,6 +33,7 @@ public class BookingService implements IBookingService {
     public CreateBookingResponse addBooking(CreateBookingRequest booking, String username) {
         Booking bookingToAdd = new Booking();
         bookingToAdd.setPassengers(booking.getPassengers().stream().map(PassengerMapper::mapPassengerDtoToEntity).toList());
+        flightService.decreaseSeat(booking.getFlightId(),booking.getPassengers().size());
         bookingToAdd.setFlight(FlightMapper.mapFlightDtoToEntity(flightService.getFlight(booking.getFlightId())));
         bookingToAdd.setBookingDate(LocalDateTime.now());
         bookingToAdd.setUser(userService.getUser(username).get());

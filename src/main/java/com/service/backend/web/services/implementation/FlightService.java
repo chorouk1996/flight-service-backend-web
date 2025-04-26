@@ -1,13 +1,17 @@
 package com.service.backend.web.services.implementation;
 
+import com.service.backend.web.exceptions.FunctionalException;
+import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import com.service.backend.web.models.dto.FlightDto;
 import com.service.backend.web.models.dto.requests.SearchFlightRequest;
+import com.service.backend.web.models.entities.Flight;
 import com.service.backend.web.models.enumerators.SortDirectionEnum;
 import com.service.backend.web.repositories.FlightCustomRepository;
 import com.service.backend.web.repositories.FlightRepository;
 import com.service.backend.web.services.interfaces.IFlightService;
 import com.service.backend.web.services.mapper.FlightMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -38,7 +42,14 @@ public class FlightService implements IFlightService {
 
     @Override
     public FlightDto getFlight(Long id) {
-        return  FlightMapper.mapFlightEntityToDto(flightRepository.getFlightById(id));
+        return FlightMapper.mapFlightEntityToDto(flightRepository.getFlightById(id));
+    }
+
+    public void decreaseSeat(Long flightId, int seat) {
+        Flight flight = flightRepository.getFlightById(flightId);
+        if(flight.getSeats() < seat) throw new FunctionalException(new FunctionalExceptionDto("Seats available are insufficient", HttpStatus.CONFLICT));
+        flight.setSeats(flight.getSeats() - seat);
+        flightRepository.save(flight);
     }
 
     @Override
