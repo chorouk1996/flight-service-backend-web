@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -46,19 +47,20 @@ public class BookingService implements IBookingService {
     public CreateBookingResponse addBooking(CreateBookingRequest booking, String username) {
         if (booking.getPassengerIds().isEmpty() && booking.getPassengers().isEmpty())
             throw new FunctionalException(new FunctionalExceptionDto("A booking must contain at least one passenger.", HttpStatus.BAD_REQUEST));
+        flightService.checkAvailableSeat(booking.getFlightId(), booking.getPassengerIds().size() + booking.getPassengers().size());
         Booking bookingToAdd = new Booking();
         User user = userService.getUserById(username);
         List<Passenger> passengers = new ArrayList<>();
         bookingToAdd.setFlight(FlightMapper.mapFlightDtoToEntity(flightService.getAvailableFlight(booking.getFlightId())));
         if (!booking.getPassengers().isEmpty()) {
-           List<Passenger> passenger=  booking.getPassengers().stream().map(PassengerMapper::mapCreatePassengerRequestToEntity).toList();
-            passenger.forEach(pass -> pass.setUser(user));
+            List<Passenger> passenger = booking.getPassengers().stream().map(PassengerMapper::mapCreatePassengerRequestToEntity).toList();
+            passenger.forEach(pass -> pass.setBookedByUserEmail(user.getEmail()));
             passengers.addAll(passenger);
         }
         if (!booking.getPassengerIds().isEmpty()) {
             booking.getPassengerIds().stream().forEach(id -> {
                         Passenger passenger = mapSavedPassengerToPassenger(savedPassengerService.getSavedPassengerById(username, id));
-                        passenger.setUser(user);
+                        passenger.setBookedByUserEmail(user.getEmail());
                         passengers.add(passenger);
                     }
             );
@@ -66,16 +68,30 @@ public class BookingService implements IBookingService {
         }
         passengers.forEach(pass -> pass.setBooking(bookingToAdd));
         bookingToAdd.setPassengers(passengers);
-        flightService.decreaseSeat(booking.getFlightId(), booking.getPassengers().size());
         bookingToAdd.setBookingDate(LocalDateTime.now());
         bookingToAdd.setUser(user);
-        bookingToAdd.setStatus(BookingStatusEnum.CONFIRMED);
-        return BookingMapper.mapBookingEntityToResponse(bookingRepository.save(bookingToAdd));
+        bookingToAdd.setStatus(BookingStatusEnum.PENDING_PAYMENT);
+        Booking book = bookingRepository.save(bookingToAdd);
+        flightService.decreaseSeat(booking.getFlightId(), bookingToAdd.getPassengers().size());
+        return BookingMapper.mapBookingEntityToResponse(book);
     }
 
     @Override
     public List<BookingDto> getAllBooking() {
         return bookingRepository.findAll().stream().map(BookingMapper::mapBookingEntityToDto).toList();
+    }
+
+    @Override
+    @Transactional
+    public void cancelAllPendingPaymentBooking() {
+       List<Booking> bookings =   bookingRepository.findByStatusAndBookingDateBefore(BookingStatusEnum.PENDING_PAYMENT,LocalDateTime.now().minusMinutes(10));
+        bookings.stream().forEach(
+                booking -> {
+                    booking.setStatus(BookingStatusEnum.CANCELLED);
+                    flightService.increaseSeat(booking.getFlight().getId(), booking.getPassengers().size());
+                }
+        );
+        bookingRepository.saveAll(bookings);
     }
 
     @Override

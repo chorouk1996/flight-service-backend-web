@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,4 +18,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
 
     Optional<Booking> findByIdAndUserAndStatusNot(Long bookingId ,User user, BookingStatusEnum status);
     List<Booking> findByUser(User user, Pageable pageable);
+
+    List<Booking> findByStatusAndBookingDateBefore(BookingStatusEnum status, LocalDateTime date);
+
 }

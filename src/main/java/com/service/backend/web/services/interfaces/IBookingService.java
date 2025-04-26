@@ -12,6 +12,7 @@ public interface IBookingService {
      CreateBookingResponse addBooking(CreateBookingRequest booking, String username);
      List<BookingDto> getAllBooking();
 
+    void cancelAllPendingPaymentBooking();
      void cancelBooking(Long booking);
 
       List<MyBookingResponse> getAllBooking(String username,int page, int size);

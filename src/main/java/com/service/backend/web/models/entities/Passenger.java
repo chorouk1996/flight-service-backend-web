@@ -20,9 +20,8 @@ public class Passenger {
     @Column
     private Integer age;
 
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    private User user;
+    private String bookedByUserEmail;
+
     @ManyToOne
     @JoinColumn(name="booking_id")
     private Booking booking;
@@ -76,11 +75,11 @@ public class Passenger {
         this.email = mail;
     }
 
-    public User getUser() {
-        return user;
+    public String getBookedByUserEmail() {
+        return bookedByUserEmail;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setBookedByUserEmail(String bookedByUserEmail) {
+        this.bookedByUserEmail = bookedByUserEmail;
     }
 }

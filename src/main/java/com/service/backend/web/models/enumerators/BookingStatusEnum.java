@@ -2,5 +2,6 @@ package com.service.backend.web.models.enumerators;
 
 public enum BookingStatusEnum {
     CONFIRMED,
-    CANCELLED
+    CANCELLED,
+    PENDING_PAYMENT
 }

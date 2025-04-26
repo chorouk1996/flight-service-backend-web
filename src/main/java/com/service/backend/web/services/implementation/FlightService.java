@@ -122,6 +122,11 @@ public class FlightService implements IFlightService {
         flightRepository.save(flight);
     }
 
+    public void checkAvailableSeat(Long flightId, int seat) {
+        Flight flight = getFlightById(flightId);
+        if(flight.getFlightStatus().equals(FlightStatusEnum.CANCELLED)) throw new FunctionalException(new FunctionalExceptionDto("Flight was Cancelled", HttpStatus.NOT_FOUND));
+        if(flight.getSeats() < seat) throw new FunctionalException(new FunctionalExceptionDto("Seats available are insufficient", HttpStatus.CONFLICT));
+    }
     public void increaseSeat(Long flightId, int seat) {
         Flight flight = getFlightById(flightId);;
         flight.setSeats(flight.getSeats() + seat);

@@ -11,6 +11,4 @@ import java.util.Optional;
 @Repository
 public interface PassengerRepository extends JpaRepository<Passenger,Long> {
 
-    List<Passenger> findByUser(User user);
-    Optional<Passenger> findByUserAndId(User user, Long id);
 }
