@@ -1,15 +1,23 @@
-package com.service.backend.web.models.dto.requests;
+package com.service.backend.web.models.dto;
 
 
-public class UpdatePassengerRequest {
+public class SavedPassengerDto {
+
+    private Long id;
 
     private String firstName;
-
     private String lastName;
-
     private Integer age;
-
     private String email;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -27,13 +35,6 @@ public class UpdatePassengerRequest {
         this.lastName = lastName;
     }
 
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
 
     public String getEmail() {
         return email;
@@ -41,5 +42,13 @@ public class UpdatePassengerRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 }

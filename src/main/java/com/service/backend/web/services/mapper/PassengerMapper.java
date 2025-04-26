@@ -1,7 +1,8 @@
 package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.PassengerDto;
-import com.service.backend.web.models.dto.requests.CreatePassengerRequest;
+import com.service.backend.web.models.dto.SavedPassengerDto;
+import com.service.backend.web.models.dto.requests.CreateSavedPassengerRequest;
 import com.service.backend.web.models.entities.Passenger;
 
 public class PassengerMapper {
@@ -30,7 +31,7 @@ public class PassengerMapper {
         return passenger;
     }
 
-    public static Passenger mapCreatePassengerRequestToEntity(CreatePassengerRequest dto) {
+    public static Passenger mapCreatePassengerRequestToEntity(CreateSavedPassengerRequest dto) {
         Passenger passenger = new Passenger();
         passenger.setAge(dto.getAge());
         passenger.setFirstName(dto.getFirstName());
@@ -39,5 +40,12 @@ public class PassengerMapper {
         return passenger;
     }
 
-
+    public static Passenger mapSavedPassengerToPassenger(SavedPassengerDto dto) {
+        Passenger passenger = new Passenger();
+        passenger.setAge(dto.getAge());
+        passenger.setFirstName(dto.getFirstName());
+        passenger.setLastName(dto.getLastName());
+        passenger.setEmail(dto.getEmail());
+        return passenger;
+    }
 }

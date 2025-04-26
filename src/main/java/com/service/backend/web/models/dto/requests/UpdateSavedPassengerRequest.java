@@ -1,27 +1,15 @@
 package com.service.backend.web.models.dto.requests;
 
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+public class UpdateSavedPassengerRequest {
 
-public class CreatePassengerRequest {
-
-    @NotBlank
     private String firstName;
 
-    @NotBlank
     private String lastName;
 
-    @Min(0)
-    @Max(120)
     private Integer age;
 
-    @Email
-    @NotBlank
     private String email;
-
 
     public String getFirstName() {
         return firstName;

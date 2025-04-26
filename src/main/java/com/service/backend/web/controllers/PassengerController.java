@@ -2,17 +2,15 @@ package com.service.backend.web.controllers;
 
 
 import com.service.backend.web.models.dto.PassengerDto;
-import com.service.backend.web.models.dto.requests.CreatePassengerRequest;
-import com.service.backend.web.models.dto.requests.UpdatePassengerRequest;
+import com.service.backend.web.models.dto.SavedPassengerDto;
+import com.service.backend.web.models.dto.requests.CreateSavedPassengerRequest;
+import com.service.backend.web.models.dto.requests.UpdateSavedPassengerRequest;
 import com.service.backend.web.security.UserDetailsImpl;
 import com.service.backend.web.services.interfaces.IPassengerService;
+import com.service.backend.web.services.interfaces.ISavedPassengerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,42 +20,42 @@ import java.util.List;
 public class PassengerController {
 
     @Autowired
-    IPassengerService passengerService;
+    ISavedPassengerService passengerService;
     PassengerDto passenger = new PassengerDto();
 
 
     @PostMapping()
-    public PassengerDto addPassenger(@RequestBody @Valid CreatePassengerRequest passenger) {
+    public SavedPassengerDto addPassenger(@RequestBody @Valid CreateSavedPassengerRequest passenger) {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return passengerService.addPassenger(passenger,user.getUsername());
+        return passengerService.addSavedPassenger(passenger,user.getUsername());
     }
 
 
     @GetMapping("/all")
-    public List<PassengerDto> getAllPassenger() {
+    public List<SavedPassengerDto> getAllPassenger() {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return passengerService.getAllPassenger(user.getUsername());
+        return passengerService.getAllSavedPassenger(user.getUsername());
     }
 
 
 
     @GetMapping("/{id}")
-    public PassengerDto getPassenger(@PathVariable(required = true) Long id) {
+    public SavedPassengerDto getPassenger(@PathVariable(required = true) Long id) {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return passengerService.getPassengerById(user.getUsername(),id);
+        return passengerService.getSavedPassengerById(user.getUsername(),id);
     }
 
 
     @PutMapping("/{id}")
-    public PassengerDto updatePassenger(@PathVariable(required = true) Long id, @RequestBody @Valid UpdatePassengerRequest passenger) {
+    public SavedPassengerDto updatePassenger(@PathVariable(required = true) Long id, @RequestBody @Valid UpdateSavedPassengerRequest passenger) {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return passengerService.updatePassengerByUser(user.getUsername(),passenger,id);
+        return passengerService.updateSavedPassengerByUser(user.getUsername(),passenger,id);
     }
 
     @DeleteMapping("/{id}")
     public void deletePassenger(@PathVariable(required = true) Long id) {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-         passengerService.deletePassengerByUser(user.getUsername(),id);
+         passengerService.deleteSavedPassengerByUser(user.getUsername(),id);
     }
 }
 
