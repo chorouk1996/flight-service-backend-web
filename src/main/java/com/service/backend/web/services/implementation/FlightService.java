@@ -45,7 +45,7 @@ public class FlightService implements IFlightService {
     @Override
     public List<FlightDto> searchFlight(SearchFlightRequest criteria) {
         if (criteria.getSort() != null && criteria.getSort().getSortField().equals("duration")) {
-            if (SortDirectionEnum.valueOf(criteria.getSort().getSortDirection().name()) == SortDirectionEnum.ASC)
+            if (criteria.getSort().getSortDirection() == SortDirectionEnum.ASC)
                 return flightCustomRepository.findByCriteria(criteria).stream().map(FlightMapper::mapFlightEntityToDto).sorted(Comparator.comparingLong(FlightDto::getDurationMinutes)).toList();
             return flightCustomRepository.findByCriteria(criteria).stream().map(FlightMapper::mapFlightEntityToDto).sorted(Comparator.comparingLong(FlightDto::getDurationMinutes).reversed()).toList();
 

@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity(name = "Booking")
+@Entity
 public class Booking {
     @Id
     @GeneratedValue

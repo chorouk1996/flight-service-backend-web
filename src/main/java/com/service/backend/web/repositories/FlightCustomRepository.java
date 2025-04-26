@@ -49,7 +49,7 @@ public class FlightCustomRepository {
 
         if (criteria.getSort() != null && criteria.getSort().getSortField() != null  && !criteria.getSort().getSortField().equals("duration")) {
             Path<Object> sortPath = flight.get(criteria.getSort().getSortField());
-            if (SortDirectionEnum.valueOf(criteria.getSort().getSortDirection().name()) == SortDirectionEnum.ASC) {
+            if (criteria.getSort().getSortDirection() == SortDirectionEnum.ASC) {
                 query.orderBy(cb.asc(sortPath));
             } else {
                 query.orderBy(cb.desc(sortPath));

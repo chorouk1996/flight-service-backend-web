@@ -2,7 +2,7 @@ package com.service.backend.web.models.entities;
 
 import jakarta.persistence.*;
 
-@Entity(name = "Passenger")
+@Entity
 public class Passenger {
 
     @Id
