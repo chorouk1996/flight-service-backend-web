@@ -2,6 +2,7 @@ package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.BookingDto;
 import com.service.backend.web.models.dto.responses.CreateBookingResponse;
+import com.service.backend.web.models.dto.responses.MyBookingResponse;
 import com.service.backend.web.models.entities.Booking;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,18 @@ public  class BookingMapper {
         dto.setPassengers(booking.getPassengers().stream().map(PassengerMapper::mapPassengerEntityToDto).toList());
         return dto;
     }
+    public static MyBookingResponse  mapBookingEntityToMyBookingResponse(Booking booking){
+        MyBookingResponse dto = new MyBookingResponse();
+        dto.setBookingId(booking.getId());
+        dto.setStatus(booking.getStatus());
+        dto.setBookingDate(booking.getBookingDate());
+        dto.setFlightDestination(booking.getFlight().getDestination());
+        dto.setFlightOrigin(booking.getFlight().getOrigin());
+        dto.setPassengers(booking.getPassengers().stream().map(PassengerMapper::mapPassengerEntityToDto).toList());
+        dto.setDepartureTime(booking.getFlight().getDepartureTime());
+        return dto;
+    }
+
     public static Booking mapBookingDtoToEntity(BookingDto dto) {
         Booking booking = new Booking();
         booking.setId(dto.getId());

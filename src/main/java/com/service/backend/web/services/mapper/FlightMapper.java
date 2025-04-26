@@ -20,7 +20,7 @@ public class FlightMapper {
         dto.setArrivalTime(flight.getArrivalTime());
         dto.setPrice(flight.getPrice());
         dto.setSeats(flight.getSeats());
-        dto.setFlightStatus(FlightStatusEnum.valueOf(flight.getFlightStatus().name()));
+        dto.setFlightStatus(flight.getFlightStatus());
         dto.setAircraftType(flight.getAircraftType());
         dto.setAirlineName(flight.getAirlineName());
         dto.setBaggagePolicy(flight.getBaggagePolicy());

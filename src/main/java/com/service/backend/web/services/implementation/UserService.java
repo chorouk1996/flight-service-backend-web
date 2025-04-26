@@ -84,7 +84,7 @@ public class UserService implements IUserService {
                 }
         );
 
-        if (bCryptPasswordEncoder.matches(user.getOldPassword(),currentUser.getPassword())) {
+        if (bCryptPasswordEncoder.matches(user.getOldPassword(), currentUser.getPassword())) {
             currentUser.setPassword(bCryptPasswordEncoder.encode(user.getNewPassword()));
         } else {
             throw new FunctionalException(new FunctionalExceptionDto("User Not Found", HttpStatus.UNAUTHORIZED));
@@ -94,6 +94,15 @@ public class UserService implements IUserService {
 
     public Optional<User> getUser(String email) {
         return userRepository.findByEmail(email);
+
+    }
+
+    public User getUserById(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> {
+                    throw new FunctionalException(new FunctionalExceptionDto("User Not Found", HttpStatus.UNAUTHORIZED));
+                }
+        );
 
     }
 

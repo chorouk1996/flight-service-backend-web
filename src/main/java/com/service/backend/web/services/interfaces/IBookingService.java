@@ -3,6 +3,7 @@ package com.service.backend.web.services.interfaces;
 import com.service.backend.web.models.dto.BookingDto;
 import com.service.backend.web.models.dto.requests.CreateBookingRequest;
 import com.service.backend.web.models.dto.responses.CreateBookingResponse;
+import com.service.backend.web.models.dto.responses.MyBookingResponse;
 
 import java.util.List;
 
@@ -13,5 +14,7 @@ public interface IBookingService {
 
      void cancelBooking(Long booking);
 
+      List<MyBookingResponse> getAllBooking(String username);
 
+    void cancelMyBooking(Long booking,String username);
 }

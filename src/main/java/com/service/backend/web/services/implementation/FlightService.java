@@ -5,6 +5,7 @@ import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import com.service.backend.web.models.dto.FlightDto;
 import com.service.backend.web.models.dto.requests.SearchFlightRequest;
 import com.service.backend.web.models.entities.Flight;
+import com.service.backend.web.models.enumerators.FlightStatusEnum;
 import com.service.backend.web.models.enumerators.SortDirectionEnum;
 import com.service.backend.web.repositories.FlightCustomRepository;
 import com.service.backend.web.repositories.FlightRepository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static com.service.backend.web.services.mapper.FlightMapper.mapFlightDtoToEntity;
 import static com.service.backend.web.services.mapper.FlightMapper.mapFlightEntityToDto;
@@ -40,20 +42,29 @@ public class FlightService implements IFlightService {
         return Collections.emptyList();
     }
 
+    public Flight getFlightById(Long id) {
+        return flightRepository.getFlightById(id).orElseThrow(
+                ()-> {throw new FunctionalException(new FunctionalExceptionDto("Flight not found",HttpStatus.NOT_FOUND));}
+
+        );
+    }
+
     @Override
     public FlightDto getFlight(Long id) {
-        return FlightMapper.mapFlightEntityToDto(flightRepository.getFlightById(id));
+        return FlightMapper.mapFlightEntityToDto(getFlightById(id));
     }
 
     public void decreaseSeat(Long flightId, int seat) {
-        Flight flight = flightRepository.getFlightById(flightId);
+        Flight flight = getFlightById(flightId);
+        if(flight.getFlightStatus().equals(FlightStatusEnum.CANCELLED)) throw new FunctionalException(new FunctionalExceptionDto("Flight was Cancelled", HttpStatus.NOT_FOUND));
         if(flight.getSeats() < seat) throw new FunctionalException(new FunctionalExceptionDto("Seats available are insufficient", HttpStatus.CONFLICT));
+
         flight.setSeats(flight.getSeats() - seat);
         flightRepository.save(flight);
     }
 
     public void increaseSeat(Long flightId, int seat) {
-        Flight flight = flightRepository.getFlightById(flightId);
+        Flight flight = getFlightById(flightId);;
         flight.setSeats(flight.getSeats() + seat);
         flightRepository.save(flight);
     }
