@@ -52,6 +52,11 @@ public class FlightService implements IFlightService {
         flightRepository.save(flight);
     }
 
+    public void increaseSeat(Long flightId, int seat) {
+        Flight flight = flightRepository.getFlightById(flightId);
+        flight.setSeats(flight.getSeats() + seat);
+        flightRepository.save(flight);
+    }
     @Override
     public List<FlightDto> searchFlight(SearchFlightRequest criteria) {
         if (criteria.getSort() != null && criteria.getSort().getSortField().equals("duration")) {

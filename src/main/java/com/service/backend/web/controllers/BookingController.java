@@ -47,4 +47,9 @@ public class BookingController {
     public ResponseEntity<BookingDto> updateBooking(@RequestBody BookingDto booking) {
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
+
+    @PutMapping("/cancel/{bookingId}")
+    public void cancelBooking(@PathVariable Long bookingId) {
+         bookingService.cancelBooking(bookingId);
+    }
 }
