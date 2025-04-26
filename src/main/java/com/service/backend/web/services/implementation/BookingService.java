@@ -15,6 +15,8 @@ import com.service.backend.web.services.mapper.BookingMapper;
 import com.service.backend.web.services.mapper.FlightMapper;
 import com.service.backend.web.services.mapper.PassengerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -38,12 +40,13 @@ public class BookingService implements IBookingService {
 
     @Override
     public CreateBookingResponse addBooking(CreateBookingRequest booking, String username) {
+
         Booking bookingToAdd = new Booking();
+        bookingToAdd.setFlight(FlightMapper.mapFlightDtoToEntity(flightService.getAvailableFlight(booking.getFlightId())));
         List<Passenger> passenger = booking.getPassengers().stream().map(PassengerMapper::mapPassengerDtoToEntity).toList();
         passenger.forEach(pass -> pass.setBooking(bookingToAdd));
         bookingToAdd.setPassengers(passenger);
         flightService.decreaseSeat(booking.getFlightId(), booking.getPassengers().size());
-        bookingToAdd.setFlight(FlightMapper.mapFlightDtoToEntity(flightService.getFlight(booking.getFlightId())));
         bookingToAdd.setBookingDate(LocalDateTime.now());
         bookingToAdd.setUser(userService.getUserById(username));
         bookingToAdd.setStatus(BookingStatusEnum.CONFIRMED);
@@ -55,8 +58,9 @@ public class BookingService implements IBookingService {
         return bookingRepository.findAll().stream().map(BookingMapper::mapBookingEntityToDto).toList();
     }
     @Override
-    public List<MyBookingResponse> getAllBooking(String username) {
-        return bookingRepository.findByUser(userService.getUserById(username)).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
+    public List<MyBookingResponse> getAllBooking(String username,int page, int size) {
+        final Pageable pageableRequest = PageRequest.of(page, size);
+        return bookingRepository.findByUser(userService.getUserById(username),pageableRequest).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
     }
 
     @Override

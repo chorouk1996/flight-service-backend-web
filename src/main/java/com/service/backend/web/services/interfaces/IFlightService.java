@@ -16,4 +16,6 @@ public interface IFlightService {
 
      List<FlightDto> searchFlight(SearchFlightRequest criteria);
 
+     FlightDto getAvailableFlight(Long id);
+
 }

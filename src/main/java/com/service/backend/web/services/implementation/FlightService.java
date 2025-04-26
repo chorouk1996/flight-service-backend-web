@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -49,8 +50,20 @@ public class FlightService implements IFlightService {
         );
     }
 
+    public Flight getAvailableFlightById(Long id) {
+        return flightRepository.getFlightByIdAndStatusNotAndDepartureTimeAfter(id,FlightStatusEnum.CANCELLED, LocalDateTime.now()).orElseThrow(
+                ()-> {throw new FunctionalException(new FunctionalExceptionDto("Flight not found , departed or cancelled",HttpStatus.NOT_FOUND));}
+
+        );
+    }
+
     @Override
     public FlightDto getFlight(Long id) {
+        return FlightMapper.mapFlightEntityToDto(getFlightById(id));
+    }
+
+    @Override
+    public FlightDto getAvailableFlight(Long id) {
         return FlightMapper.mapFlightEntityToDto(getFlightById(id));
     }
 

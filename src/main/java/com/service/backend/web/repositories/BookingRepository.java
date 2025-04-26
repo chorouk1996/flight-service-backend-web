@@ -3,6 +3,7 @@ package com.service.backend.web.repositories;
 import com.service.backend.web.models.entities.Booking;
 import com.service.backend.web.models.entities.User;
 import com.service.backend.web.models.enumerators.BookingStatusEnum;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +16,5 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     Optional<Booking> findByIdAndStatusNot(Long bookingId , BookingStatusEnum status);
 
     Optional<Booking> findByIdAndUserAndStatusNot(Long bookingId ,User user, BookingStatusEnum status);
-    List<Booking> findByUser(User user);
+    List<Booking> findByUser(User user, Pageable pageable);
 }

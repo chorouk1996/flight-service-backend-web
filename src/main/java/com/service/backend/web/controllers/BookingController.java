@@ -33,9 +33,11 @@ public class BookingController {
     }
 
     @GetMapping("/my-bookings")
-    public List<MyBookingResponse> getMyBookings() {
+
+
+    public List<MyBookingResponse> getMyBookings(@RequestParam(required = false, defaultValue = "0") int page,@RequestParam(required = false, defaultValue = "10") int size) {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return bookingService.getAllBooking(user.getUsername());
+        return bookingService.getAllBooking(user.getUsername(),page,size);
     }
 
     @PostMapping()

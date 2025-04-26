@@ -14,7 +14,7 @@ public interface IBookingService {
 
      void cancelBooking(Long booking);
 
-      List<MyBookingResponse> getAllBooking(String username);
+      List<MyBookingResponse> getAllBooking(String username,int page, int size);
 
     void cancelMyBooking(Long booking,String username);
 }
