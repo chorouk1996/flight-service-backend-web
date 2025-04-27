@@ -17,5 +17,10 @@ public interface IBookingService {
 
       List<MyBookingResponse> getAllBooking(String username,int page, int size);
 
+      List<MyBookingResponse> getUpcomingBooking(String username,int page, int size);
+
+      List<MyBookingResponse> getPastBooking(String username,int page, int size);
+
     void cancelMyBooking(Long booking,String username);
+    void confirmBooking(Long booking);
 }

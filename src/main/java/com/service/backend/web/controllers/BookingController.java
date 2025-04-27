@@ -30,8 +30,6 @@ public class BookingController {
     }
 
     @GetMapping("/my-bookings")
-
-
     public List<MyBookingResponse> getMyBookings(@RequestParam(required = false, defaultValue = "0") int page,@RequestParam(required = false, defaultValue = "10") int size) {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return bookingService.getAllBooking(user.getUsername(),page,size);
@@ -53,6 +51,18 @@ public class BookingController {
     public void cancelBooking(@PathVariable Long bookingId) {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         bookingService.cancelMyBooking(bookingId,user.getUsername());
+    }
+
+    @GetMapping("/my-bookings/upcoming")
+    public List<MyBookingResponse> getMyUpcomingBookings(@RequestParam(required = false, defaultValue = "0") int page,@RequestParam(required = false, defaultValue = "10") int size) {
+        UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return bookingService.getUpcomingBooking(user.getUsername(),page,size);
+    }
+
+    @GetMapping("/my-bookings/past")
+    public List<MyBookingResponse> getMyPastBookings(@RequestParam(required = false, defaultValue = "0") int page,@RequestParam(required = false, defaultValue = "10") int size) {
+        UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return bookingService.getPastBooking(user.getUsername(),page,size);
     }
 
 }

@@ -55,4 +55,10 @@ public class BookingAdminController {
     public void cancelBooking(@PathVariable Long bookingId) {
          bookingService.cancelBooking(bookingId);
     }
+
+    @PutMapping("/confirm/{bookingId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void confirmBooking(@PathVariable Long bookingId) {
+        bookingService.cancelBooking(bookingId);
+    }
 }

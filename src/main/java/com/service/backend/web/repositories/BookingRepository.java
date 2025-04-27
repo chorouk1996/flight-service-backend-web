@@ -16,8 +16,14 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
 
     Optional<Booking> findByIdAndStatusNot(Long bookingId , BookingStatusEnum status);
 
+    Optional<Booking> findByIdAndStatus(Long bookingId , BookingStatusEnum status);
+
     Optional<Booking> findByIdAndUserAndStatusNot(Long bookingId ,User user, BookingStatusEnum status);
     List<Booking> findByUser(User user, Pageable pageable);
+
+    List<Booking> findByUserAndStatusAndFlight_DepartureTimeAfter(User user,BookingStatusEnum status,LocalDateTime date, Pageable pageable);
+
+    List<Booking> findByUserAndStatusAndFlight_DepartureTimeBefore(User user,BookingStatusEnum status,LocalDateTime date, Pageable pageable);
 
     List<Booking> findByStatusAndBookingDateBefore(BookingStatusEnum status, LocalDateTime date);
 

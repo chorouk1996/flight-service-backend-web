@@ -101,10 +101,24 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public void cancelBooking(Long booking) {
+    public List<MyBookingResponse> getUpcomingBooking(String username, int page, int size) {
+        final Pageable pageableRequest = PageRequest.of(page, size);
+        return bookingRepository.findByUserAndStatusAndFlight_DepartureTimeAfter(userService.getUserById(username), BookingStatusEnum.CONFIRMED,LocalDateTime.now(), pageableRequest).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
 
+    }
+    @Override
+    public List<MyBookingResponse> getPastBooking(String username, int page, int size) {
+        final Pageable pageableRequest = PageRequest.of(page, size);
+        return bookingRepository.findByUserAndStatusAndFlight_DepartureTimeBefore(userService.getUserById(username), BookingStatusEnum.CONFIRMED,LocalDateTime.now(), pageableRequest).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
+
+    }
+
+    @Override
+    public void cancelBooking(Long booking) {
         bookingRepository.findByIdAndStatusNot(booking, BookingStatusEnum.CANCELLED).ifPresentOrElse(
                 myBooking -> {
+                    if(!myBooking.getStatus().equals(BookingStatusEnum.PENDING_PAYMENT))
+                        throw new FunctionalException(new FunctionalExceptionDto("Only pending payment bookings can be cancelled manually", HttpStatus.CONFLICT));
                     flightService.increaseSeat(myBooking.getFlight().getId(), myBooking.getPassengers().size());
                     myBooking.setStatus(BookingStatusEnum.CANCELLED);
                     bookingRepository.save(myBooking);
@@ -133,6 +147,21 @@ public class BookingService implements IBookingService {
                 }
         );
 
+
+    }
+
+    @Override
+    public void confirmBooking(Long booking) {
+        bookingRepository.findByIdAndStatus(booking, BookingStatusEnum.PENDING_PAYMENT).ifPresentOrElse(
+                myBooking -> {
+                    myBooking.setStatus(BookingStatusEnum.CONFIRMED);
+                    bookingRepository.save(myBooking);
+                },
+
+                () -> {
+                    throw new FunctionalException(new FunctionalExceptionDto("Only pending payment bookings can be confirmed manually", HttpStatus.CONFLICT));
+                }
+        );
 
     }
 
