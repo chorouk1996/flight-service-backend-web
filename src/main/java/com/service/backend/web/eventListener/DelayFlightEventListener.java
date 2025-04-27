@@ -1,6 +1,7 @@
 package com.service.backend.web.eventListener;
 
 import com.service.backend.web.events.DelayFlightEvent;
+import com.service.backend.web.models.dto.UserDto;
 import com.service.backend.web.models.entities.User;
 import com.service.backend.web.services.implementation.BookingService;
 import com.service.backend.web.services.implementation.NotificationService;
@@ -31,7 +32,7 @@ public class DelayFlightEventListener {
     public void handleUserRegistered(DelayFlightEvent event) {
         System.out.println("Flight was delayed with id : " + event.getFlightId());
 
-        List<User> users = bookingService.getMailsWithThisDelayedFlightAndConfirmedBooking(event.getFlightId());
+        List<UserDto> users = bookingService.getMailsWithThisDelayedFlightAndConfirmedBooking(event.getFlightId());
         notificationService.sendDelayNotificationToAllUsers(event,users);
 
     }

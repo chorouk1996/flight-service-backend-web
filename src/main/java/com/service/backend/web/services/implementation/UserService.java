@@ -2,11 +2,11 @@ package com.service.backend.web.services.implementation;
 
 import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.exceptions.FunctionalExceptionDto;
-import com.service.backend.web.models.dto.requests.AuthentUserRequest;
-import com.service.backend.web.models.dto.requests.CreateUserRequest;
-import com.service.backend.web.models.dto.requests.PasswordUpdateRequest;
-import com.service.backend.web.models.dto.responses.AuthenticationResponse;
-import com.service.backend.web.models.dto.responses.CreateUserResponse;
+import com.service.backend.web.models.requests.AuthentUserRequest;
+import com.service.backend.web.models.requests.CreateUserRequest;
+import com.service.backend.web.models.requests.PasswordUpdateRequest;
+import com.service.backend.web.models.responses.AuthenticationResponse;
+import com.service.backend.web.models.responses.CreateUserResponse;
 import com.service.backend.web.models.entities.User;
 import com.service.backend.web.repositories.UserRepository;
 import com.service.backend.web.services.interfaces.IUserService;
@@ -97,6 +97,8 @@ public class UserService implements IUserService {
 
     }
 
+
+    @Override
     public User getUserById(String email) {
         return userRepository.findByEmail(email).orElseThrow(
                 () -> {

@@ -1,15 +1,8 @@
 package com.service.backend.web.services.mapper;
 
-import com.service.backend.web.models.dto.BookingDto;
 import com.service.backend.web.models.dto.NotificationDto;
-import com.service.backend.web.models.dto.responses.CreateBookingResponse;
-import com.service.backend.web.models.dto.responses.MyBookingResponse;
-import com.service.backend.web.models.entities.Booking;
 import com.service.backend.web.models.entities.Notification;
-
-import static com.service.backend.web.services.mapper.FlightMapper.mapFlightDtoToEntity;
-import static com.service.backend.web.services.mapper.FlightMapper.mapFlightEntityToDto;
-import static com.service.backend.web.services.mapper.UserMapper.mapUserDtoToEntity;
+import com.service.backend.web.models.responses.NotificationResponse;
 
 
 public  class NotificationMapper {
@@ -21,14 +14,38 @@ public  class NotificationMapper {
 
     public static Notification mapNotificationDtoToEntity(NotificationDto dto) {
         Notification notification = new Notification();
-        notification.setFlight(dto.getFlight());
+        notification.setFlight(FlightMapper.mapFlightDtoToEntity(dto.getFlight()));
         notification.setCreatedAt(dto.getCreatedAt());
-        notification.setUser(dto.getUser());
+        notification.setUser(UserMapper.mapUserDtoToEntity(dto.getUser()));
         notification.setRead(dto.getRead());
         notification.setType(dto.getType());
         notification.setMessage(dto.getMessage());
         notification.setTitle(dto.getTitle());
         return notification;
+    }
+
+    public static NotificationDto mapNotificationEntityToDto(Notification entity) {
+        NotificationDto dto = new NotificationDto();
+        dto.setId(entity.getId());
+        dto.setFlight(FlightMapper.mapFlightEntityToDto(entity.getFlight()));
+        dto.setCreatedAt(entity.getCreatedAt());
+        dto.setUser(UserMapper.mapUserEntityToDto(entity.getUser()));
+        dto.setRead(entity.getRead());
+        dto.setType(entity.getType());
+        dto.setMessage(entity.getMessage());
+        dto.setTitle(entity.getTitle());
+        return dto;
+    }
+
+    public static NotificationResponse mapEntityToNotificationResponse(Notification entity) {
+        NotificationResponse dto = new NotificationResponse();
+        dto.setId(entity.getId());
+        dto.setCreatedAt(entity.getCreatedAt());
+        dto.setRead(entity.getRead());
+        dto.setType(entity.getType());
+        dto.setMessage(entity.getMessage());
+        dto.setTitle(entity.getTitle());
+        return dto;
     }
 
 }

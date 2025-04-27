@@ -3,19 +3,21 @@ package com.service.backend.web.services.implementation;
 import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import com.service.backend.web.models.dto.BookingDto;
-import com.service.backend.web.models.dto.requests.CreateBookingRequest;
-import com.service.backend.web.models.dto.responses.CreateBookingResponse;
-import com.service.backend.web.models.dto.responses.MyBookingResponse;
+import com.service.backend.web.models.dto.UserDto;
 import com.service.backend.web.models.entities.Booking;
 import com.service.backend.web.models.entities.Passenger;
 import com.service.backend.web.models.entities.User;
 import com.service.backend.web.models.enumerators.BookingStatusEnum;
+import com.service.backend.web.models.requests.CreateBookingRequest;
+import com.service.backend.web.models.responses.CreateBookingResponse;
+import com.service.backend.web.models.responses.MyBookingResponse;
 import com.service.backend.web.repositories.BookingRepository;
 import com.service.backend.web.services.interfaces.IBookingService;
 import com.service.backend.web.services.interfaces.ISavedPassengerService;
 import com.service.backend.web.services.mapper.BookingMapper;
 import com.service.backend.web.services.mapper.FlightMapper;
 import com.service.backend.web.services.mapper.PassengerMapper;
+import com.service.backend.web.services.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -87,7 +89,7 @@ public class BookingService implements IBookingService {
     @Override
     @Transactional
     public void cancelAllPendingPaymentBooking() {
-       List<Booking> bookings =   bookingRepository.findByStatusAndBookingDateBefore(BookingStatusEnum.PENDING_PAYMENT,LocalDateTime.now().minusMinutes(10));
+        List<Booking> bookings = bookingRepository.findByStatusAndBookingDateBefore(BookingStatusEnum.PENDING_PAYMENT, LocalDateTime.now().minusMinutes(10));
         bookings.stream().forEach(
                 booking -> {
                     booking.setStatus(BookingStatusEnum.CANCELLED);
@@ -106,21 +108,27 @@ public class BookingService implements IBookingService {
     @Override
     public List<MyBookingResponse> getUpcomingBooking(String username, int page, int size) {
         final Pageable pageableRequest = PageRequest.of(page, size);
-        return bookingRepository.findByUserAndStatusAndFlight_DepartureTimeAfter(userService.getUserById(username), BookingStatusEnum.CONFIRMED,LocalDateTime.now(), pageableRequest).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
+        return bookingRepository.findByUserAndStatusAndFlight_DepartureTimeAfter(userService.getUserById(username), BookingStatusEnum.CONFIRMED, LocalDateTime.now(), pageableRequest).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
 
     }
+
     @Override
     public List<MyBookingResponse> getPastBooking(String username, int page, int size) {
         final Pageable pageableRequest = PageRequest.of(page, size);
-        return bookingRepository.findByUserAndStatusAndFlight_DepartureTimeBefore(userService.getUserById(username), BookingStatusEnum.CONFIRMED,LocalDateTime.now(), pageableRequest).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
+        return bookingRepository.findByUserAndStatusAndFlight_DepartureTimeBefore(userService.getUserById(username), BookingStatusEnum.CONFIRMED, LocalDateTime.now(), pageableRequest).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
 
+    }
+
+    @Override
+    public List<BookingDto> getConfirmedAndDepartedBooking() {
+        return null;
     }
 
     @Override
     public void cancelBooking(Long booking) {
         bookingRepository.findByIdAndStatusNot(booking, BookingStatusEnum.CANCELLED).ifPresentOrElse(
                 myBooking -> {
-                    if(!myBooking.getStatus().equals(BookingStatusEnum.PENDING_PAYMENT))
+                    if (!myBooking.getStatus().equals(BookingStatusEnum.PENDING_PAYMENT))
                         throw new FunctionalException(new FunctionalExceptionDto("Only pending payment bookings can be cancelled manually", HttpStatus.CONFLICT));
                     flightService.increaseSeat(myBooking.getFlight().getId(), myBooking.getPassengers().size());
                     myBooking.setStatus(BookingStatusEnum.CANCELLED);
@@ -168,9 +176,38 @@ public class BookingService implements IBookingService {
 
     }
 
-    public List<User> getMailsWithThisDelayedFlightAndConfirmedBooking(Long flightId){
+    public List<UserDto> getMailsWithThisDelayedFlightAndConfirmedBooking(Long flightId) {
 
-        return bookingRepository.findByFlightIdAndStatus(flightId,BookingStatusEnum.CONFIRMED).stream().map(booking -> booking.getUser()).toList();
+        return bookingRepository.findByFlightIdAndStatus(flightId, BookingStatusEnum.CONFIRMED).stream().map(booking -> UserMapper.mapUserEntityToDto(booking.getUser())).toList();
+    }
+
+    @Override
+    public BookingDto getBookingByIdandUser(Long id, String username) {
+        return BookingMapper.mapBookingEntityToDto(bookingRepository.findByIdAndStatusAndUser(id, BookingStatusEnum.PENDING_PAYMENT, userService.getUserById(username)).orElseThrow(
+                () -> {
+                    throw new FunctionalException(new FunctionalExceptionDto("This booking does not exist or has already been cancelled", HttpStatus.NOT_FOUND));
+                }
+        ));
+    }
+
+    @Override
+    public long countAll() {
+        return bookingRepository.count();
+    }
+
+    @Override
+    public long countCancelledBookings() {
+        return bookingRepository.countByStatus(BookingStatusEnum.CANCELLED);
+    }
+
+    @Override
+    public long countConfirmedBookings() {
+        return bookingRepository.countByStatus(BookingStatusEnum.CONFIRMED);
+    }
+
+    @Override
+    public Double calculateBookingRevenue() {
+        return bookingRepository.findByStatus(BookingStatusEnum.CONFIRMED).stream().map(booking -> booking.getFlight().getPrice() * booking.getPassengers().size()).reduce((priceA, priceB) -> priceA + priceB).get();
     }
 
     public BookingService(BookingRepository bookingRepository) {

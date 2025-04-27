@@ -2,17 +2,12 @@ package com.service.backend.web.controllers;
 
 
 import com.service.backend.web.models.dto.FlightDto;
-import com.service.backend.web.models.dto.requests.CreateFlightRequest;
-import com.service.backend.web.models.dto.requests.SearchFlightRequest;
-import com.service.backend.web.models.dto.requests.UpdateFlightRequest;
-import com.service.backend.web.models.dto.responses.CreateFlightResponse;
+import com.service.backend.web.models.requests.SearchFlightRequest;
 import com.service.backend.web.services.implementation.FlightService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

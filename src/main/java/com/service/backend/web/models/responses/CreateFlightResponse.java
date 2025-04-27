@@ -1,4 +1,4 @@
-package com.service.backend.web.models.dto.responses;
+package com.service.backend.web.models.responses;
 
 
 

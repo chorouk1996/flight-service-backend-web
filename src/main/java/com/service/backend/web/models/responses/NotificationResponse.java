@@ -1,16 +1,13 @@
-package com.service.backend.web.models.dto;
+package com.service.backend.web.models.responses;
 
-import com.service.backend.web.models.entities.Flight;
-import com.service.backend.web.models.entities.User;
+
 import com.service.backend.web.models.enumerators.NotificationTypeEnum;
 
 import java.time.LocalDateTime;
 
-public class NotificationDto {
+public class NotificationResponse {
 
     private Long id;
-
-    private UserDto user;
 
     private String title;
     private String message;
@@ -18,8 +15,6 @@ public class NotificationDto {
     private Boolean isRead;
 
     private NotificationTypeEnum type;
-
-    private FlightDto flight;
 
 
     public Long getId() {
@@ -30,21 +25,6 @@ public class NotificationDto {
         this.id = id;
     }
 
-    public UserDto getUser() {
-        return user;
-    }
-
-    public void setUser(UserDto user) {
-        this.user = user;
-    }
-
-    public FlightDto getFlight() {
-        return flight;
-    }
-
-    public void setFlight(FlightDto flight) {
-        this.flight = flight;
-    }
 
     public String getTitle() {
         return title;

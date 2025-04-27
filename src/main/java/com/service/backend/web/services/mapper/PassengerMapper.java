@@ -2,7 +2,7 @@ package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.PassengerDto;
 import com.service.backend.web.models.dto.SavedPassengerDto;
-import com.service.backend.web.models.dto.requests.CreateSavedPassengerRequest;
+import com.service.backend.web.models.requests.CreateSavedPassengerRequest;
 import com.service.backend.web.models.entities.Passenger;
 
 public class PassengerMapper {

@@ -1,13 +1,12 @@
 package com.service.backend.web.services.interfaces;
 
 import com.service.backend.web.models.dto.BookingDto;
-import com.service.backend.web.models.dto.requests.CreateBookingRequest;
-import com.service.backend.web.models.dto.responses.CreateBookingResponse;
-import com.service.backend.web.models.dto.responses.MyBookingResponse;
-import com.service.backend.web.models.entities.User;
+import com.service.backend.web.models.dto.UserDto;
+import com.service.backend.web.models.requests.CreateBookingRequest;
+import com.service.backend.web.models.responses.CreateBookingResponse;
+import com.service.backend.web.models.responses.MyBookingResponse;
 
 import java.util.List;
-import java.util.Set;
 
 public interface IBookingService {
 
@@ -25,10 +24,21 @@ public interface IBookingService {
 
     List<MyBookingResponse> getPastBooking(String username, int page, int size);
 
+    List<BookingDto> getConfirmedAndDepartedBooking();
+
     void cancelMyBooking(Long booking, String username);
 
     void confirmBooking(Long booking);
 
-    List<User> getMailsWithThisDelayedFlightAndConfirmedBooking(Long flightId);
+    List<UserDto> getMailsWithThisDelayedFlightAndConfirmedBooking(Long flightId);
 
+    BookingDto getBookingByIdandUser(Long id,String username);
+
+
+    Double calculateBookingRevenue();
+    long countAll();
+
+    long countCancelledBookings();
+
+    long countConfirmedBookings();
 }

@@ -1,14 +1,12 @@
 package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.BookingDto;
-import com.service.backend.web.models.dto.responses.CreateBookingResponse;
-import com.service.backend.web.models.dto.responses.MyBookingResponse;
+import com.service.backend.web.models.responses.CreateBookingResponse;
+import com.service.backend.web.models.responses.MyBookingResponse;
 import com.service.backend.web.models.entities.Booking;
-import org.springframework.stereotype.Service;
 
 import static com.service.backend.web.services.mapper.FlightMapper.mapFlightDtoToEntity;
 import static com.service.backend.web.services.mapper.FlightMapper.mapFlightEntityToDto;
-import static com.service.backend.web.services.mapper.PassengerMapper.mapPassengerDtoToEntity;
 import static com.service.backend.web.services.mapper.UserMapper.mapUserDtoToEntity;
 
 

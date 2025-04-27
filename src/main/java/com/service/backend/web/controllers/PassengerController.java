@@ -3,10 +3,9 @@ package com.service.backend.web.controllers;
 
 import com.service.backend.web.models.dto.PassengerDto;
 import com.service.backend.web.models.dto.SavedPassengerDto;
-import com.service.backend.web.models.dto.requests.CreateSavedPassengerRequest;
-import com.service.backend.web.models.dto.requests.UpdateSavedPassengerRequest;
+import com.service.backend.web.models.requests.CreateSavedPassengerRequest;
+import com.service.backend.web.models.requests.UpdateSavedPassengerRequest;
 import com.service.backend.web.security.UserDetailsImpl;
-import com.service.backend.web.services.interfaces.IPassengerService;
 import com.service.backend.web.services.interfaces.ISavedPassengerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

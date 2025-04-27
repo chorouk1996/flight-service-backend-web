@@ -1,8 +1,8 @@
 package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.UserDto;
-import com.service.backend.web.models.dto.requests.CreateUserRequest;
-import com.service.backend.web.models.dto.responses.CreateUserResponse;
+import com.service.backend.web.models.requests.CreateUserRequest;
+import com.service.backend.web.models.responses.CreateUserResponse;
 import com.service.backend.web.models.entities.User;
 import com.service.backend.web.models.enumerators.RoleEnum;
 

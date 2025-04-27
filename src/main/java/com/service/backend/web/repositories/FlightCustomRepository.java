@@ -1,6 +1,6 @@
 package com.service.backend.web.repositories;
 
-import com.service.backend.web.models.dto.requests.SearchFlightRequest;
+import com.service.backend.web.models.requests.SearchFlightRequest;
 import com.service.backend.web.models.entities.Flight;
 import com.service.backend.web.models.enumerators.SortDirectionEnum;
 import jakarta.persistence.EntityManager;

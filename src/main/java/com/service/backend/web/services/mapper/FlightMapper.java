@@ -1,8 +1,8 @@
 package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.FlightDto;
-import com.service.backend.web.models.dto.requests.CreateFlightRequest;
-import com.service.backend.web.models.dto.responses.CreateFlightResponse;
+import com.service.backend.web.models.requests.CreateFlightRequest;
+import com.service.backend.web.models.responses.CreateFlightResponse;
 import com.service.backend.web.models.entities.Flight;
 import com.service.backend.web.models.enumerators.FlightStatusEnum;
 import com.service.backend.web.services.helper.FlightHelper;

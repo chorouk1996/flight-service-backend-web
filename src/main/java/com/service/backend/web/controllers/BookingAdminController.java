@@ -2,9 +2,8 @@ package com.service.backend.web.controllers;
 
 
 import com.service.backend.web.models.dto.BookingDto;
-import com.service.backend.web.models.dto.requests.CreateBookingRequest;
-import com.service.backend.web.models.dto.responses.CreateBookingResponse;
-import com.service.backend.web.models.dto.responses.MyBookingResponse;
+import com.service.backend.web.models.requests.CreateBookingRequest;
+import com.service.backend.web.models.responses.CreateBookingResponse;
 import com.service.backend.web.security.UserDetailsImpl;
 import com.service.backend.web.services.implementation.BookingService;
 import jakarta.validation.Valid;

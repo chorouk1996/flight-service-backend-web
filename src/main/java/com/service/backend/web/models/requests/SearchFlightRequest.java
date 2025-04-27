@@ -1,4 +1,4 @@
-package com.service.backend.web.models.dto.requests;
+package com.service.backend.web.models.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.service.backend.web.models.enumerators.FlightStatusEnum;

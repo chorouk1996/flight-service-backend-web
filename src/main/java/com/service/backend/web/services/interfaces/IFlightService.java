@@ -1,11 +1,11 @@
 package com.service.backend.web.services.interfaces;
 
 import com.service.backend.web.models.dto.FlightDto;
-import com.service.backend.web.models.dto.requests.CreateFlightRequest;
-import com.service.backend.web.models.dto.requests.SearchFlightRequest;
-import com.service.backend.web.models.dto.requests.UpdateFlightRequest;
-import com.service.backend.web.models.dto.requests.UpdateFlightStatusRequest;
-import com.service.backend.web.models.dto.responses.CreateFlightResponse;
+import com.service.backend.web.models.requests.CreateFlightRequest;
+import com.service.backend.web.models.requests.SearchFlightRequest;
+import com.service.backend.web.models.requests.UpdateFlightRequest;
+import com.service.backend.web.models.requests.UpdateFlightStatusRequest;
+import com.service.backend.web.models.responses.CreateFlightResponse;
 import com.service.backend.web.models.entities.Flight;
 
 import java.util.List;
@@ -31,4 +31,5 @@ public interface IFlightService {
 
      void cancelFlight(Long flightId);
 
+    long countAll();
 }

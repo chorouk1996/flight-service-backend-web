@@ -1,15 +1,18 @@
-package com.service.backend.web.models.dto.requests;
+package com.service.backend.web.models.responses;
 
+import jakarta.persistence.Column;
 
-public class UpdateSavedPassengerRequest {
+public class CreateUserResponse {
 
+    private Long id;
     private String firstName;
 
     private String lastName;
 
-    private Integer age;
-
     private String email;
+
+
+    private String role;
 
     public String getFirstName() {
         return firstName;
@@ -27,19 +30,27 @@ public class UpdateSavedPassengerRequest {
         this.lastName = lastName;
     }
 
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

@@ -16,4 +16,10 @@ import java.util.Optional;
 public interface NotificationRepository extends JpaRepository<Notification,Long> {
 
 
+    List<Notification> findByUser(User user);
+
+    Optional<Notification> findByIdAndUser(Long id,User user);
+
+
+    void deleteByCreatedAtBefore(LocalDateTime date);
 }

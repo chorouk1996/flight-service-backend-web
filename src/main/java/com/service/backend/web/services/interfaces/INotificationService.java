@@ -2,12 +2,18 @@ package com.service.backend.web.services.interfaces;
 
 
 import com.service.backend.web.events.DelayFlightEvent;
-import com.service.backend.web.models.entities.User;
+import com.service.backend.web.models.dto.UserDto;
+import com.service.backend.web.models.responses.NotificationResponse;
 
 import java.util.List;
-import java.util.Set;
 
 public interface INotificationService {
 
-    void sendDelayNotificationToAllUsers(DelayFlightEvent event, List<User> users) ;
+    void sendDelayNotificationToAllUsers(DelayFlightEvent event, List<UserDto>  users) ;
+
+    List<NotificationResponse> getAlNotifications(String username);
+
+    void markAsRead(Long id, String user);
+
+    void deleteExpiredNotifications();
 }

@@ -1,4 +1,4 @@
-package com.service.backend.web.models.dto.requests;
+package com.service.backend.web.models.requests;
 
 import jakarta.validation.constraints.Email;
 

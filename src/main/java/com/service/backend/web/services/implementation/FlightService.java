@@ -4,11 +4,11 @@ import com.service.backend.web.events.DelayFlightEvent;
 import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import com.service.backend.web.models.dto.FlightDto;
-import com.service.backend.web.models.dto.requests.CreateFlightRequest;
-import com.service.backend.web.models.dto.requests.SearchFlightRequest;
-import com.service.backend.web.models.dto.requests.UpdateFlightRequest;
-import com.service.backend.web.models.dto.requests.UpdateFlightStatusRequest;
-import com.service.backend.web.models.dto.responses.CreateFlightResponse;
+import com.service.backend.web.models.requests.CreateFlightRequest;
+import com.service.backend.web.models.requests.SearchFlightRequest;
+import com.service.backend.web.models.requests.UpdateFlightRequest;
+import com.service.backend.web.models.requests.UpdateFlightStatusRequest;
+import com.service.backend.web.models.responses.CreateFlightResponse;
 import com.service.backend.web.models.entities.Flight;
 import com.service.backend.web.models.enumerators.FlightStatusEnum;
 import com.service.backend.web.models.enumerators.SortDirectionEnum;
@@ -133,6 +133,11 @@ public class FlightService implements IFlightService {
         Flight flight = getFlightById(flightId);
         flight.setFlightStatus(FlightStatusEnum.CANCELLED);
         flightRepository.save(flight);
+    }
+
+    @Override
+    public long countAll() {
+        return flightRepository.count();
     }
 
     public void decreaseSeat(Long flightId, int seat) {

@@ -1,10 +1,11 @@
 package com.service.backend.web.services.interfaces;
 
-import com.service.backend.web.models.dto.requests.AuthentUserRequest;
-import com.service.backend.web.models.dto.requests.CreateUserRequest;
-import com.service.backend.web.models.dto.requests.PasswordUpdateRequest;
-import com.service.backend.web.models.dto.responses.AuthenticationResponse;
-import com.service.backend.web.models.dto.responses.CreateUserResponse;
+import com.service.backend.web.models.requests.AuthentUserRequest;
+import com.service.backend.web.models.requests.CreateUserRequest;
+import com.service.backend.web.models.requests.PasswordUpdateRequest;
+import com.service.backend.web.models.responses.AuthenticationResponse;
+import com.service.backend.web.models.responses.CreateUserResponse;
+import com.service.backend.web.models.entities.User;
 
 import java.util.List;
 
@@ -22,5 +23,5 @@ public interface IUserService {
 
     void updatePassword(PasswordUpdateRequest user);
 
-
+    User getUserById(String email);
 }
