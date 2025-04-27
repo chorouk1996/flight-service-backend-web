@@ -34,7 +34,12 @@ public class SearchFlightRequest {
     @JsonProperty("sort")
     private SortRequest sort;
 
+    private Double minPrice;
+    private Double maxPrice;
+    private Long minDurationMinutes;
+    private Long maxDurationMinutes;
 
+    private Boolean flexibleDates;
 
     public String getDeparture_city() {
         return departureCity;
@@ -107,5 +112,45 @@ public class SearchFlightRequest {
 
     public void setStatus(FlightStatusEnum status) {
         this.status = status;
+    }
+
+    public Double getMinPrice() {
+        return minPrice;
+    }
+
+    public void setMinPrice(Double minPrice) {
+        this.minPrice = minPrice;
+    }
+
+    public Double getMaxPrice() {
+        return maxPrice;
+    }
+
+    public void setMaxPrice(Double maxPrice) {
+        this.maxPrice = maxPrice;
+    }
+
+    public Long getMinDurationMinutes() {
+        return minDurationMinutes;
+    }
+
+    public void setMinDurationMinutes(Long minDurationMinutes) {
+        this.minDurationMinutes = minDurationMinutes;
+    }
+
+    public Long getMaxDurationMinutes() {
+        return maxDurationMinutes;
+    }
+
+    public void setMaxDurationMinutes(Long maxDurationMinutes) {
+        this.maxDurationMinutes = maxDurationMinutes;
+    }
+
+    public Boolean getFlexibleDates() {
+        return flexibleDates;
+    }
+
+    public void setFlexibleDates(Boolean flexibleDates) {
+        this.flexibleDates = flexibleDates;
     }
 }

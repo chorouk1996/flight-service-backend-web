@@ -25,8 +25,10 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
-import static com.service.backend.web.services.mapper.FlightMapper.*;
+import static com.service.backend.web.services.mapper.FlightMapper.mapCreateFlightRequestToEntity;
+import static com.service.backend.web.services.mapper.FlightMapper.mapFlightEntityToCreateFlightResponse;
 
 @Service
 public class FlightService implements IFlightService {
@@ -41,38 +43,39 @@ public class FlightService implements IFlightService {
 
         return mapFlightEntityToCreateFlightResponse(flightRepository.save(mapCreateFlightRequestToEntity(flight)));
     }
-    @Override
-    public CreateFlightResponse updateFlight(Long id,UpdateFlightRequest flight) {
-        checkIfReasonExist(flight.getStatus(),flight.getDelayReason());
-        Flight oldFlight =  getFlightById(id);
-        FlightHelper.updateIfNotNull(oldFlight::setAircraftType,flight::getAircraftType);
-        FlightHelper.updateIfNotNull(oldFlight::setFlightStatus,flight::getStatus);
-        FlightHelper.updateIfNotNull(oldFlight::setFlightNumber,flight::getFlightNumber);
-        FlightHelper.updateIfNotNull(oldFlight::setArrivalTime,flight::getArrivalTime);
-        FlightHelper.updateIfNotNull(oldFlight::setBaggagePolicy,flight::getBaggagePolicy);
-        FlightHelper.updateIfNotNull(oldFlight::setDepartureTime,flight::getDepartureTime);
-        FlightHelper.updateIfNotNull(oldFlight::setSeats,flight::getSeats);
-        FlightHelper.updateIfNotNull(oldFlight::setOrigin,flight::getOrigin);
-        FlightHelper.updateIfNotNull(oldFlight::setDestination,flight::getDestination);
-        FlightHelper.updateIfNotNull(oldFlight::setPrice,flight::getPrice);
-        FlightHelper.updateIfNotNull(oldFlight::setAirlineName,flight::getAirlineName);
 
-       return  mapFlightEntityToCreateFlightResponse(flightRepository.save(oldFlight));
+    @Override
+    public CreateFlightResponse updateFlight(Long id, UpdateFlightRequest flight) {
+        checkIfReasonExist(flight.getStatus(), flight.getDelayReason());
+        Flight oldFlight = getFlightById(id);
+        FlightHelper.updateIfNotNull(oldFlight::setAircraftType, flight::getAircraftType);
+        FlightHelper.updateIfNotNull(oldFlight::setFlightStatus, flight::getStatus);
+        FlightHelper.updateIfNotNull(oldFlight::setFlightNumber, flight::getFlightNumber);
+        FlightHelper.updateIfNotNull(oldFlight::setArrivalTime, flight::getArrivalTime);
+        FlightHelper.updateIfNotNull(oldFlight::setBaggagePolicy, flight::getBaggagePolicy);
+        FlightHelper.updateIfNotNull(oldFlight::setDepartureTime, flight::getDepartureTime);
+        FlightHelper.updateIfNotNull(oldFlight::setSeats, flight::getSeats);
+        FlightHelper.updateIfNotNull(oldFlight::setOrigin, flight::getOrigin);
+        FlightHelper.updateIfNotNull(oldFlight::setDestination, flight::getDestination);
+        FlightHelper.updateIfNotNull(oldFlight::setPrice, flight::getPrice);
+        FlightHelper.updateIfNotNull(oldFlight::setAirlineName, flight::getAirlineName);
+
+        return mapFlightEntityToCreateFlightResponse(flightRepository.save(oldFlight));
 
     }
 
     @Override
     public CreateFlightResponse updateFlightStatus(Long id, UpdateFlightStatusRequest request) {
-        Flight oldFlight =  getFlightById(id);
-        checkIfReasonExist(request.getStatus(),request.getDelayReason());
-        FlightHelper.updateIfNotNull(oldFlight::setFlightStatus,request::getStatus);
-       return  mapFlightEntityToCreateFlightResponse(flightRepository.save(oldFlight));
+        Flight oldFlight = getFlightById(id);
+        checkIfReasonExist(request.getStatus(), request.getDelayReason());
+        FlightHelper.updateIfNotNull(oldFlight::setFlightStatus, request::getStatus);
+        return mapFlightEntityToCreateFlightResponse(flightRepository.save(oldFlight));
 
     }
 
-    private void checkIfReasonExist(FlightStatusEnum status,String delayReason){
-        if((status == FlightStatusEnum.CANCELLED || status == FlightStatusEnum.DELAYED ) && !StringUtils.hasText(delayReason)){
-            throw new FunctionalException(new FunctionalExceptionDto("Delay reason must be provided when status is DELAYED or CANCELLED",HttpStatus.BAD_REQUEST));
+    private void checkIfReasonExist(FlightStatusEnum status, String delayReason) {
+        if ((status == FlightStatusEnum.CANCELLED || status == FlightStatusEnum.DELAYED) && !StringUtils.hasText(delayReason)) {
+            throw new FunctionalException(new FunctionalExceptionDto("Delay reason must be provided when status is DELAYED or CANCELLED", HttpStatus.BAD_REQUEST));
         }
     }
 
@@ -84,14 +87,18 @@ public class FlightService implements IFlightService {
 
     public Flight getFlightById(Long id) {
         return flightRepository.getFlightById(id).orElseThrow(
-                ()-> {throw new FunctionalException(new FunctionalExceptionDto("Flight not found",HttpStatus.NOT_FOUND));}
+                () -> {
+                    throw new FunctionalException(new FunctionalExceptionDto("Flight not found", HttpStatus.NOT_FOUND));
+                }
 
         );
     }
 
     public Flight getAvailableFlightById(Long id) {
-        return flightRepository.getFlightByIdAndFlightStatusNotAndDepartureTimeAfter(id,FlightStatusEnum.CANCELLED, LocalDateTime.now()).orElseThrow(
-                ()-> {throw new FunctionalException(new FunctionalExceptionDto("Flight not found , departed or cancelled",HttpStatus.NOT_FOUND));}
+        return flightRepository.getFlightByIdAndFlightStatusNotAndDepartureTimeAfter(id, FlightStatusEnum.CANCELLED, LocalDateTime.now()).orElseThrow(
+                () -> {
+                    throw new FunctionalException(new FunctionalExceptionDto("Flight not found , departed or cancelled", HttpStatus.NOT_FOUND));
+                }
 
         );
     }
@@ -115,8 +122,10 @@ public class FlightService implements IFlightService {
 
     public void decreaseSeat(Long flightId, int seat) {
         Flight flight = getFlightById(flightId);
-        if(flight.getFlightStatus().equals(FlightStatusEnum.CANCELLED)) throw new FunctionalException(new FunctionalExceptionDto("Flight was Cancelled", HttpStatus.NOT_FOUND));
-        if(flight.getSeats() < seat) throw new FunctionalException(new FunctionalExceptionDto("Seats available are insufficient", HttpStatus.CONFLICT));
+        if (flight.getFlightStatus().equals(FlightStatusEnum.CANCELLED))
+            throw new FunctionalException(new FunctionalExceptionDto("Flight was Cancelled", HttpStatus.NOT_FOUND));
+        if (flight.getSeats() < seat)
+            throw new FunctionalException(new FunctionalExceptionDto("Seats available are insufficient", HttpStatus.CONFLICT));
 
         flight.setSeats(flight.getSeats() - seat);
         flightRepository.save(flight);
@@ -124,33 +133,51 @@ public class FlightService implements IFlightService {
 
     public void checkAvailableSeat(Long flightId, int seat) {
         Flight flight = getFlightById(flightId);
-        if(flight.getFlightStatus().equals(FlightStatusEnum.CANCELLED)) throw new FunctionalException(new FunctionalExceptionDto("Flight was Cancelled", HttpStatus.NOT_FOUND));
-        if(flight.getSeats() < seat) throw new FunctionalException(new FunctionalExceptionDto("Seats available are insufficient", HttpStatus.CONFLICT));
+        if (flight.getFlightStatus().equals(FlightStatusEnum.CANCELLED))
+            throw new FunctionalException(new FunctionalExceptionDto("Flight was Cancelled", HttpStatus.NOT_FOUND));
+        if (flight.getSeats() < seat)
+            throw new FunctionalException(new FunctionalExceptionDto("Seats available are insufficient", HttpStatus.CONFLICT));
     }
+
     public void increaseSeat(Long flightId, int seat) {
-        Flight flight = getFlightById(flightId);;
+        Flight flight = getFlightById(flightId);
+        ;
         flight.setSeats(flight.getSeats() + seat);
         flightRepository.save(flight);
     }
+
     @Override
     public List<FlightDto> userSearchFlight(SearchFlightRequest criteria) {
-        if( criteria.getStatus() == FlightStatusEnum.CANCELLED || criteria.getStatus() == FlightStatusEnum.DEPARTED) throw new FunctionalException(new FunctionalExceptionDto("Users are not allowed to access cancelled flight",HttpStatus.FORBIDDEN));
-        return  searchFlight(criteria);
+        if (criteria.getStatus() == FlightStatusEnum.CANCELLED || criteria.getStatus() == FlightStatusEnum.DEPARTED)
+            throw new FunctionalException(new FunctionalExceptionDto("Users are not allowed to access cancelled flight", HttpStatus.FORBIDDEN));
+        return searchFlight(criteria);
     }
 
     private List<FlightDto> searchFlight(SearchFlightRequest criteria) {
-        if (criteria.getSort() != null && criteria.getSort().getSortField().equals("duration")) {
-            if (criteria.getSort().getSortDirection() == SortDirectionEnum.ASC)
-                return flightCustomRepository.findByCriteria(criteria).stream().map(FlightMapper::mapFlightEntityToDto).sorted(Comparator.comparingLong(FlightDto::getDurationMinutes)).toList();
-            return flightCustomRepository.findByCriteria(criteria).stream().map(FlightMapper::mapFlightEntityToDto).sorted(Comparator.comparingLong(FlightDto::getDurationMinutes).reversed()).toList();
+        Stream<FlightDto> flights = flightCustomRepository.findByCriteria(criteria).stream().map(FlightMapper::mapFlightEntityToDto);
+        if (criteria.getMaxDurationMinutes() != null && criteria.getMinDurationMinutes() == null) {
+            flights =  flights.filter(flight -> flight.getDurationMinutes() <= criteria.getMaxDurationMinutes());
+        }
+        if (criteria.getMinDurationMinutes() != null && criteria.getMaxDurationMinutes() == null) {
+            flights = flights.filter(flight -> flight.getDurationMinutes() >= criteria.getMinDurationMinutes());
+        }
+        if (criteria.getMinDurationMinutes() != null && criteria.getMaxDurationMinutes() != null) {
+            flights =  flights.filter(flight -> flight.getDurationMinutes() >= criteria.getMinDurationMinutes() && flight.getDurationMinutes() <= criteria.getMaxDurationMinutes());
 
         }
-        return flightCustomRepository.findByCriteria(criteria).stream().map(FlightMapper::mapFlightEntityToDto).toList();
+        if (criteria.getSort() != null && criteria.getSort().getSortField().equals("duration")) {
+            if (criteria.getSort().getSortDirection() == SortDirectionEnum.ASC)
+                flights = flights.sorted(Comparator.comparingLong(FlightDto::getDurationMinutes));
+            flights = flights.sorted(Comparator.comparingLong(FlightDto::getDurationMinutes).reversed());
+        }
+
+
+        return flights.toList();
     }
 
     @Override
     public List<FlightDto> adminSearchFlight(SearchFlightRequest criteria) {
-       return  searchFlight(criteria);
+        return searchFlight(criteria);
     }
 
 
