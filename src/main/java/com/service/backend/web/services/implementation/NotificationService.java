@@ -4,6 +4,7 @@ package com.service.backend.web.services.implementation;
 import com.service.backend.web.events.DelayFlightEvent;
 import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.exceptions.FunctionalExceptionDto;
+import com.service.backend.web.models.dto.BookingDto;
 import com.service.backend.web.models.dto.FlightDto;
 import com.service.backend.web.models.dto.NotificationDto;
 import com.service.backend.web.models.dto.UserDto;
@@ -11,6 +12,7 @@ import com.service.backend.web.models.entities.Notification;
 import com.service.backend.web.models.enumerators.NotificationTypeEnum;
 import com.service.backend.web.models.responses.NotificationResponse;
 import com.service.backend.web.repositories.NotificationRepository;
+import com.service.backend.web.services.interfaces.IBookingService;
 import com.service.backend.web.services.interfaces.IFlightService;
 import com.service.backend.web.services.interfaces.INotificationService;
 import com.service.backend.web.services.interfaces.IUserService;
@@ -30,6 +32,9 @@ public class NotificationService implements INotificationService {
 
     @Autowired
     IFlightService flightService;
+
+    @Autowired
+    IBookingService bookingService;
 
     @Autowired
     IUserService userService;
@@ -76,7 +81,7 @@ public class NotificationService implements INotificationService {
     @Override
     public void markAsRead(Long id, String username) {
 
-        Notification notif  = notificationRepository.findByIdAndUser(id, userService.getUserById(username)).orElseThrow(
+        Notification notif = notificationRepository.findByIdAndUser(id, userService.getUserById(username)).orElseThrow(
                 () -> {
                     throw new FunctionalException(new FunctionalExceptionDto("This notification doesn't exist", HttpStatus.NOT_FOUND));
                 }
@@ -89,5 +94,27 @@ public class NotificationService implements INotificationService {
     @Override
     public void deleteExpiredNotifications() {
         notificationRepository.deleteByCreatedAtBefore(LocalDateTime.now().minusMonths(3));
+    }
+
+    @Override
+    public void sendPaymentConfirmationNotification(Long bookingId) {
+        BookingDto booking = bookingService.getBookingById(bookingId);
+
+        NotificationDto notification = new NotificationDto();
+        notification.setCreatedAt(LocalDateTime.now());
+        notification.setFlight(booking.getFlight());
+        notification.setMessage(String.format("""
+                Dear Passenger,
+
+                We are pleased to inform you that your booking for flight (%s) has been successfully confirmed.
+
+                Thank you for choosing our services. We look forward to welcoming you on board!
+                """, booking.getFlight().getFlightNumber())
+        );
+        notification.setTitle(String.format("Confirmation: Your Flight %s Booking is Successful", booking.getFlight().getFlightNumber()));
+        notification.setUser(booking.getUser());
+        notification.setRead(false);
+        notification.setType(NotificationTypeEnum.INFO);
+        notificationRepository.save(NotificationMapper.mapNotificationDtoToEntity(notification));
     }
 }

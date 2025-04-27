@@ -1,8 +1,10 @@
 package com.service.backend.web.services.interfaces;
 
 
+import com.service.backend.web.models.responses.PaymentResponse;
+
 public interface IPaymentService {
 
-   void pay(Long id,String username);
+   PaymentResponse pay(Long id, String username);
 
 }

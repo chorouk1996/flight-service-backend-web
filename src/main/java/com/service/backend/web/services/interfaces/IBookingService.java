@@ -12,7 +12,6 @@ public interface IBookingService {
 
     CreateBookingResponse addBooking(CreateBookingRequest booking, String username);
 
-    List<BookingDto> getAllBooking();
 
     void cancelAllPendingPaymentBooking();
 
@@ -34,6 +33,7 @@ public interface IBookingService {
 
     BookingDto getBookingByIdandUser(Long id,String username);
 
+    BookingDto getBookingById(Long id);
 
     Double calculateBookingRevenue();
     long countAll();
@@ -41,4 +41,6 @@ public interface IBookingService {
     long countCancelledBookings();
 
     long countConfirmedBookings();
+
+    List<BookingDto> getAllBooking(int page, int size);
 }

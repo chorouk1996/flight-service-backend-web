@@ -16,4 +16,6 @@ public interface INotificationService {
     void markAsRead(Long id, String user);
 
     void deleteExpiredNotifications();
+
+    void sendPaymentConfirmationNotification(Long booking);
 }

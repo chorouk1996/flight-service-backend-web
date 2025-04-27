@@ -21,12 +21,14 @@ import com.service.backend.web.services.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.service.backend.web.services.mapper.PassengerMapper.mapSavedPassengerToPassenger;
@@ -81,10 +83,7 @@ public class BookingService implements IBookingService {
         return BookingMapper.mapBookingEntityToResponse(book);
     }
 
-    @Override
-    public List<BookingDto> getAllBooking() {
-        return bookingRepository.findAll().stream().map(BookingMapper::mapBookingEntityToDto).toList();
-    }
+
 
     @Override
     @Transactional
@@ -128,7 +127,7 @@ public class BookingService implements IBookingService {
     public void cancelBooking(Long booking) {
         bookingRepository.findByIdAndStatusNot(booking, BookingStatusEnum.CANCELLED).ifPresentOrElse(
                 myBooking -> {
-                    if (!myBooking.getStatus().equals(BookingStatusEnum.PENDING_PAYMENT))
+                    if (!(myBooking.getStatus().equals(BookingStatusEnum.PENDING_PAYMENT) || myBooking.getStatus().equals(BookingStatusEnum.CONFIRMED)))
                         throw new FunctionalException(new FunctionalExceptionDto("Only pending payment bookings can be cancelled manually", HttpStatus.CONFLICT));
                     flightService.increaseSeat(myBooking.getFlight().getId(), myBooking.getPassengers().size());
                     myBooking.setStatus(BookingStatusEnum.CANCELLED);
@@ -191,6 +190,15 @@ public class BookingService implements IBookingService {
     }
 
     @Override
+    public BookingDto getBookingById(Long id) {
+        return BookingMapper.mapBookingEntityToDto(bookingRepository.findById(id).orElseThrow(
+                () -> {
+                    throw new FunctionalException(new FunctionalExceptionDto("This booking does not exist or has already been cancelled", HttpStatus.NOT_FOUND));
+                }
+        ));
+    }
+
+    @Override
     public long countAll() {
         return bookingRepository.count();
     }
@@ -203,6 +211,12 @@ public class BookingService implements IBookingService {
     @Override
     public long countConfirmedBookings() {
         return bookingRepository.countByStatus(BookingStatusEnum.CONFIRMED);
+    }
+
+    @Override
+    public List<BookingDto> getAllBooking(int page, int size) {
+        final Pageable pageableRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,"bookingDate"));
+        return bookingRepository.findAll(pageableRequest).stream().map(BookingMapper::mapBookingEntityToDto).toList();
     }
 
     @Override

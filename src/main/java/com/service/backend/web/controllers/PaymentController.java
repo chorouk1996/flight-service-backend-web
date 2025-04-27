@@ -1,6 +1,7 @@
 package com.service.backend.web.controllers;
 
 
+import com.service.backend.web.models.responses.PaymentResponse;
 import com.service.backend.web.security.UserDetailsImpl;
 import com.service.backend.web.services.interfaces.IPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,9 @@ public class PaymentController {
     IPaymentService paymentService;
 
     @PutMapping("{bookingId}/pay")
-    public ResponseEntity<Void> pay(@PathVariable Long bookingId) {
+    public ResponseEntity<PaymentResponse> pay(@PathVariable Long bookingId) {
 
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        paymentService.pay(bookingId, user.getUsername());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(paymentService.pay(bookingId, user.getUsername()),HttpStatus.OK);
     }
 }

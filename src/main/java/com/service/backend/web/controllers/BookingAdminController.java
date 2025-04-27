@@ -32,8 +32,8 @@ public class BookingAdminController {
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<List<BookingDto>> getAllBooking() {
-        return new ResponseEntity<>(bookingService.getAllBooking(), HttpStatus.OK);
+    public ResponseEntity<List<BookingDto>> getAllBooking(@RequestParam(required = false, defaultValue = "0") int page,@RequestParam(required = false, defaultValue = "10") int size) {
+        return new ResponseEntity<>(bookingService.getAllBooking(page,size), HttpStatus.OK);
     }
 
     @PostMapping()
