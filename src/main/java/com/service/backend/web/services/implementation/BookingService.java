@@ -38,6 +38,9 @@ public class BookingService implements IBookingService {
     ISavedPassengerService savedPassengerService;
 
     @Autowired
+    PassengerService passengerService;
+
+    @Autowired
     FlightService flightService;
 
     @Autowired
@@ -71,8 +74,8 @@ public class BookingService implements IBookingService {
         bookingToAdd.setBookingDate(LocalDateTime.now());
         bookingToAdd.setUser(user);
         bookingToAdd.setStatus(BookingStatusEnum.PENDING_PAYMENT);
-        Booking book = bookingRepository.save(bookingToAdd);
         flightService.decreaseSeat(booking.getFlightId(), bookingToAdd.getPassengers().size());
+        Booking book = bookingRepository.save(bookingToAdd);
         return BookingMapper.mapBookingEntityToResponse(book);
     }
 
@@ -163,6 +166,11 @@ public class BookingService implements IBookingService {
                 }
         );
 
+    }
+
+    public List<User> getMailsWithThisDelayedFlightAndConfirmedBooking(Long flightId){
+
+        return bookingRepository.findByFlightIdAndStatus(flightId,BookingStatusEnum.CONFIRMED).stream().map(booking -> booking.getUser()).toList();
     }
 
     public BookingService(BookingRepository bookingRepository) {

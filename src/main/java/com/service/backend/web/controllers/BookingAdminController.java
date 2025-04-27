@@ -38,27 +38,27 @@ public class BookingAdminController {
     }
 
     @PostMapping()
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public CreateBookingResponse addBooking(@RequestBody @Valid CreateBookingRequest booking) {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
          return bookingService.addBooking(booking,user.getUsername());
     }
 
     @PutMapping()
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<BookingDto> updateBooking(@RequestBody @Valid BookingDto booking) {
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
     @PutMapping("/cancel/{bookingId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void cancelBooking(@PathVariable Long bookingId) {
          bookingService.cancelBooking(bookingId);
     }
 
     @PutMapping("/confirm/{bookingId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void confirmBooking(@PathVariable Long bookingId) {
-        bookingService.cancelBooking(bookingId);
+        bookingService.confirmBooking(bookingId);
     }
 }

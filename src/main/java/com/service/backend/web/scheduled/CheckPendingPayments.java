@@ -1,4 +1,4 @@
-package com.service.backend.web.Scheduled;
+package com.service.backend.web.scheduled;
 
 
 import com.service.backend.web.services.implementation.BookingService;

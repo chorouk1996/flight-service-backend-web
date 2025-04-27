@@ -27,4 +27,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
 
     List<Booking> findByStatusAndBookingDateBefore(BookingStatusEnum status, LocalDateTime date);
 
+    List<Booking> findByFlightIdAndStatus(Long id,BookingStatusEnum status);
+
+
 }

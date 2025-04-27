@@ -1,5 +1,6 @@
 package com.service.backend.web.services.implementation;
 
+import com.service.backend.web.events.DelayFlightEvent;
 import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import com.service.backend.web.models.dto.FlightDto;
@@ -17,6 +18,7 @@ import com.service.backend.web.services.helper.FlightHelper;
 import com.service.backend.web.services.interfaces.IFlightService;
 import com.service.backend.web.services.mapper.FlightMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -34,6 +36,9 @@ import static com.service.backend.web.services.mapper.FlightMapper.mapFlightEnti
 public class FlightService implements IFlightService {
 
     FlightRepository flightRepository;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Autowired
     FlightCustomRepository flightCustomRepository;
@@ -59,7 +64,14 @@ public class FlightService implements IFlightService {
         FlightHelper.updateIfNotNull(oldFlight::setDestination, flight::getDestination);
         FlightHelper.updateIfNotNull(oldFlight::setPrice, flight::getPrice);
         FlightHelper.updateIfNotNull(oldFlight::setAirlineName, flight::getAirlineName);
-
+        if (flight.getStatus() == FlightStatusEnum.CANCELLED || flight.getStatus() == FlightStatusEnum.DELAYED || (flight.getDepartureTime() != null && flight.getDepartureTime().isAfter(oldFlight.getDepartureTime()))) {
+            if (!StringUtils.hasText(flight.getDelayReason()))
+                throw new FunctionalException(new FunctionalExceptionDto("Delay reason must be provided when status is DELAYED or CANCELLED", HttpStatus.BAD_REQUEST));
+            oldFlight.setDelayReason(flight.getDelayReason());
+            oldFlight.setFlightStatus(flight.getStatus() != null ? flight.getStatus() : FlightStatusEnum.DELAYED);
+            if (oldFlight.getFlightStatus() == FlightStatusEnum.DELAYED)
+                eventPublisher.publishEvent(new DelayFlightEvent(oldFlight.getId(), flight.getDelayReason()));
+        }
         return mapFlightEntityToCreateFlightResponse(flightRepository.save(oldFlight));
 
     }
@@ -68,6 +80,8 @@ public class FlightService implements IFlightService {
     public CreateFlightResponse updateFlightStatus(Long id, UpdateFlightStatusRequest request) {
         Flight oldFlight = getFlightById(id);
         checkIfReasonExist(request.getStatus(), request.getDelayReason());
+        if (request.getStatus() == FlightStatusEnum.DELAYED)
+            eventPublisher.publishEvent(new DelayFlightEvent(oldFlight.getId(), request.getDelayReason()));
         FlightHelper.updateIfNotNull(oldFlight::setFlightStatus, request::getStatus);
         return mapFlightEntityToCreateFlightResponse(flightRepository.save(oldFlight));
 
@@ -85,6 +99,7 @@ public class FlightService implements IFlightService {
         return Collections.emptyList();
     }
 
+    @Override
     public Flight getFlightById(Long id) {
         return flightRepository.getFlightById(id).orElseThrow(
                 () -> {
@@ -156,13 +171,13 @@ public class FlightService implements IFlightService {
     private List<FlightDto> searchFlight(SearchFlightRequest criteria) {
         Stream<FlightDto> flights = flightCustomRepository.findByCriteria(criteria).stream().map(FlightMapper::mapFlightEntityToDto);
         if (criteria.getMaxDurationMinutes() != null && criteria.getMinDurationMinutes() == null) {
-            flights =  flights.filter(flight -> flight.getDurationMinutes() <= criteria.getMaxDurationMinutes());
+            flights = flights.filter(flight -> flight.getDurationMinutes() <= criteria.getMaxDurationMinutes());
         }
         if (criteria.getMinDurationMinutes() != null && criteria.getMaxDurationMinutes() == null) {
             flights = flights.filter(flight -> flight.getDurationMinutes() >= criteria.getMinDurationMinutes());
         }
         if (criteria.getMinDurationMinutes() != null && criteria.getMaxDurationMinutes() != null) {
-            flights =  flights.filter(flight -> flight.getDurationMinutes() >= criteria.getMinDurationMinutes() && flight.getDurationMinutes() <= criteria.getMaxDurationMinutes());
+            flights = flights.filter(flight -> flight.getDurationMinutes() >= criteria.getMinDurationMinutes() && flight.getDurationMinutes() <= criteria.getMaxDurationMinutes());
 
         }
         if (criteria.getSort() != null && criteria.getSort().getSortField().equals("duration")) {

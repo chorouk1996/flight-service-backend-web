@@ -6,6 +6,7 @@ import com.service.backend.web.models.dto.requests.SearchFlightRequest;
 import com.service.backend.web.models.dto.requests.UpdateFlightRequest;
 import com.service.backend.web.models.dto.requests.UpdateFlightStatusRequest;
 import com.service.backend.web.models.dto.responses.CreateFlightResponse;
+import com.service.backend.web.models.entities.Flight;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public interface IFlightService {
 
      FlightDto  getFlight(Long id);
 
+     Flight getFlightById(Long id);
      List<FlightDto> adminSearchFlight(SearchFlightRequest criteria);
 
      List<FlightDto> userSearchFlight(SearchFlightRequest criteria);
@@ -28,4 +30,5 @@ public interface IFlightService {
      FlightDto getAvailableFlight(Long id);
 
      void cancelFlight(Long flightId);
+
 }
