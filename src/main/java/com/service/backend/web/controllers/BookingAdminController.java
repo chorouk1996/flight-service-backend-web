@@ -3,9 +3,12 @@ package com.service.backend.web.controllers;
 
 import com.service.backend.web.models.dto.BookingDto;
 import com.service.backend.web.models.requests.CreateBookingRequest;
+import com.service.backend.web.models.requests.SearchBookingRequest;
 import com.service.backend.web.models.responses.CreateBookingResponse;
+import com.service.backend.web.models.responses.SearchBookingResponse;
 import com.service.backend.web.security.UserDetailsImpl;
 import com.service.backend.web.services.implementation.BookingService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -59,5 +63,17 @@ public class BookingAdminController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public void confirmBooking(@PathVariable Long bookingId) {
         bookingService.confirmBooking(bookingId);
+    }
+
+    @PostMapping("/search")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<SearchBookingResponse> searchBooking(@RequestBody SearchBookingRequest request){
+        return bookingService.searchBooking(request);
+    }
+
+    @GetMapping("/export")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void exportBooking(HttpServletResponse response){
+         bookingService.exportAllBookingto(response);
     }
 }

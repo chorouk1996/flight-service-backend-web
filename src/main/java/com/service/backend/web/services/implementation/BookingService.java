@@ -1,5 +1,8 @@
 package com.service.backend.web.services.implementation;
 
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import com.service.backend.web.models.dto.BookingDto;
@@ -9,8 +12,12 @@ import com.service.backend.web.models.entities.Passenger;
 import com.service.backend.web.models.entities.User;
 import com.service.backend.web.models.enumerators.BookingStatusEnum;
 import com.service.backend.web.models.requests.CreateBookingRequest;
+import com.service.backend.web.models.requests.SearchBookingRequest;
+import com.service.backend.web.models.responses.BookingCSV;
 import com.service.backend.web.models.responses.CreateBookingResponse;
 import com.service.backend.web.models.responses.MyBookingResponse;
+import com.service.backend.web.models.responses.SearchBookingResponse;
+import com.service.backend.web.repositories.BookingCustomRepository;
 import com.service.backend.web.repositories.BookingRepository;
 import com.service.backend.web.services.interfaces.IBookingService;
 import com.service.backend.web.services.interfaces.ISavedPassengerService;
@@ -18,6 +25,7 @@ import com.service.backend.web.services.mapper.BookingMapper;
 import com.service.backend.web.services.mapper.FlightMapper;
 import com.service.backend.web.services.mapper.PassengerMapper;
 import com.service.backend.web.services.mapper.UserMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,9 +34,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.service.backend.web.services.mapper.PassengerMapper.mapSavedPassengerToPassenger;
@@ -49,6 +57,9 @@ public class BookingService implements IBookingService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    BookingCustomRepository bookingCustomRepository;
 
     @Override
     public CreateBookingResponse addBooking(CreateBookingRequest booking, String username) {
@@ -82,7 +93,6 @@ public class BookingService implements IBookingService {
         Booking book = bookingRepository.save(bookingToAdd);
         return BookingMapper.mapBookingEntityToResponse(book);
     }
-
 
 
     @Override
@@ -165,6 +175,7 @@ public class BookingService implements IBookingService {
         bookingRepository.findByIdAndStatus(booking, BookingStatusEnum.PENDING_PAYMENT).ifPresentOrElse(
                 myBooking -> {
                     myBooking.setStatus(BookingStatusEnum.CONFIRMED);
+                    System.out.println("Admin confirmed booking " + myBooking.getId());
                     bookingRepository.save(myBooking);
                 },
 
@@ -215,8 +226,13 @@ public class BookingService implements IBookingService {
 
     @Override
     public List<BookingDto> getAllBooking(int page, int size) {
-        final Pageable pageableRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,"bookingDate"));
+        final Pageable pageableRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "bookingDate"));
         return bookingRepository.findAll(pageableRequest).stream().map(BookingMapper::mapBookingEntityToDto).toList();
+    }
+
+    @Override
+    public List<SearchBookingResponse> searchBooking(SearchBookingRequest request) {
+        return bookingCustomRepository.findByCriteria(request).stream().map(BookingMapper::mapBookingEntityToSearchBookingResponse).toList();
     }
 
     @Override
@@ -228,5 +244,23 @@ public class BookingService implements IBookingService {
         this.bookingRepository = bookingRepository;
     }
 
+    @Override
+    public void exportAllBookingto(HttpServletResponse response){
+        List<BookingCSV> bookings = getBookingtoExport();
+        try {
+            StatefulBeanToCsv<BookingCSV> writer = new StatefulBeanToCsvBuilder<BookingCSV>(response.getWriter()).withSeparator(CSVWriter.DEFAULT_SEPARATOR).build();
+            writer.write(bookings);
+            response.setContentType("text/csv");
+            response.setHeader("Content-Disposition","attachment; filename=bookings");
+        }
+        catch(Exception ex){
+            throw new FunctionalException(new FunctionalExceptionDto("can't export cvs, try later",HttpStatus.SERVICE_UNAVAILABLE));
+        }
+
+    }
+
+    private List<BookingCSV> getBookingtoExport() {
+        return bookingRepository.findAll().stream().map(BookingMapper::mapBookingEntityToBookingCSV).toList();
+    }
 
 }

@@ -1,9 +1,11 @@
 package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.BookingDto;
+import com.service.backend.web.models.responses.BookingCSV;
 import com.service.backend.web.models.responses.CreateBookingResponse;
 import com.service.backend.web.models.responses.MyBookingResponse;
 import com.service.backend.web.models.entities.Booking;
+import com.service.backend.web.models.responses.SearchBookingResponse;
 
 import static com.service.backend.web.services.mapper.FlightMapper.mapFlightDtoToEntity;
 import static com.service.backend.web.services.mapper.FlightMapper.mapFlightEntityToDto;
@@ -60,4 +62,31 @@ public  class BookingMapper {
         return booking;
     }
 
+    public static SearchBookingResponse mapBookingEntityToSearchBookingResponse(Booking booking){
+        SearchBookingResponse dto = new SearchBookingResponse();
+        dto.setBookingId(booking.getId());
+        dto.setStatus(booking.getStatus());
+        dto.setBookingDate(booking.getBookingDate());
+        dto.setFlightDestination(booking.getFlight().getDestination());
+        dto.setFlightOrigin(booking.getFlight().getOrigin());
+        dto.setPassengers(booking.getPassengers().stream().map(PassengerMapper::mapPassengerEntityToDto).toList());
+        dto.setDepartureTime(booking.getFlight().getDepartureTime());
+        dto.setFlightNumber(booking.getFlight().getFlightNumber());
+        dto.setUserEmail(booking.getUser().getEmail());
+        return dto;
+    }
+
+    public static BookingCSV mapBookingEntityToBookingCSV(Booking booking){
+        BookingCSV dto = new BookingCSV();
+        dto.setBookingId(booking.getId());
+        dto.setStatus(booking.getStatus());
+        dto.setBookingDate(booking.getBookingDate());
+        dto.setDestination(booking.getFlight().getDestination());
+        dto.setOrigin(booking.getFlight().getOrigin());
+        dto.setPassengerCount(booking.getPassengers().size());
+        dto.setDepartureTime(booking.getFlight().getDepartureTime());
+        dto.setFlightNumber(booking.getFlight().getFlightNumber());
+        dto.setUserEmail(booking.getUser().getEmail());
+        return dto;
+    }
 }
