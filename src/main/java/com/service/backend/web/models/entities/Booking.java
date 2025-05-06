@@ -2,7 +2,6 @@ package com.service.backend.web.models.entities;
 
 import com.service.backend.web.models.enumerators.BookingStatusEnum;
 import jakarta.persistence.*;
-import org.springframework.data.repository.cdi.Eager;
 
 import java.time.LocalDateTime;
 import java.util.List;

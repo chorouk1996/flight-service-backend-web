@@ -12,6 +12,8 @@ import com.service.backend.web.repositories.UserRepository;
 import com.service.backend.web.services.interfaces.IUserService;
 import com.service.backend.web.services.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -30,6 +32,7 @@ import static com.service.backend.web.services.mapper.UserMapper.mapEntityToCrea
 @Service
 public class UserService implements IUserService {
 
+    private static final String USER_NOT_FOUND = "User Not Found";
     UserRepository userRepository;
 
     JwtService jwtService;
@@ -50,6 +53,12 @@ public class UserService implements IUserService {
     @Override
     public List<CreateUserResponse> getAllUser() {
         return userRepository.findAll().stream().map(UserMapper::mapEntityToCreateUserResponse).toList();
+    }
+
+    @Override
+    public List<CreateUserResponse> getAllUser(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable).stream().map(UserMapper::mapEntityToCreateUserResponse).toList();
     }
 
     public boolean doesUserExist(String email) {
@@ -80,14 +89,14 @@ public class UserService implements IUserService {
     public void updatePassword(PasswordUpdateRequest user) {
         User currentUser = getUser(user.getEmail()).orElseThrow(
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto("User Not Found", HttpStatus.UNAUTHORIZED));
+                    throw new FunctionalException(new FunctionalExceptionDto(USER_NOT_FOUND, HttpStatus.UNAUTHORIZED));
                 }
         );
 
         if (bCryptPasswordEncoder.matches(user.getOldPassword(), currentUser.getPassword())) {
             currentUser.setPassword(bCryptPasswordEncoder.encode(user.getNewPassword()));
         } else {
-            throw new FunctionalException(new FunctionalExceptionDto("User Not Found", HttpStatus.UNAUTHORIZED));
+            throw new FunctionalException(new FunctionalExceptionDto(USER_NOT_FOUND, HttpStatus.UNAUTHORIZED));
         }
         userRepository.save(currentUser);
     }
@@ -97,16 +106,37 @@ public class UserService implements IUserService {
 
     }
 
-
     @Override
-    public User getUserById(String email) {
+    public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto("User Not Found", HttpStatus.UNAUTHORIZED));
+                    throw new FunctionalException(new FunctionalExceptionDto(USER_NOT_FOUND, HttpStatus.UNAUTHORIZED));
                 }
         );
 
     }
+    @Override
+    public User getUserById(long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> {
+                    throw new FunctionalException(new FunctionalExceptionDto(USER_NOT_FOUND, HttpStatus.UNAUTHORIZED));
+                }
+        );
+
+    }
+
+    @Override
+    public void blockUser(long userId) {
+       User user = getUserById(userId);
+        user.setEnabled(true);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void unBlockUser(long userId) {
+        User user = getUserById(userId);
+        user.setEnabled(false);
+        userRepository.save(user);    }
 
 
     public UserService(UserRepository userRepository, AuthenticationManager manager, JwtService jwtService) {

@@ -16,12 +16,19 @@ public interface IUserService {
 
      List<CreateUserResponse>getAllUser();
 
-
+    List<CreateUserResponse>getAllUser(int page, int size);
     String authenticate(AuthentUserRequest user);
 
     String refreshToken(AuthenticationResponse token);
 
     void updatePassword(PasswordUpdateRequest user);
 
-    User getUserById(String email);
+    User getUserByEmail(String email);
+
+    User getUserById(long email);
+
+    void blockUser(long user);
+
+    void unBlockUser(long user);
+
 }

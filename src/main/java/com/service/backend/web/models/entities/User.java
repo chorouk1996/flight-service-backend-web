@@ -32,6 +32,10 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user")
     private List<Booking> booking;
 
+    @Column
+    private boolean enabled;
+
+
     public Long getId() {
         return id;
     }
@@ -86,5 +90,13 @@ public class User implements Serializable {
 
     public void setBooking(List<Booking> booking) {
         this.booking = booking;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

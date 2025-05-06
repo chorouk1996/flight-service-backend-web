@@ -34,7 +34,7 @@ public class BookingCustomRepository {
         if (criteria.getFlightNumber() != null)
             predicates.add(cb.equal(booking.get("flight_id"), criteria.getFlightNumber()));
         if (criteria.getEmail() != null)
-            predicates.add(cb.equal(booking.get("user_id"), userService.getUserById(criteria.getEmail()).getId()));
+            predicates.add(cb.equal(booking.get("user_id"), userService.getUserByEmail(criteria.getEmail()).getId()));
         if (criteria.getStatus() != null)
             predicates.add(cb.equal(booking.get("status"), criteria.getStatus()));
 

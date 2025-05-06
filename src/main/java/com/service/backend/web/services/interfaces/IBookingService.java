@@ -4,9 +4,7 @@ import com.service.backend.web.models.dto.BookingDto;
 import com.service.backend.web.models.dto.UserDto;
 import com.service.backend.web.models.requests.CreateBookingRequest;
 import com.service.backend.web.models.requests.SearchBookingRequest;
-import com.service.backend.web.models.responses.CreateBookingResponse;
-import com.service.backend.web.models.responses.MyBookingResponse;
-import com.service.backend.web.models.responses.SearchBookingResponse;
+import com.service.backend.web.models.responses.*;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -51,4 +49,6 @@ public interface IBookingService {
     List<SearchBookingResponse> searchBooking(SearchBookingRequest request);
 
     public void exportAllBookingto(HttpServletResponse response) throws IOException;
+
+    List<BookingByMonthResponse> getBookingsByMonth();
 }

@@ -43,7 +43,7 @@ public class NotificationService implements INotificationService {
     public void sendDelayNotificationToAllUsers(DelayFlightEvent event, List<UserDto> users) {
 
         FlightDto flight = flightService.getFlight(event.getFlightId());
-        users.stream().forEach(
+        users.forEach(
                 user -> {
                     NotificationDto notification = new NotificationDto();
                     notification.setCreatedAt(LocalDateTime.now());
@@ -75,20 +75,20 @@ public class NotificationService implements INotificationService {
 
     @Override
     public List<NotificationResponse> getAlNotifications(String username) {
-        return notificationRepository.findByUser(userService.getUserById(username)).stream().map(NotificationMapper::mapEntityToNotificationResponse).toList();
+        return notificationRepository.findByUser(userService.getUserByEmail(username)).stream().map(NotificationMapper::mapEntityToNotificationResponse).toList();
     }
 
     @Override
     public void markAsRead(Long id, String username) {
 
-        Notification notif = notificationRepository.findByIdAndUser(id, userService.getUserById(username)).orElseThrow(
+        Notification notification = notificationRepository.findByIdAndUser(id, userService.getUserByEmail(username)).orElseThrow(
                 () -> {
                     throw new FunctionalException(new FunctionalExceptionDto("This notification doesn't exist", HttpStatus.NOT_FOUND));
                 }
 
         );
-        notif.setRead(true);
-        notificationRepository.save(notif);
+        notification.setRead(true);
+        notificationRepository.save(notification);
     }
 
     @Override

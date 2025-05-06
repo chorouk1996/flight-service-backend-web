@@ -29,7 +29,7 @@ public class BookingAdminController {
     BookingDto booking = new BookingDto();
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public BookingDto getBooking(@PathVariable Long id) {
         return booking;
     }

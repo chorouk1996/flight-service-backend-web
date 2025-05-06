@@ -77,16 +77,17 @@ public  class BookingMapper {
     }
 
     public static BookingCSV mapBookingEntityToBookingCSV(Booking booking){
-        BookingCSV dto = new BookingCSV();
-        dto.setBookingId(booking.getId());
-        dto.setStatus(booking.getStatus());
-        dto.setBookingDate(booking.getBookingDate());
-        dto.setDestination(booking.getFlight().getDestination());
-        dto.setOrigin(booking.getFlight().getOrigin());
-        dto.setPassengerCount(booking.getPassengers().size());
-        dto.setDepartureTime(booking.getFlight().getDepartureTime());
-        dto.setFlightNumber(booking.getFlight().getFlightNumber());
-        dto.setUserEmail(booking.getUser().getEmail());
-        return dto;
+        return new BookingCSV(
+                booking.getId(),
+                booking.getFlight().getFlightNumber(),
+                booking.getFlight().getOrigin(),
+                booking.getFlight().getDestination(),
+                booking.getFlight().getDepartureTime(),
+                booking.getBookingDate(),
+                booking.getUser().getEmail(),
+                booking.getPassengers().size(),
+                booking.getStatus()
+        );
+
     }
 }

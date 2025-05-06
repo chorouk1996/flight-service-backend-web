@@ -12,6 +12,7 @@ import com.service.backend.web.models.responses.CreateFlightResponse;
 import com.service.backend.web.models.entities.Flight;
 import com.service.backend.web.models.enumerators.FlightStatusEnum;
 import com.service.backend.web.models.enumerators.SortDirectionEnum;
+import com.service.backend.web.models.responses.FlightByAirlineResponse;
 import com.service.backend.web.repositories.FlightCustomRepository;
 import com.service.backend.web.repositories.FlightRepository;
 import com.service.backend.web.services.helper.FlightHelper;
@@ -161,7 +162,6 @@ public class FlightService implements IFlightService {
 
     public void increaseSeat(Long flightId, int seat) {
         Flight flight = getFlightById(flightId);
-        ;
         flight.setSeats(flight.getSeats() + seat);
         flightRepository.save(flight);
     }
@@ -198,6 +198,12 @@ public class FlightService implements IFlightService {
     @Override
     public List<FlightDto> adminSearchFlight(SearchFlightRequest criteria) {
         return searchFlight(criteria);
+    }
+
+
+    @Override
+    public List<FlightByAirlineResponse> getFlightsByAirline() {
+        return flightRepository.countFlightByAirlineName().stream().map(FlightByAirlineResponse::new).toList();
     }
 
 

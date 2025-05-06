@@ -7,6 +7,7 @@ import com.service.backend.web.models.requests.UpdateFlightRequest;
 import com.service.backend.web.models.requests.UpdateFlightStatusRequest;
 import com.service.backend.web.models.responses.CreateFlightResponse;
 import com.service.backend.web.models.entities.Flight;
+import com.service.backend.web.models.responses.FlightByAirlineResponse;
 
 import java.util.List;
 
@@ -32,4 +33,6 @@ public interface IFlightService {
      void cancelFlight(Long flightId);
 
     long countAll();
+
+     List<FlightByAirlineResponse> getFlightsByAirline();
 }

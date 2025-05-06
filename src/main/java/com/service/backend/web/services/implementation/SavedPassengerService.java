@@ -22,21 +22,22 @@ import static com.service.backend.web.services.mapper.SavedPassengerMapper.mapSa
 @Service
 public class SavedPassengerService implements ISavedPassengerService {
 
-    SavedPassengerRepository SavedPassengerRepository;
+    @Autowired
+    SavedPassengerRepository savedPassengerRepository;
 
     @Autowired UserService userService;
     @Override
-    public SavedPassengerDto addSavedPassenger(CreateSavedPassengerRequest SavedPassenger,String username) {
-        SavedPassenger newSavedPassenger = mapCreateSavedPassengerRequestToEntity(SavedPassenger);
-        newSavedPassenger.setUser(userService.getUserById(username));
+    public SavedPassengerDto addSavedPassenger(CreateSavedPassengerRequest savedPassenger,String username) {
+        SavedPassenger newSavedPassenger = mapCreateSavedPassengerRequestToEntity(savedPassenger);
+        newSavedPassenger.setUser(userService.getUserByEmail(username));
 
-        return  mapSavedPassengerEntityToDto(SavedPassengerRepository.save(newSavedPassenger));
+        return  mapSavedPassengerEntityToDto(savedPassengerRepository.save(newSavedPassenger));
     }
 
 
     @Override
     public List<SavedPassengerDto> getAllSavedPassenger(String username) {
-        return SavedPassengerRepository.findByUser(userService.getUserById(username)).stream().map(SavedPassengerMapper::mapSavedPassengerEntityToDto).toList();
+        return savedPassengerRepository.findByUser(userService.getUserByEmail(username)).stream().map(SavedPassengerMapper::mapSavedPassengerEntityToDto).toList();
     }
 
     @Override
@@ -45,7 +46,7 @@ public class SavedPassengerService implements ISavedPassengerService {
     }
 
     private SavedPassenger getSavedPassengerByIdAndUser(String username, Long id) {
-        return SavedPassengerRepository.findByUserAndId(userService.getUserById(username),id).orElseThrow(
+        return savedPassengerRepository.findByUserAndId(userService.getUserByEmail(username),id).orElseThrow(
                 () -> {
                     throw new FunctionalException(new FunctionalExceptionDto("The SavedPassenger doesn't exist or don't belong to this user", HttpStatus.NOT_FOUND));
                 }
@@ -53,23 +54,21 @@ public class SavedPassengerService implements ISavedPassengerService {
 
     }
     @Override
-    public SavedPassengerDto updateSavedPassengerByUser(String username, UpdateSavedPassengerRequest SavedPassenger, Long id) {
+    public SavedPassengerDto updateSavedPassengerByUser(String username, UpdateSavedPassengerRequest savedPassenger, Long id) {
         SavedPassenger oldSavedPassenger = getSavedPassengerByIdAndUser(username,id);
-        UtilHelper.updateIfNotNull(oldSavedPassenger::setAge,SavedPassenger::getAge);
-        UtilHelper.updateIfNotNull(oldSavedPassenger::setEmail,SavedPassenger::getEmail);
-        UtilHelper.updateIfNotNull(oldSavedPassenger::setFirstName,SavedPassenger::getFirstName);
-        UtilHelper.updateIfNotNull(oldSavedPassenger::setLastName,SavedPassenger::getLastName);
-        return mapSavedPassengerEntityToDto(SavedPassengerRepository.save(oldSavedPassenger));
+        UtilHelper.updateIfNotNull(oldSavedPassenger::setAge,savedPassenger::getAge);
+        UtilHelper.updateIfNotNull(oldSavedPassenger::setEmail,savedPassenger::getEmail);
+        UtilHelper.updateIfNotNull(oldSavedPassenger::setFirstName,savedPassenger::getFirstName);
+        UtilHelper.updateIfNotNull(oldSavedPassenger::setLastName,savedPassenger::getLastName);
+        return mapSavedPassengerEntityToDto(savedPassengerRepository.save(oldSavedPassenger));
     }
 
     @Override
     public void deleteSavedPassengerByUser(String username, Long id) {
-        SavedPassengerRepository.delete(getSavedPassengerByIdAndUser(username,id));
+        savedPassengerRepository.delete(getSavedPassengerByIdAndUser(username,id));
     }
 
 
 
-    public SavedPassengerService(@Autowired SavedPassengerRepository SavedPassengerRepository) {
-        this.SavedPassengerRepository = SavedPassengerRepository;
-    }
+
 }

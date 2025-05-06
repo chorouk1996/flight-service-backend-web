@@ -1,6 +1,6 @@
 package com.service.backend.web.services.implementation;
 
-import com.opencsv.CSVWriter;
+import com.opencsv.ICSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.service.backend.web.exceptions.FunctionalException;
@@ -13,12 +13,10 @@ import com.service.backend.web.models.entities.User;
 import com.service.backend.web.models.enumerators.BookingStatusEnum;
 import com.service.backend.web.models.requests.CreateBookingRequest;
 import com.service.backend.web.models.requests.SearchBookingRequest;
-import com.service.backend.web.models.responses.BookingCSV;
-import com.service.backend.web.models.responses.CreateBookingResponse;
-import com.service.backend.web.models.responses.MyBookingResponse;
-import com.service.backend.web.models.responses.SearchBookingResponse;
+import com.service.backend.web.models.responses.*;
 import com.service.backend.web.repositories.BookingCustomRepository;
 import com.service.backend.web.repositories.BookingRepository;
+import com.service.backend.web.services.interfaces.IAuditLogService;
 import com.service.backend.web.services.interfaces.IBookingService;
 import com.service.backend.web.services.interfaces.ISavedPassengerService;
 import com.service.backend.web.services.mapper.BookingMapper;
@@ -34,9 +32,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.service.backend.web.services.mapper.PassengerMapper.mapSavedPassengerToPassenger;
@@ -44,13 +42,12 @@ import static com.service.backend.web.services.mapper.PassengerMapper.mapSavedPa
 @Service
 public class BookingService implements IBookingService {
 
+    private static final String ALREADY_CANCELED_BOOKING = "This booking does not exist or has already been cancelled";
     BookingRepository bookingRepository;
 
     @Autowired
     ISavedPassengerService savedPassengerService;
 
-    @Autowired
-    PassengerService passengerService;
 
     @Autowired
     FlightService flightService;
@@ -61,13 +58,15 @@ public class BookingService implements IBookingService {
     @Autowired
     BookingCustomRepository bookingCustomRepository;
 
+    @Autowired
+    IAuditLogService auditLogService;
     @Override
     public CreateBookingResponse addBooking(CreateBookingRequest booking, String username) {
         if (booking.getPassengerIds().isEmpty() && booking.getPassengers().isEmpty())
             throw new FunctionalException(new FunctionalExceptionDto("A booking must contain at least one passenger.", HttpStatus.BAD_REQUEST));
         flightService.checkAvailableSeat(booking.getFlightId(), booking.getPassengerIds().size() + booking.getPassengers().size());
         Booking bookingToAdd = new Booking();
-        User user = userService.getUserById(username);
+        User user = userService.getUserByEmail(username);
         List<Passenger> passengers = new ArrayList<>();
         bookingToAdd.setFlight(FlightMapper.mapFlightDtoToEntity(flightService.getAvailableFlight(booking.getFlightId())));
         if (!booking.getPassengers().isEmpty()) {
@@ -76,7 +75,7 @@ public class BookingService implements IBookingService {
             passengers.addAll(passenger);
         }
         if (!booking.getPassengerIds().isEmpty()) {
-            booking.getPassengerIds().stream().forEach(id -> {
+            booking.getPassengerIds().forEach(id -> {
                         Passenger passenger = mapSavedPassengerToPassenger(savedPassengerService.getSavedPassengerById(username, id));
                         passenger.setBookedByUserEmail(user.getEmail());
                         passengers.add(passenger);
@@ -99,10 +98,11 @@ public class BookingService implements IBookingService {
     @Transactional
     public void cancelAllPendingPaymentBooking() {
         List<Booking> bookings = bookingRepository.findByStatusAndBookingDateBefore(BookingStatusEnum.PENDING_PAYMENT, LocalDateTime.now().minusMinutes(10));
-        bookings.stream().forEach(
+        bookings.forEach(
                 booking -> {
                     booking.setStatus(BookingStatusEnum.CANCELLED);
                     flightService.increaseSeat(booking.getFlight().getId(), booking.getPassengers().size());
+                    auditLogService.auditBookingCancel(BookingStatusEnum.PENDING_PAYMENT,booking.getId());
                 }
         );
         bookingRepository.saveAll(bookings);
@@ -111,26 +111,26 @@ public class BookingService implements IBookingService {
     @Override
     public List<MyBookingResponse> getAllBooking(String username, int page, int size) {
         final Pageable pageableRequest = PageRequest.of(page, size);
-        return bookingRepository.findByUser(userService.getUserById(username), pageableRequest).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
+        return bookingRepository.findByUser(userService.getUserByEmail(username), pageableRequest).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
     }
 
     @Override
     public List<MyBookingResponse> getUpcomingBooking(String username, int page, int size) {
         final Pageable pageableRequest = PageRequest.of(page, size);
-        return bookingRepository.findByUserAndStatusAndFlight_DepartureTimeAfter(userService.getUserById(username), BookingStatusEnum.CONFIRMED, LocalDateTime.now(), pageableRequest).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
+        return bookingRepository.findByUserAndStatusAndFlight_DepartureTimeAfter(userService.getUserByEmail(username), BookingStatusEnum.CONFIRMED, LocalDateTime.now(), pageableRequest).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
 
     }
 
     @Override
     public List<MyBookingResponse> getPastBooking(String username, int page, int size) {
         final Pageable pageableRequest = PageRequest.of(page, size);
-        return bookingRepository.findByUserAndStatusAndFlight_DepartureTimeBefore(userService.getUserById(username), BookingStatusEnum.CONFIRMED, LocalDateTime.now(), pageableRequest).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
+        return bookingRepository.findByUserAndStatusAndFlight_DepartureTimeBefore(userService.getUserByEmail(username), BookingStatusEnum.CONFIRMED, LocalDateTime.now(), pageableRequest).stream().map(BookingMapper::mapBookingEntityToMyBookingResponse).toList();
 
     }
 
     @Override
     public List<BookingDto> getConfirmedAndDepartedBooking() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -140,12 +140,15 @@ public class BookingService implements IBookingService {
                     if (!(myBooking.getStatus().equals(BookingStatusEnum.PENDING_PAYMENT) || myBooking.getStatus().equals(BookingStatusEnum.CONFIRMED)))
                         throw new FunctionalException(new FunctionalExceptionDto("Only pending payment bookings can be cancelled manually", HttpStatus.CONFLICT));
                     flightService.increaseSeat(myBooking.getFlight().getId(), myBooking.getPassengers().size());
+                    BookingStatusEnum oldStatus  = myBooking.getStatus();
                     myBooking.setStatus(BookingStatusEnum.CANCELLED);
                     bookingRepository.save(myBooking);
+                    auditLogService.auditBookingCancel(oldStatus,myBooking.getId());
+
                 },
 
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto("This booking does not exist or has already been cancelled", HttpStatus.NOT_FOUND));
+                    throw new FunctionalException(new FunctionalExceptionDto(ALREADY_CANCELED_BOOKING, HttpStatus.NOT_FOUND));
                 }
         );
 
@@ -155,11 +158,14 @@ public class BookingService implements IBookingService {
     @Override
     public void cancelMyBooking(Long booking, String username) {
 
-        bookingRepository.findByIdAndUserAndStatusNot(booking, userService.getUserById(username), BookingStatusEnum.CANCELLED).ifPresentOrElse(
+        bookingRepository.findByIdAndUserAndStatusNot(booking, userService.getUserByEmail(username), BookingStatusEnum.CANCELLED).ifPresentOrElse(
                 myBooking -> {
                     flightService.increaseSeat(myBooking.getFlight().getId(), myBooking.getPassengers().size());
+                    BookingStatusEnum oldStatus  = myBooking.getStatus();
                     myBooking.setStatus(BookingStatusEnum.CANCELLED);
                     bookingRepository.save(myBooking);
+                    auditLogService.auditBookingCancel(oldStatus,myBooking.getId());
+
                 },
 
                 () -> {
@@ -177,6 +183,7 @@ public class BookingService implements IBookingService {
                     myBooking.setStatus(BookingStatusEnum.CONFIRMED);
                     System.out.println("Admin confirmed booking " + myBooking.getId());
                     bookingRepository.save(myBooking);
+                    auditLogService.auditBookingConfirmation(myBooking.getId());
                 },
 
                 () -> {
@@ -193,9 +200,9 @@ public class BookingService implements IBookingService {
 
     @Override
     public BookingDto getBookingByIdandUser(Long id, String username) {
-        return BookingMapper.mapBookingEntityToDto(bookingRepository.findByIdAndStatusAndUser(id, BookingStatusEnum.PENDING_PAYMENT, userService.getUserById(username)).orElseThrow(
+        return BookingMapper.mapBookingEntityToDto(bookingRepository.findByIdAndStatusAndUser(id, BookingStatusEnum.PENDING_PAYMENT, userService.getUserByEmail(username)).orElseThrow(
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto("This booking does not exist or has already been cancelled", HttpStatus.NOT_FOUND));
+                    throw new FunctionalException(new FunctionalExceptionDto(ALREADY_CANCELED_BOOKING, HttpStatus.NOT_FOUND));
                 }
         ));
     }
@@ -204,7 +211,7 @@ public class BookingService implements IBookingService {
     public BookingDto getBookingById(Long id) {
         return BookingMapper.mapBookingEntityToDto(bookingRepository.findById(id).orElseThrow(
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto("This booking does not exist or has already been cancelled", HttpStatus.NOT_FOUND));
+                    throw new FunctionalException(new FunctionalExceptionDto(ALREADY_CANCELED_BOOKING, HttpStatus.NOT_FOUND));
                 }
         ));
     }
@@ -237,7 +244,7 @@ public class BookingService implements IBookingService {
 
     @Override
     public Double calculateBookingRevenue() {
-        return bookingRepository.findByStatus(BookingStatusEnum.CONFIRMED).stream().map(booking -> booking.getFlight().getPrice() * booking.getPassengers().size()).reduce((priceA, priceB) -> priceA + priceB).get();
+        return bookingRepository.findByStatus(BookingStatusEnum.CONFIRMED).stream().map(booking -> booking.getFlight().getPrice() * booking.getPassengers().size()).reduce(Double::sum).orElse(0.0);
     }
 
     public BookingService(BookingRepository bookingRepository) {
@@ -246,12 +253,12 @@ public class BookingService implements IBookingService {
 
     @Override
     public void exportAllBookingto(HttpServletResponse response){
-        List<BookingCSV> bookings = getBookingtoExport();
+        List<BookingCSV> bookings = getBookingDtoExport();
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition","attachment; filename=bookings");
         try {
-            StatefulBeanToCsv<BookingCSV> writer = new StatefulBeanToCsvBuilder<BookingCSV>(response.getWriter()).withSeparator(CSVWriter.DEFAULT_SEPARATOR).build();
+            StatefulBeanToCsv<BookingCSV> writer = new StatefulBeanToCsvBuilder<BookingCSV>(response.getWriter()).withSeparator(ICSVWriter.DEFAULT_SEPARATOR).build();
             writer.write(bookings);
-            response.setContentType("text/csv");
-            response.setHeader("Content-Disposition","attachment; filename=bookings");
         }
         catch(Exception ex){
             throw new FunctionalException(new FunctionalExceptionDto("can't export cvs, try later",HttpStatus.SERVICE_UNAVAILABLE));
@@ -259,7 +266,12 @@ public class BookingService implements IBookingService {
 
     }
 
-    private List<BookingCSV> getBookingtoExport() {
+    @Override
+    public List<BookingByMonthResponse> getBookingsByMonth() {
+        return bookingRepository.getBookingsByMonth().stream().map(BookingByMonthResponse::new).toList();
+    }
+
+    private List<BookingCSV> getBookingDtoExport() {
         return bookingRepository.findAll().stream().map(BookingMapper::mapBookingEntityToBookingCSV).toList();
     }
 
