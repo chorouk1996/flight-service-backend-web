@@ -22,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,17 +53,18 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<CreateUserResponse> getAllUser() {
+    public List<CreateUserResponse> getAllUsers() {
         return userRepository.findAll().stream().map(UserMapper::mapEntityToCreateUserResponse).toList();
     }
 
     @Override
-    public UserPaginationResponse getAllUser(int page, int size) {
+    public UserPaginationResponse getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         UserPaginationResponse result = new UserPaginationResponse();
         result.setUsers(userRepository.findAll(pageable).stream().map(UserMapper::mapEntityToCreateUserResponse).toList());
         result.setPage(page);
         result.setSize(size);
+        result.setTotalElements(userRepository.count());
         return result;
     }
 
@@ -131,16 +133,18 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Transactional
     public void blockUser(long userId) {
        User user = getUserById(userId);
-        user.setEnabled(true);
+        user.setEnabled(false);
         userRepository.save(user);
     }
 
     @Override
+    @Transactional
     public void unBlockUser(long userId) {
         User user = getUserById(userId);
-        user.setEnabled(false);
+        user.setEnabled(true);
         userRepository.save(user);    }
 
 

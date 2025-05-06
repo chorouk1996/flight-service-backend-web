@@ -23,7 +23,7 @@ public class UserController {
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<CreateUserResponse> getAllUser() {
-        return userService.getAllUser();
+        return userService.getAllUsers();
     }
 
     @PostMapping()

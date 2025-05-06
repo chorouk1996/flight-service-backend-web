@@ -15,9 +15,9 @@ public interface IUserService {
 
      CreateUserResponse addUser(CreateUserRequest user);
 
-     List<CreateUserResponse>getAllUser();
+     List<CreateUserResponse>getAllUsers();
 
-    UserPaginationResponse getAllUser(int page, int size);
+    UserPaginationResponse getAllUsers(int page, int size);
     String authenticate(AuthentUserRequest user);
 
     String refreshToken(AuthenticationResponse token);

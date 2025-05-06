@@ -10,6 +10,8 @@ public class UserPaginationResponse {
 
    int size;
 
+    long totalElements;
+
     public List<CreateUserResponse> getUsers() {
         return users;
     }
@@ -32,5 +34,13 @@ public class UserPaginationResponse {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public long getTotalElements() {
+        return totalElements;
+    }
+
+    public void setTotalElements(long totalElements) {
+        this.totalElements = totalElements;
     }
 }
