@@ -6,6 +6,7 @@ import com.service.backend.web.models.requests.PasswordUpdateRequest;
 import com.service.backend.web.models.responses.AuthenticationResponse;
 import com.service.backend.web.models.responses.CreateUserResponse;
 import com.service.backend.web.models.entities.User;
+import com.service.backend.web.models.responses.UserPaginationResponse;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface IUserService {
 
      List<CreateUserResponse>getAllUser();
 
-    List<CreateUserResponse>getAllUser(int page, int size);
+    UserPaginationResponse getAllUser(int page, int size);
     String authenticate(AuthentUserRequest user);
 
     String refreshToken(AuthenticationResponse token);

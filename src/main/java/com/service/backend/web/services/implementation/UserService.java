@@ -8,6 +8,7 @@ import com.service.backend.web.models.requests.PasswordUpdateRequest;
 import com.service.backend.web.models.responses.AuthenticationResponse;
 import com.service.backend.web.models.responses.CreateUserResponse;
 import com.service.backend.web.models.entities.User;
+import com.service.backend.web.models.responses.UserPaginationResponse;
 import com.service.backend.web.repositories.UserRepository;
 import com.service.backend.web.services.interfaces.IUserService;
 import com.service.backend.web.services.mapper.UserMapper;
@@ -56,9 +57,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<CreateUserResponse> getAllUser(int page, int size) {
+    public UserPaginationResponse getAllUser(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return userRepository.findAll(pageable).stream().map(UserMapper::mapEntityToCreateUserResponse).toList();
+        UserPaginationResponse result = new UserPaginationResponse();
+        result.setUsers(userRepository.findAll(pageable).stream().map(UserMapper::mapEntityToCreateUserResponse).toList());
+        result.setPage(page);
+        result.setSize(size);
+        return result;
     }
 
     public boolean doesUserExist(String email) {

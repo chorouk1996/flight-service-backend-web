@@ -2,6 +2,7 @@ package com.service.backend.web.controllers;
 
 
 import com.service.backend.web.models.responses.CreateUserResponse;
+import com.service.backend.web.models.responses.UserPaginationResponse;
 import com.service.backend.web.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,17 +20,17 @@ public class UserAdminController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public List<CreateUserResponse> getAllUser(@RequestParam(required = false, defaultValue = "0") int page,@RequestParam(required = false, defaultValue = "10") int size) {
+    public UserPaginationResponse getAllUser(@RequestParam(required = false, defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "10") int size) {
         return userService.getAllUser( page,  size);
     }
 
-    @GetMapping("/{userId}/block")
+    @PutMapping("/{userId}/block")
     @PreAuthorize("hasAuthority('ADMIN')")
     public void blockUser(@PathVariable long userId){
          userService.blockUser(userId);
     }
 
-    @GetMapping("/{userId}/unblock")
+    @PutMapping("/{userId}/unblock")
     @PreAuthorize("hasAuthority('ADMIN')")
     public void unBlockUser(@PathVariable long userId) {
          userService.unBlockUser(userId);
