@@ -15,6 +15,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.service.backend.web.services.helper.DateHelper.convertStringToEndDateTime;
+import static com.service.backend.web.services.helper.DateHelper.convertStringToStartDateTime;
+
+
 @Repository
 public class AuditLogCustomRepository {
 
@@ -34,15 +38,15 @@ public class AuditLogCustomRepository {
             predicates.add(builder.equal(auditLog.get("entityType"), criteria.getEntityType()));
         if (criteria.getAction() != null)
             predicates.add(builder.equal(auditLog.get("action"), criteria.getAction()));
-        if (criteria.getFromDate() != null && criteria.getToDate() == null) {
-            LocalDateTime start = criteria.getFromDate().atStartOfDay();
+        if (criteria.getStartDate() != null && criteria.getEndDate() == null) {
+            LocalDateTime start = convertStringToStartDateTime(criteria.getStartDate());
             predicates.add(builder.greaterThanOrEqualTo(auditLog.get("timestamp"), start));
-        } else if (criteria.getToDate() != null && criteria.getFromDate() == null) {
-            LocalDateTime end = criteria.getToDate().atTime(23, 59, 59);
+        } else if (criteria.getEndDate() != null && criteria.getStartDate() == null) {
+            LocalDateTime end = convertStringToEndDateTime(criteria.getEndDate());
             predicates.add(builder.lessThanOrEqualTo(auditLog.get("timestamp"), end));
-        } else if (criteria.getToDate() != null && criteria.getFromDate() != null) {
-            LocalDateTime end = criteria.getToDate().atTime(23, 59, 59);
-            LocalDateTime start = criteria.getFromDate().atStartOfDay();
+        } else if (criteria.getEndDate() != null && criteria.getStartDate() != null) {
+            LocalDateTime end = convertStringToEndDateTime(criteria.getEndDate());
+            LocalDateTime start = convertStringToStartDateTime(criteria.getStartDate());
 
             predicates.add(builder.between(auditLog.get("timestamp"), end, start));
         }

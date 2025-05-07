@@ -34,7 +34,7 @@ public class AuditLogService implements IAuditLogService {
             String performedBy  = Optional.of(SecurityContextHolder
                     .getContext()).map(a->  Optional.of(a).get().getAuthentication()).map(a -> ((UserDetailsImpl)a.getPrincipal()).getUsername()).orElse(SYSTEM);
             AuditLogDto auditLog = new AuditLogDto(LocalDateTime.now(),EntityTypeEnum.BOOKING,EntityActionEnum.UPDATE,entityId,performedBy,"Status changed from "+oldStatus+" to CANCELED");
-        auditLogRepository.save(AuditLogMapper.mapAuditLogEntityToDto(auditLog));
+        auditLogRepository.save(AuditLogMapper.mapAuditLogDtoToEntity(auditLog));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class AuditLogService implements IAuditLogService {
         String performedBy  = Optional.of(SecurityContextHolder
                 .getContext()).map(a->  Optional.of(a).get().getAuthentication()).map(a -> ((UserDetailsImpl)a.getPrincipal()).getUsername()).orElse(SYSTEM);
         AuditLogDto auditLog = new AuditLogDto(LocalDateTime.now(),EntityTypeEnum.BOOKING,EntityActionEnum.UPDATE,entityId,performedBy,"Status changed from PENDING_PAYMENT to CONFIRMED");
-        auditLogRepository.save(AuditLogMapper.mapAuditLogEntityToDto(auditLog));
+        auditLogRepository.save(AuditLogMapper.mapAuditLogDtoToEntity(auditLog));
     }
 
     @Override
@@ -52,18 +52,18 @@ public class AuditLogService implements IAuditLogService {
         String performedBy  = Optional.of(SecurityContextHolder
                 .getContext()).map(a->  Optional.of(a).get().getAuthentication()).map(a -> ((UserDetailsImpl)a.getPrincipal()).getUsername()).orElse(SYSTEM);
         AuditLogDto auditLog = new AuditLogDto(LocalDateTime.now(),EntityTypeEnum.FLIGHT,EntityActionEnum.UPDATE,entityId,performedBy,"Status changed from "+oldStatus+" to " + currentStatus);
-        auditLogRepository.save(AuditLogMapper.mapAuditLogEntityToDto(auditLog));
+        auditLogRepository.save(AuditLogMapper.mapAuditLogDtoToEntity(auditLog));
     }
 
     @Override
     @Transactional
     public List<AuditLogDto> getAudit() {
-        return auditLogRepository.findAll().stream().map(AuditLogMapper::mapAuditLogDtoToEntity).toList();
+        return auditLogRepository.findAll().stream().map(AuditLogMapper::mapAuditLogEntityToDto).toList();
     }
 
     @Override
     @Transactional
     public List<AuditLogDto> getAuditByCriteria(SearchAuditRequest request) {
-        return auditLogCustomRepository.findByCriteria(request).stream().map(AuditLogMapper::mapAuditLogDtoToEntity).toList();
+        return auditLogCustomRepository.findByCriteria(request).stream().map(AuditLogMapper::mapAuditLogEntityToDto).toList();
     }
 }

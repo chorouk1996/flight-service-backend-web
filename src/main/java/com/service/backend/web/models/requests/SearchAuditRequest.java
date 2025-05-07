@@ -2,17 +2,18 @@ package com.service.backend.web.models.requests;
 
 import com.service.backend.web.models.enumerators.EntityActionEnum;
 import com.service.backend.web.models.enumerators.EntityTypeEnum;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.bind.DefaultValue;
+import jakarta.validation.constraints.Pattern;
 
-import java.time.LocalDate;
 
 public class SearchAuditRequest {
 
     private EntityTypeEnum entityType;
     private EntityActionEnum action;
-    private LocalDate fromDate;
-    private LocalDate toDate;
+    @Pattern(regexp = "^\\d{2}-\\d{2}-\\d{4}$", message = "Date must be in format dd-MM-yyyy")
+    private String startDate;
+
+    @Pattern(regexp = "^\\d{2}-\\d{2}-\\d{4}$", message = "Date must be in format dd-MM-yyyy")
+    private String endDate;
 
     private int page= 0;
 
@@ -34,20 +35,20 @@ public class SearchAuditRequest {
         this.action = action;
     }
 
-    public LocalDate getFromDate() {
-        return fromDate;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setFromDate(LocalDate fromDate) {
-        this.fromDate = fromDate;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
-    public LocalDate getToDate() {
-        return toDate;
+    public String getEndDate() {
+        return endDate;
     }
 
-    public void setToDate(LocalDate toDate) {
-        this.toDate = toDate;
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     public int getPage() {

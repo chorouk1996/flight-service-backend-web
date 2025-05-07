@@ -7,10 +7,7 @@ import com.service.backend.web.services.interfaces.IAuditLogService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,7 +19,7 @@ public class AuditAdminController {
     IAuditLogService auditLogService;
 
 
-    @GetMapping("/logs")
+    @PostMapping("/logs")
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<AuditLogDto> getauditLog(@RequestBody @Valid SearchAuditRequest req) {
         return auditLogService.getAuditByCriteria(req);

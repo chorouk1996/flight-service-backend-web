@@ -9,7 +9,7 @@ public class AuditLogMapper {
         throw new UnsupportedOperationException("Don't instantiate this  Utility class");
     };
 
-    public static AuditLog mapAuditLogEntityToDto(AuditLogDto auditLog){
+    public static AuditLog mapAuditLogDtoToEntity(AuditLogDto auditLog){
         AuditLog entity = new AuditLog();
         entity.setTimestamp(auditLog.getTimestamp());
         entity.setAction(auditLog.getAction());
@@ -20,7 +20,7 @@ public class AuditLogMapper {
         return entity;
     }
 
-    public static AuditLogDto mapAuditLogDtoToEntity(AuditLog auditLog){
+    public static AuditLogDto mapAuditLogEntityToDto(AuditLog auditLog){
         AuditLogDto dto = new AuditLogDto();
         dto.setTimestamp(auditLog.getTimestamp());
         dto.setAction(auditLog.getAction());
