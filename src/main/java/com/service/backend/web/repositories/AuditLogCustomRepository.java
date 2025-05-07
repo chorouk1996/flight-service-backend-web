@@ -1,0 +1,55 @@
+package com.service.backend.web.repositories;
+
+
+import com.service.backend.web.models.entities.AuditLog;
+import com.service.backend.web.models.requests.SearchAuditRequest;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Repository
+public class AuditLogCustomRepository {
+
+
+    @PersistenceContext
+    EntityManager entityManager;
+
+    public List<AuditLog> findByCriteria(SearchAuditRequest criteria) {
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<AuditLog> criteriaQuery = builder.createQuery(AuditLog.class);
+        Root<AuditLog> auditLog = criteriaQuery.from(AuditLog.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (criteria.getEntityType() != null)
+            predicates.add(builder.equal(auditLog.get("entityType"), criteria.getEntityType()));
+        if (criteria.getAction() != null)
+            predicates.add(builder.equal(auditLog.get("action"), criteria.getAction()));
+        if (criteria.getFromDate() != null && criteria.getToDate() == null) {
+            LocalDateTime start = criteria.getFromDate().atStartOfDay();
+            predicates.add(builder.greaterThanOrEqualTo(auditLog.get("timestamp"), start));
+        } else if (criteria.getToDate() != null && criteria.getFromDate() == null) {
+            LocalDateTime end = criteria.getToDate().atTime(23, 59, 59);
+            predicates.add(builder.lessThanOrEqualTo(auditLog.get("timestamp"), end));
+        } else if (criteria.getToDate() != null && criteria.getFromDate() != null) {
+            LocalDateTime end = criteria.getToDate().atTime(23, 59, 59);
+            LocalDateTime start = criteria.getFromDate().atStartOfDay();
+
+            predicates.add(builder.between(auditLog.get("timestamp"), end, start));
+        }
+
+        criteriaQuery.where(predicates.toArray(predicates.toArray(new Predicate[0])));
+
+
+        return entityManager.createQuery(criteriaQuery).setFirstResult((criteria.getPage()) * criteria.getSize()).setMaxResults(criteria.getSize()).getResultList();
+    }
+}

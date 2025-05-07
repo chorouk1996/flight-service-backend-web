@@ -20,5 +20,14 @@ public class AuditLogMapper {
         return entity;
     }
 
-
+    public static AuditLogDto mapAuditLogDtoToEntity(AuditLog auditLog){
+        AuditLogDto dto = new AuditLogDto();
+        dto.setTimestamp(auditLog.getTimestamp());
+        dto.setAction(auditLog.getAction());
+        dto.setDetails(auditLog.getDetails());
+        dto.setEntityId(auditLog.getEntityId());
+        dto.setEntityType(auditLog.getEntityType());
+        dto.setPerformedBy(auditLog.getPerformedBy());
+        return dto;
+    }
 }

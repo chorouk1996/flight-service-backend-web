@@ -35,6 +35,10 @@ public class User implements Serializable {
     @Column
     private boolean enabled;
 
+    @Column
+    private int loyaltyPoints = 0;
+
+
 
     public Long getId() {
         return id;
@@ -98,5 +102,13 @@ public class User implements Serializable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public int getLoyaltyPoints() {
+        return loyaltyPoints;
+    }
+
+    public void setLoyaltyPoints(int loyaltyPoints) {
+        this.loyaltyPoints = loyaltyPoints;
     }
 }

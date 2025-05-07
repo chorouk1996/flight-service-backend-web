@@ -72,4 +72,8 @@ public class AuditLogDto {
         this.performedBy = performedBy;
         this.details = details;
     }
+
+    public AuditLogDto() {
+
+    }
 }
