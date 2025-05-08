@@ -6,10 +6,7 @@ import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import com.service.backend.web.models.dto.EmailTokenDto;
 import com.service.backend.web.models.entities.User;
 import com.service.backend.web.models.enumerators.TypeTokenEnum;
-import com.service.backend.web.models.requests.AuthentUserRequest;
-import com.service.backend.web.models.requests.CreateUserRequest;
-import com.service.backend.web.models.requests.PasswordUpdateRequest;
-import com.service.backend.web.models.requests.ResetTokenRequest;
+import com.service.backend.web.models.requests.*;
 import com.service.backend.web.models.responses.AuthenticationResponse;
 import com.service.backend.web.models.responses.CreateUserResponse;
 import com.service.backend.web.models.responses.UserPaginationResponse;
@@ -106,7 +103,7 @@ public class UserService implements IUserService {
 
     @Override
     public void resetToken(ResetTokenRequest tokenRequest, HttpServletRequest request) {
-        getUserByEmail(tokenRequest.getEmail());
+        isUserExistAndActive(tokenRequest.getEmail());
         String token = jwtService.generateResetToken(tokenRequest.getEmail());
         EmailTokenDto dto = new EmailTokenDto();
         dto.setCreatedAt(LocalDateTime.now());
@@ -121,6 +118,13 @@ public class UserService implements IUserService {
         dto.setEmail(tokenRequest.getEmail());
         dto.setUsed(Boolean.FALSE);
         emailTokenService.addEmailToken(dto);
+        System.out.println("this is the reset-link https://yourdomain.com/reset-password?token=" + token);
+    }
+
+    @Override
+    public void resetPassword(ResetPasswordRequest request) {
+        User user = getUserByEmail(emailTokenService.isResetTokenValid(request).getEmail());
+        updatePasswordAfterReset(request, user);
     }
 
     @Override
@@ -135,6 +139,12 @@ public class UserService implements IUserService {
             throw new FunctionalException(new FunctionalExceptionDto(ErrorMessages.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED));
         }
         userRepository.save(currentUser);
+    }
+
+    @Override
+    public void updatePasswordAfterReset(ResetPasswordRequest request, User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 
     public Optional<User> getUser(String email) {
@@ -152,7 +162,7 @@ public class UserService implements IUserService {
 
     @Override
     public User isUserExistAndActive(String email) {
-        return userRepository.findByEmailAndActive(email,true).orElseThrow(() -> {
+        return userRepository.findByEmailAndActive(email, true).orElseThrow(() -> {
             throw new FunctionalException(new FunctionalExceptionDto(ErrorMessages.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED));
         });
     }

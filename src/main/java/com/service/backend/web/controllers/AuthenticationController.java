@@ -1,19 +1,17 @@
 package com.service.backend.web.controllers;
 
 import com.service.backend.web.models.requests.AuthentUserRequest;
+import com.service.backend.web.models.requests.ResetPasswordRequest;
 import com.service.backend.web.models.requests.ResetTokenRequest;
 import com.service.backend.web.models.responses.AuthenticationResponse;
+import com.service.backend.web.models.responses.ResetTokenResponse;
 import com.service.backend.web.services.interfaces.IUserService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
-import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping("/auth")
@@ -23,7 +21,7 @@ public class AuthenticationController {
     private IUserService userService;
 
     @PostMapping("/login")
-    public AuthenticationResponse loginUser(@RequestBody @Valid AuthentUserRequest user) throws NoSuchAlgorithmException {
+    public AuthenticationResponse loginUser(@RequestBody @Valid AuthentUserRequest user) {
         return new AuthenticationResponse(userService.authenticate(user));
     }
 
@@ -33,7 +31,14 @@ public class AuthenticationController {
     }
 
     @PostMapping("/request-reset")
-    public void requestResetToken(@RequestBody ResetTokenRequest tokenRequest, HttpServletRequest request) {
-        userService.resetToken(tokenRequest,request);
+    public ResetTokenResponse requestResetToken(@RequestBody ResetTokenRequest tokenRequest, HttpServletRequest request) {
+        userService.resetToken(tokenRequest, request);
+        return new ResetTokenResponse("If an active account with this email exists, a reset link has been sent.");
+    }
+
+    @PostMapping("/reset-password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        userService.resetPassword(resetPasswordRequest);
     }
 }
