@@ -3,10 +3,13 @@ package com.service.backend.web.services.interfaces;
 import com.service.backend.web.models.requests.AuthentUserRequest;
 import com.service.backend.web.models.requests.CreateUserRequest;
 import com.service.backend.web.models.requests.PasswordUpdateRequest;
+import com.service.backend.web.models.requests.ResetTokenRequest;
 import com.service.backend.web.models.responses.AuthenticationResponse;
 import com.service.backend.web.models.responses.CreateUserResponse;
 import com.service.backend.web.models.entities.User;
 import com.service.backend.web.models.responses.UserPaginationResponse;
+import com.service.backend.web.security.UserDetailsImpl;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 
@@ -22,14 +25,18 @@ public interface IUserService {
 
     String refreshToken(AuthenticationResponse token);
 
-    void updatePassword(PasswordUpdateRequest user);
+    void resetToken(ResetTokenRequest tokenRequest, HttpServletRequest request);
+
+    void updatePassword(PasswordUpdateRequest user, UserDetailsImpl username);
 
     User getUserByEmail(String email);
 
-    User getUserById(long email);
+    User isUserExistAndActive(String email);
 
-    void blockUser(long user);
+    User getUserById(long id);
 
-    void unBlockUser(long user);
+    void blockUser(long id);
+
+    void unBlockUser(long id);
 
 }

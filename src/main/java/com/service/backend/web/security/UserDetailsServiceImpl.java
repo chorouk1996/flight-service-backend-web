@@ -1,5 +1,6 @@
 package com.service.backend.web.security;
 
+import com.service.backend.web.constantes.ErrorMessages;
 import com.service.backend.web.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return userRepository.findByEmail(username).map(
                 UserDetailsImpl::new).orElseThrow(
                 () -> {
-                    throw new UsernameNotFoundException("User not found");
+                    throw new UsernameNotFoundException(ErrorMessages.USER_NOT_FOUND);
                 });
 
     }

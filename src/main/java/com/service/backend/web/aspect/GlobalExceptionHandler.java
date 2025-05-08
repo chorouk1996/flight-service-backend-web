@@ -1,5 +1,6 @@
 package com.service.backend.web.aspect;
 
+import com.service.backend.web.constantes.ErrorMessages;
 import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,12 +40,12 @@ public class GlobalExceptionHandler {
     public FunctionalExceptionDto usernameNotFoundException(HttpServletResponse response,HttpServletRequest request){
         FunctionalExceptionDto ex = new FunctionalExceptionDto();
         request.getRequestURL();
-        ex.setMessage("User Not Found");
+        ex.setMessage(ErrorMessages.USER_NOT_FOUND);
         ex.setPath(request.getRequestURI());
         ex.setStatus(HttpStatus.NOT_FOUND);
         response.setStatus(ex.getStatus().value());
         ex.setTimestamp(LocalDateTime.now());
-        ex.setError("User_Not_Found");
+        ex.setError(ErrorMessages.USER_NOT_FOUND);
         return ex;
     }
 

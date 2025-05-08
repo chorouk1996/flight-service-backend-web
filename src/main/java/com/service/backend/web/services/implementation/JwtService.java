@@ -2,6 +2,7 @@ package com.service.backend.web.services.implementation;
 
 import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.exceptions.FunctionalExceptionDto;
+import com.service.backend.web.models.enumerators.TypeTokenEnum;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -29,21 +30,34 @@ public class JwtService {
     }*/
 
     public String generateToken(String username) {
+        return tokenGeneration(username,new HashMap<>(),new Date(System.currentTimeMillis() + 1000 * 60 * 60));
+    }
+
+    public String generateResetToken(String username) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("Type", TypeTokenEnum.RESET_TOKEN);
+        return tokenGeneration(username,claims,new Date(System.currentTimeMillis() + 1000 * 60 * 15));
+    }
+
+
+    private String tokenGeneration(String username ,Map<String, Object> claims ,Date date) {
         return Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(username)
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .expiration(date)
                 .issuedAt(new Date())
                 .and()
                 .signWith(getKey())
                 .compact();
 
     }
-
     public String refreshToken(String token){
             return  generateToken(extractUsername(token));
+    }
+
+    public String resetToken(String token){
+        return  generateToken(extractUsername(token));
     }
     public SecretKey getKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));

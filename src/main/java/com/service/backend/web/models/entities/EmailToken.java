@@ -1,0 +1,101 @@
+package com.service.backend.web.models.entities;
+
+
+import com.service.backend.web.models.enumerators.TypeTokenEnum;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+
+@Entity
+public class EmailToken {
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Long id;
+    @Column
+    private String token;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private TypeTokenEnum type;
+
+    @Column
+    private LocalDateTime expireAt;
+
+    @Column
+    private LocalDateTime createdAt;
+
+    @Column
+    private String email;
+
+    @Column
+    private boolean used;
+
+    @Column
+    private String ipAddress;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public TypeTokenEnum getType() {
+        return type;
+    }
+
+    public void setType(TypeTokenEnum type) {
+        this.type = type;
+    }
+
+    public LocalDateTime getExpireAt() {
+        return expireAt;
+    }
+
+    public void setExpireAt(LocalDateTime expireAt) {
+        this.expireAt = expireAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isUsed() {
+        return used;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+}

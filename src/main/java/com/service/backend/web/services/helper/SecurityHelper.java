@@ -12,8 +12,6 @@ public class SecurityHelper {
 
     public static UserDetailsImpl getUserConnected (){
        return (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
     }
-
 
 }

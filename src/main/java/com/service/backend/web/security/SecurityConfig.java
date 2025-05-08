@@ -34,7 +34,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 //.httpBasic(Customizer.withDefaults())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/login/**","/flight/search").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**","/flight/search").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class)
