@@ -16,7 +16,7 @@ public  class BookingMapper {
 
     private BookingMapper() {
         throw new UnsupportedOperationException("Don't instantiate this  Utility class");
-    };
+    }
 
     public static BookingDto  mapBookingEntityToDto(Booking booking){
         BookingDto dto = new BookingDto();

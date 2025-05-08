@@ -1,7 +1,6 @@
 package com.service.backend.web.models.dto;
 
-import com.service.backend.web.models.entities.Flight;
-import com.service.backend.web.models.entities.User;
+
 import com.service.backend.web.models.enumerators.NotificationTypeEnum;
 
 import java.time.LocalDateTime;

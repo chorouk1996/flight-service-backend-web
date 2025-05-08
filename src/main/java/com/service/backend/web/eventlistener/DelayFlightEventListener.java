@@ -1,11 +1,7 @@
-package com.service.backend.web.eventListener;
+package com.service.backend.web.eventlistener;
 
 import com.service.backend.web.events.DelayFlightEvent;
 import com.service.backend.web.models.dto.UserDto;
-import com.service.backend.web.models.entities.User;
-import com.service.backend.web.services.implementation.BookingService;
-import com.service.backend.web.services.implementation.NotificationService;
-import com.service.backend.web.services.implementation.PassengerService;
 import com.service.backend.web.services.interfaces.IBookingService;
 import com.service.backend.web.services.interfaces.INotificationService;
 import com.service.backend.web.services.interfaces.IPassengerService;
@@ -14,7 +10,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class DelayFlightEventListener {

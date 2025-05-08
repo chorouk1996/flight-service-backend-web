@@ -10,33 +10,33 @@ public class SavedPassengerMapper {
         throw new UnsupportedOperationException("Don't instantiate this  Utility class");
     }
 
-    public static SavedPassengerDto mapSavedPassengerEntityToDto(SavedPassenger SavedPassenger) {
+    public static SavedPassengerDto mapSavedPassengerEntityToDto(SavedPassenger savedPassenger) {
         SavedPassengerDto dto = new SavedPassengerDto();
-        dto.setId(SavedPassenger.getId());
-        dto.setAge(SavedPassenger.getAge());
-        dto.setFirstName(SavedPassenger.getFirstName());
-        dto.setLastName(SavedPassenger.getLastName());
-        dto.setEmail(SavedPassenger.getEmail());
+        dto.setId(savedPassenger.getId());
+        dto.setAge(savedPassenger.getAge());
+        dto.setFirstName(savedPassenger.getFirstName());
+        dto.setLastName(savedPassenger.getLastName());
+        dto.setEmail(savedPassenger.getEmail());
         return dto;
     }
 
     public static SavedPassenger mapSavedPassengerDtoToEntity(SavedPassengerDto dto) {
-        SavedPassenger SavedPassenger = new SavedPassenger();
-        SavedPassenger.setId(dto.getId());
-        SavedPassenger.setAge(dto.getAge());
-        SavedPassenger.setFirstName(dto.getFirstName());
-        SavedPassenger.setLastName(dto.getLastName());
-        SavedPassenger.setEmail(dto.getEmail());
-        return SavedPassenger;
+        SavedPassenger savedPassenger = new SavedPassenger();
+        savedPassenger.setId(dto.getId());
+        savedPassenger.setAge(dto.getAge());
+        savedPassenger.setFirstName(dto.getFirstName());
+        savedPassenger.setLastName(dto.getLastName());
+        savedPassenger.setEmail(dto.getEmail());
+        return savedPassenger;
     }
 
     public static SavedPassenger mapCreateSavedPassengerRequestToEntity(CreateSavedPassengerRequest dto) {
-        SavedPassenger SavedPassenger = new SavedPassenger();
-        SavedPassenger.setAge(dto.getAge());
-        SavedPassenger.setFirstName(dto.getFirstName());
-        SavedPassenger.setLastName(dto.getLastName());
-        SavedPassenger.setEmail(dto.getEmail());
-        return SavedPassenger;
+        SavedPassenger savedPassenger = new SavedPassenger();
+        savedPassenger.setAge(dto.getAge());
+        savedPassenger.setFirstName(dto.getFirstName());
+        savedPassenger.setLastName(dto.getLastName());
+        savedPassenger.setEmail(dto.getEmail());
+        return savedPassenger;
     }
 
 

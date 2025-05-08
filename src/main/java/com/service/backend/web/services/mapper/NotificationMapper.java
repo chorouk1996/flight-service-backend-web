@@ -9,7 +9,7 @@ public  class NotificationMapper {
 
     private NotificationMapper() {
         throw new UnsupportedOperationException("Don't instantiate this  Utility class");
-    };
+    }
 
 
     public static Notification mapNotificationDtoToEntity(NotificationDto dto) {

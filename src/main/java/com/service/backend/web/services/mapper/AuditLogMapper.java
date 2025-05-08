@@ -7,7 +7,7 @@ public class AuditLogMapper {
 
     private AuditLogMapper() {
         throw new UnsupportedOperationException("Don't instantiate this  Utility class");
-    };
+    }
 
     public static AuditLog mapAuditLogDtoToEntity(AuditLogDto auditLog){
         AuditLog entity = new AuditLog();

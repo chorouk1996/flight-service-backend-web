@@ -8,6 +8,7 @@ import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import com.service.backend.web.models.dto.BookingDto;
 import com.service.backend.web.models.dto.UserDto;
 import com.service.backend.web.models.entities.Booking;
+import com.service.backend.web.models.entities.Flight;
 import com.service.backend.web.models.entities.Passenger;
 import com.service.backend.web.models.entities.User;
 import com.service.backend.web.models.enumerators.BookingStatusEnum;
@@ -43,6 +44,8 @@ import static com.service.backend.web.services.mapper.PassengerMapper.mapSavedPa
 public class BookingService implements IBookingService {
 
     private static final String ALREADY_CANCELED_BOOKING = "This booking does not exist or has already been cancelled";
+
+    @Autowired
     BookingRepository bookingRepository;
 
     @Autowired
@@ -60,38 +63,69 @@ public class BookingService implements IBookingService {
 
     @Autowired
     IAuditLogService auditLogService;
+
     @Override
     public CreateBookingResponse addBooking(CreateBookingRequest booking, String username) {
-        if (booking.getPassengerIds().isEmpty() && booking.getPassengers().isEmpty())
-            throw new FunctionalException(new FunctionalExceptionDto("A booking must contain at least one passenger.", HttpStatus.BAD_REQUEST));
-        flightService.checkAvailableSeat(booking.getFlightId(), booking.getPassengerIds().size() + booking.getPassengers().size());
-        Booking bookingToAdd = new Booking();
+        validatePassengers(booking);
+
+        int totalPassengers = booking.getPassengerIds().size() + booking.getPassengers().size();
+        flightService.checkAvailableSeat(booking.getFlightId(), totalPassengers);
+
         User user = userService.getUserByEmail(username);
-        List<Passenger> passengers = new ArrayList<>();
-        bookingToAdd.setFlight(FlightMapper.mapFlightDtoToEntity(flightService.getAvailableFlight(booking.getFlightId())));
-        if (!booking.getPassengers().isEmpty()) {
-            List<Passenger> passenger = booking.getPassengers().stream().map(PassengerMapper::mapCreatePassengerRequestToEntity).toList();
-            passenger.forEach(pass -> pass.setBookedByUserEmail(user.getEmail()));
-            passengers.addAll(passenger);
+        Flight flight = FlightMapper.mapFlightDtoToEntity(flightService.getAvailableFlight(booking.getFlightId()));
+
+        Booking bookingToAdd = initializeBooking(user, flight);
+        List<Passenger> passengers = collectPassengers(booking, user, bookingToAdd);
+
+        bookingToAdd.setPassengers(passengers);
+        flightService.decreaseSeat(booking.getFlightId(), passengers.size());
+
+        Booking saved = bookingRepository.save(bookingToAdd);
+        return BookingMapper.mapBookingEntityToResponse(saved);
+    }
+
+    private void validatePassengers(CreateBookingRequest booking) {
+        if (booking.getPassengerIds().isEmpty() && booking.getPassengers().isEmpty()) {
+            throw new FunctionalException(new FunctionalExceptionDto(
+                    "A booking must contain at least one passenger.", HttpStatus.BAD_REQUEST));
         }
+    }
+
+    private Booking initializeBooking(User user, Flight flight) {
+        Booking booking = new Booking();
+        booking.setUser(user);
+        booking.setFlight(flight);
+        booking.setBookingDate(LocalDateTime.now());
+        booking.setStatus(BookingStatusEnum.PENDING_PAYMENT);
+        return booking;
+    }
+
+    private List<Passenger> collectPassengers(CreateBookingRequest booking, User user, Booking bookingEntity) {
+        List<Passenger> passengers = new ArrayList<>();
+
+        if (!booking.getPassengers().isEmpty()) {
+            booking.getPassengers().stream()
+                    .map(PassengerMapper::mapCreatePassengerRequestToEntity)
+                    .forEach(p -> {
+                        p.setBookedByUserEmail(user.getEmail());
+                        p.setBooking(bookingEntity);
+                        passengers.add(p);
+                    });
+        }
+
         if (!booking.getPassengerIds().isEmpty()) {
             booking.getPassengerIds().forEach(id -> {
-                        Passenger passenger = mapSavedPassengerToPassenger(savedPassengerService.getSavedPassengerById(username, id));
-                        passenger.setBookedByUserEmail(user.getEmail());
-                        passengers.add(passenger);
-                    }
-            );
-
+                Passenger passenger = mapSavedPassengerToPassenger(
+                        savedPassengerService.getSavedPassengerById(user.getEmail(), id));
+                passenger.setBookedByUserEmail(user.getEmail());
+                passenger.setBooking(bookingEntity);
+                passengers.add(passenger);
+            });
         }
-        passengers.forEach(pass -> pass.setBooking(bookingToAdd));
-        bookingToAdd.setPassengers(passengers);
-        bookingToAdd.setBookingDate(LocalDateTime.now());
-        bookingToAdd.setUser(user);
-        bookingToAdd.setStatus(BookingStatusEnum.PENDING_PAYMENT);
-        flightService.decreaseSeat(booking.getFlightId(), bookingToAdd.getPassengers().size());
-        Booking book = bookingRepository.save(bookingToAdd);
-        return BookingMapper.mapBookingEntityToResponse(book);
+
+        return passengers;
     }
+
 
 
     @Override
@@ -245,10 +279,6 @@ public class BookingService implements IBookingService {
     @Override
     public Double calculateBookingRevenue() {
         return bookingRepository.findByStatus(BookingStatusEnum.CONFIRMED).stream().map(booking -> booking.getFlight().getPrice() * booking.getPassengers().size()).reduce(Double::sum).orElse(0.0);
-    }
-
-    public BookingService(BookingRepository bookingRepository) {
-        this.bookingRepository = bookingRepository;
     }
 
     @Override

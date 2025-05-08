@@ -22,6 +22,7 @@ import static com.service.backend.web.services.helper.DateHelper.convertStringTo
 @Repository
 public class AuditLogCustomRepository {
 
+    private static final String TIMESTAMP = "timestamp";
 
     @PersistenceContext
     EntityManager entityManager;
@@ -40,15 +41,15 @@ public class AuditLogCustomRepository {
             predicates.add(builder.equal(auditLog.get("action"), criteria.getAction()));
         if (criteria.getStartDate() != null && criteria.getEndDate() == null) {
             LocalDateTime start = convertStringToStartDateTime(criteria.getStartDate());
-            predicates.add(builder.greaterThanOrEqualTo(auditLog.get("timestamp"), start));
+            predicates.add(builder.greaterThanOrEqualTo(auditLog.get(TIMESTAMP), start));
         } else if (criteria.getEndDate() != null && criteria.getStartDate() == null) {
             LocalDateTime end = convertStringToEndDateTime(criteria.getEndDate());
-            predicates.add(builder.lessThanOrEqualTo(auditLog.get("timestamp"), end));
+            predicates.add(builder.lessThanOrEqualTo(auditLog.get(TIMESTAMP), end));
         } else if (criteria.getEndDate() != null && criteria.getStartDate() != null) {
             LocalDateTime end = convertStringToEndDateTime(criteria.getEndDate());
             LocalDateTime start = convertStringToStartDateTime(criteria.getStartDate());
 
-            predicates.add(builder.between(auditLog.get("timestamp"), end, start));
+            predicates.add(builder.between(auditLog.get(TIMESTAMP), end, start));
         }
 
         criteriaQuery.where(predicates.toArray(predicates.toArray(new Predicate[0])));

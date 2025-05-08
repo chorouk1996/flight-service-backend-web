@@ -6,7 +6,7 @@ import com.service.backend.web.models.requests.CreateBookingRequest;
 import com.service.backend.web.models.requests.SearchBookingRequest;
 import com.service.backend.web.models.responses.CreateBookingResponse;
 import com.service.backend.web.models.responses.SearchBookingResponse;
-import com.service.backend.web.security.UserDetailsImpl;
+import com.service.backend.web.services.helper.SecurityHelper;
 import com.service.backend.web.services.implementation.BookingService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -14,10 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -26,12 +24,11 @@ public class BookingAdminController {
 
     @Autowired
     BookingService bookingService;
-    BookingDto booking = new BookingDto();
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public BookingDto getBooking(@PathVariable Long id) {
-        return booking;
+        return bookingService.getBookingById(id);
     }
 
     @GetMapping("/all")
@@ -43,8 +40,7 @@ public class BookingAdminController {
     @PostMapping()
     @PreAuthorize("hasAuthority('ADMIN')")
     public CreateBookingResponse addBooking(@RequestBody @Valid CreateBookingRequest booking) {
-        UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-         return bookingService.addBooking(booking,user.getUsername());
+         return bookingService.addBooking(booking, SecurityHelper.getUserConnected().getUsername());
     }
 
     @PutMapping()

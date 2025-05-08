@@ -35,9 +35,12 @@ import static com.service.backend.web.services.mapper.UserMapper.mapEntityToCrea
 public class UserService implements IUserService {
 
     private static final String USER_NOT_FOUND = "User Not Found";
+    @Autowired
     UserRepository userRepository;
 
+    @Autowired
     JwtService jwtService;
+    @Autowired
     AuthenticationManager manager;
 
     @Autowired
@@ -148,9 +151,4 @@ public class UserService implements IUserService {
         userRepository.save(user);    }
 
 
-    public UserService(UserRepository userRepository, AuthenticationManager manager, JwtService jwtService) {
-        this.userRepository = userRepository;
-        this.manager = manager;
-        this.jwtService = jwtService;
-    }
 }

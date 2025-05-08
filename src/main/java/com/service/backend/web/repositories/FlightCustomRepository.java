@@ -15,6 +15,7 @@ import java.util.List;
 @Repository
 public class FlightCustomRepository {
 
+    private static final  String PRICE ="price";
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -22,7 +23,7 @@ public class FlightCustomRepository {
 
         CriteriaQuery<Flight> query = buildCriteria(criteria,false);
         List<Flight> flights = entityManager.createQuery(query).getResultList();
-        if (flights.isEmpty() && criteria.getFlexibleDates()) {
+        if (flights.isEmpty() && Boolean.TRUE.equals(criteria.getFlexibleDates())) {
             query = buildCriteria(criteria,true);
             flights = entityManager.createQuery(query).getResultList();
 
@@ -36,16 +37,31 @@ public class FlightCustomRepository {
         CriteriaQuery<Flight> query = cb.createQuery(Flight.class);
         Root<Flight> flight = query.from(Flight.class);
 
+
+        query.where(buildPredicates(cb,flight,criteria,flexibleDates).toArray(new Predicate[0]));
+
+        if (criteria.getSort() != null && criteria.getSort().getSortField() != null && !criteria.getSort().getSortField().equals("duration")) {
+            Path<Object> sortPath = flight.get(criteria.getSort().getSortField());
+            if (criteria.getSort().getSortDirection() == SortDirectionEnum.ASC) {
+                query.orderBy(cb.asc(sortPath));
+            } else {
+                query.orderBy(cb.desc(sortPath));
+            }
+        }
+        return query;
+    }
+
+    private List<Predicate> buildPredicates(CriteriaBuilder cb, Root<Flight> flight, SearchFlightRequest criteria, boolean flexibleDates) {
         List<Predicate> predicates = new ArrayList<>();
 
-        predicates.add(cb.equal(flight.get("origin"), criteria.getDeparture_city()));
-        predicates.add(cb.equal(flight.get("destination"), criteria.getDestination_city()));
+        predicates.add(cb.equal(flight.get("origin"), criteria.getDepartureCity()));
+        predicates.add(cb.equal(flight.get("destination"), criteria.getDestinationCity()));
         if (criteria.getDate() != null) {
             LocalDateTime startOfDay = criteria.getDate().atStartOfDay();
             LocalDateTime endOfDay = criteria.getDate().atTime(23, 59, 59);
             if(flexibleDates){
-                 startOfDay = criteria.getDate().atStartOfDay().minusDays(1);
-                 endOfDay = criteria.getDate().atStartOfDay().plusDays(1);
+                startOfDay = criteria.getDate().atStartOfDay().minusDays(1);
+                endOfDay = criteria.getDate().atStartOfDay().plusDays(1);
             }
             predicates.add(cb.between(flight.get("departureTime"), startOfDay, endOfDay));
         }
@@ -61,24 +77,14 @@ public class FlightCustomRepository {
             predicates.add(cb.equal(flight.get("flightStatus"), criteria.getStatus()));
         }
         if (criteria.getMaxPrice() != null && criteria.getMinPrice() == null) {
-            predicates.add(cb.lessThanOrEqualTo(flight.get("price"), criteria.getMaxPrice()));
+            predicates.add(cb.lessThanOrEqualTo(flight.get(PRICE), criteria.getMaxPrice()));
         }
         if (criteria.getMinPrice() != null && criteria.getMaxPrice() == null) {
-            predicates.add(cb.greaterThanOrEqualTo(flight.get("price"), criteria.getMinPrice()));
+            predicates.add(cb.greaterThanOrEqualTo(flight.get(PRICE), criteria.getMinPrice()));
         }
         if (criteria.getMinPrice() != null && criteria.getMaxPrice() != null) {
-            predicates.add(cb.between(flight.get("price"), criteria.getMinPrice(), criteria.getMaxPrice()));
+            predicates.add(cb.between(flight.get(PRICE), criteria.getMinPrice(), criteria.getMaxPrice()));
         }
-        query.where(predicates.toArray(new Predicate[0]));
-
-        if (criteria.getSort() != null && criteria.getSort().getSortField() != null && !criteria.getSort().getSortField().equals("duration")) {
-            Path<Object> sortPath = flight.get(criteria.getSort().getSortField());
-            if (criteria.getSort().getSortDirection() == SortDirectionEnum.ASC) {
-                query.orderBy(cb.asc(sortPath));
-            } else {
-                query.orderBy(cb.desc(sortPath));
-            }
-        }
-        return query;
+        return predicates;
     }
 }

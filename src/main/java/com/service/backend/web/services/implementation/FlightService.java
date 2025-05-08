@@ -36,6 +36,7 @@ import static com.service.backend.web.services.mapper.FlightMapper.mapFlightEnti
 @Service
 public class FlightService implements IFlightService {
 
+    @Autowired
     FlightRepository flightRepository;
 
     @Autowired
@@ -207,7 +208,4 @@ public class FlightService implements IFlightService {
     }
 
 
-    public FlightService(FlightRepository flightRepository) {
-        this.flightRepository = flightRepository;
-    }
 }

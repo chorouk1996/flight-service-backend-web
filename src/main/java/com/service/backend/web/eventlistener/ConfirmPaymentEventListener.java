@@ -1,4 +1,4 @@
-package com.service.backend.web.eventListener;
+package com.service.backend.web.eventlistener;
 
 import com.service.backend.web.events.ConfirmPaymentEvent;
 import com.service.backend.web.services.interfaces.INotificationService;

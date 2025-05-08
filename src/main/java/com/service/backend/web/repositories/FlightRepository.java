@@ -2,7 +2,6 @@ package com.service.backend.web.repositories;
 
 import com.service.backend.web.models.entities.Flight;
 import com.service.backend.web.models.enumerators.FlightStatusEnum;
-import com.service.backend.web.models.responses.FlightByAirlineResponse;
 import com.service.backend.web.models.responses.IFlightByAirlineResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

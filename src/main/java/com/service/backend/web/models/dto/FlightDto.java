@@ -1,12 +1,8 @@
 package com.service.backend.web.models.dto;
 
 
-import com.service.backend.web.models.entities.Booking;
 import com.service.backend.web.models.enumerators.FlightStatusEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
+
 
 import java.time.LocalDateTime;
 import java.util.List;

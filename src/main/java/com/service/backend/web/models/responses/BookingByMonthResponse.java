@@ -2,11 +2,11 @@ package com.service.backend.web.models.responses;
 
 public class BookingByMonthResponse {
 
-    public String month;
+    private String month;
 
-    public long bookingCount;
+    private long bookingCount;
 
-    public double revenue;
+    private double revenue;
 
     public BookingByMonthResponse(IBookingByMonthResponse res) {
         this.month = res.getMonth();

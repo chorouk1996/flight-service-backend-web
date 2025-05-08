@@ -1,6 +1,5 @@
 package com.service.backend.web.models.responses;
 
-import jakarta.persistence.Column;
 
 public class CreateUserResponse {
 

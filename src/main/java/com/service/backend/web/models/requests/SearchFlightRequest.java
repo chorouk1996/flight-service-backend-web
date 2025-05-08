@@ -41,21 +41,6 @@ public class SearchFlightRequest {
 
     private Boolean flexibleDates;
 
-    public String getDeparture_city() {
-        return departureCity;
-    }
-
-    public void setDeparture_city(String departure_city) {
-        this.departureCity = departure_city;
-    }
-
-    public String getDestination_city() {
-        return destinationCity;
-    }
-
-    public void setDestination_city(String destination_city) {
-        this.destinationCity = destination_city;
-    }
 
     public LocalDate getDate() {
         return date;

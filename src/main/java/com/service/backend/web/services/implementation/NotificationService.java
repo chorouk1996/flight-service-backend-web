@@ -39,16 +39,7 @@ public class NotificationService implements INotificationService {
     @Autowired
     IUserService userService;
 
-    @Override
-    public void sendDelayNotificationToAllUsers(DelayFlightEvent event, List<UserDto> users) {
-
-        FlightDto flight = flightService.getFlight(event.getFlightId());
-        users.forEach(
-                user -> {
-                    NotificationDto notification = new NotificationDto();
-                    notification.setCreatedAt(LocalDateTime.now());
-                    notification.setFlight(flight);
-                    notification.setMessage(String.format("""
+    private static final String MESSAGE = """
                             Dear Passenger,
                                             
                                             
@@ -61,7 +52,17 @@ public class NotificationService implements INotificationService {
                             Our teams are doing their best to minimize the delay and keep you updated.
                                             
                                             
-                            Thank you for your understanding.""", flight.getFlightNumber(), event.getReason())
+                            Thank you for your understanding.""";
+    @Override
+    public void sendDelayNotificationToAllUsers(DelayFlightEvent event, List<UserDto> users) {
+
+        FlightDto flight = flightService.getFlight(event.getFlightId());
+        users.forEach(
+                user -> {
+                    NotificationDto notification = new NotificationDto();
+                    notification.setCreatedAt(LocalDateTime.now());
+                    notification.setFlight(flight);
+                    notification.setMessage(String.format(MESSAGE, flight.getFlightNumber(), event.getReason())
                     );
                     notification.setTitle("Flight " + flight.getFlightNumber() + " - Schedule Update");
                     notification.setUser(user);

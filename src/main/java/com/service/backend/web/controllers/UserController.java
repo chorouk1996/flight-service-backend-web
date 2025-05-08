@@ -20,19 +20,6 @@ public class UserController {
     private IUserService userService;
 
 
-    @GetMapping("/all")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public List<CreateUserResponse> getAllUser() {
-        return userService.getAllUsers();
-    }
-
-    @PostMapping()
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public CreateUserResponse addUser(@RequestBody @Valid CreateUserRequest user) {
-        return userService.addUser(user);
-    }
-
-
     @PutMapping("/updatePassword")
     public void updatePassword(@RequestBody @Valid PasswordUpdateRequest user) {
          userService.updatePassword(user);

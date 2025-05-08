@@ -1,6 +1,5 @@
 package com.service.backend.web.repositories;
 
-import com.service.backend.web.models.entities.Passenger;
 import com.service.backend.web.models.entities.SavedPassenger;
 import com.service.backend.web.models.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;

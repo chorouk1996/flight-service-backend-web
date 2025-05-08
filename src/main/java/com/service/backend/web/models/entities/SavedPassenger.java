@@ -2,7 +2,6 @@ package com.service.backend.web.models.entities;
 
 import jakarta.persistence.*;
 
-import java.util.List;
 
 @Entity
 public class SavedPassenger {
