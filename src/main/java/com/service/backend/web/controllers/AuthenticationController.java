@@ -37,8 +37,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/reset-password")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+    public ResetTokenResponse resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
         userService.resetPassword(resetPasswordRequest);
+        return new ResetTokenResponse("If an active account with this email exists, the password will be changed.");
+
     }
 }

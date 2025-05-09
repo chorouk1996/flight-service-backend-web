@@ -9,7 +9,7 @@ public class ResetPasswordRequest {
     private String token;
 
     @NotBlank(message = "newPassword should not be empty")
-    @Pattern(regexp = "^(?=.*[@#$%!])(?=.*[a-z])(?=.*[A-Z])(?=.*d)[a-zA-Z0-9@#$%!]{8,}$")
+    @Pattern(regexp = "^(?=.*[@#$%!])(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z0-9@#$%!]{8,}$")
     private String newPassword;
 
 

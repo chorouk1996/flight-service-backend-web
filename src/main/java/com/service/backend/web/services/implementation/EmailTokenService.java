@@ -37,13 +37,16 @@ public class EmailTokenService implements IEmailTokenService {
                     throw new FunctionalException(new FunctionalExceptionDto("Your token is not valid", HttpStatus.NOT_FOUND));
                 }
         );
-        token.setUsed(Boolean.FALSE);
-        emailTokenRepository.save(token);
         return token;
     }
 
     @Override
+    public void setTokenUsed(EmailToken emailToken) {
+        emailToken.setUsed(Boolean.TRUE);
+        emailTokenRepository.save(emailToken);
+    }
+    @Override
     public void deleteExpiredUnusedTokens() {
-        emailTokenRepository.deleteByUsedAndExpireAtAfterAndType(Boolean.FALSE, LocalDateTime.now(), TypeTokenEnum.RESET_TOKEN);
+        emailTokenRepository.deleteByUsedAndExpireAtBeforeAndType(Boolean.FALSE, LocalDateTime.now(), TypeTokenEnum.RESET_TOKEN);
     }
 }

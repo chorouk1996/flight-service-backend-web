@@ -14,4 +14,5 @@ public interface IEmailTokenService {
 
     void deleteExpiredUnusedTokens();
 
+    void setTokenUsed(EmailToken emailToken);
 }

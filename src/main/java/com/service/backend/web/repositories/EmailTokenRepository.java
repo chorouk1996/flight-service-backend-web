@@ -11,5 +11,5 @@ public interface EmailTokenRepository extends JpaRepository<EmailToken, Long> {
 
     Optional<EmailToken> findByTokenAndUsedAndExpireAtAfterAndType(String token, boolean used, LocalDateTime time, TypeTokenEnum type);
 
-    void deleteByUsedAndExpireAtAfterAndType(boolean used, LocalDateTime time, TypeTokenEnum type);
+    void deleteByUsedAndExpireAtBeforeAndType(boolean used, LocalDateTime time, TypeTokenEnum type);
 }

@@ -4,6 +4,7 @@ import com.service.backend.web.constantes.ErrorMessages;
 import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import com.service.backend.web.models.dto.EmailTokenDto;
+import com.service.backend.web.models.entities.EmailToken;
 import com.service.backend.web.models.entities.User;
 import com.service.backend.web.models.enumerators.TypeTokenEnum;
 import com.service.backend.web.models.requests.*;
@@ -123,8 +124,13 @@ public class UserService implements IUserService {
 
     @Override
     public void resetPassword(ResetPasswordRequest request) {
-        User user = getUserByEmail(emailTokenService.isResetTokenValid(request).getEmail());
-        updatePasswordAfterReset(request, user);
+        EmailToken token = emailTokenService.isResetTokenValid(request);
+        Optional<User> opUser = userRepository.findByEmailAndActive(token.getEmail(),Boolean.TRUE);
+        if (opUser.isPresent()) {
+            User user = opUser.get();
+            updatePasswordAfterReset(request, user);
+            emailTokenService.setTokenUsed(token);
+        }
     }
 
     @Override
@@ -159,6 +165,7 @@ public class UserService implements IUserService {
         });
 
     }
+
 
     @Override
     public User isUserExistAndActive(String email) {
