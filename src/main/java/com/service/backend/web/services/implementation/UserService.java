@@ -13,6 +13,7 @@ import com.service.backend.web.models.responses.CreateUserResponse;
 import com.service.backend.web.models.responses.UserPaginationResponse;
 import com.service.backend.web.repositories.UserRepository;
 import com.service.backend.web.security.UserDetailsImpl;
+import com.service.backend.web.services.interfaces.IRefreshTokenService;
 import com.service.backend.web.services.interfaces.IUserService;
 import com.service.backend.web.services.mapper.UserMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,6 +54,9 @@ public class UserService implements IUserService {
     @Autowired
     EmailTokenService emailTokenService;
 
+    @Autowired
+    IRefreshTokenService refreshTokenService;
+
     @Override
     public CreateUserResponse addUser(CreateUserRequest user) {
 
@@ -86,9 +90,10 @@ public class UserService implements IUserService {
     public String authenticate(AuthentUserRequest user) {
         Authentication auth = manager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         try {
-
             if (auth.isAuthenticated()) {
-                return jwtService.generateToken(user.getEmail());
+                String token = jwtService.generateToken((user.getEmail()));
+                refreshTokenService.saveRefreshToken(token, getUserByEmail(user.getEmail()));
+                return token;
             }
         } catch (BadCredentialsException badCredentialsException) {
             return "Bad Credentials";
@@ -98,8 +103,14 @@ public class UserService implements IUserService {
 
     @Override
     public String refreshToken(AuthenticationResponse authenticationRequest) {
-
-        return jwtService.refreshToken(authenticationRequest.getToken());
+        User user = getUserByEmail(jwtService.extractUsername(authenticationRequest.getToken()));
+        if (refreshTokenService.isTokenNotValid(authenticationRequest.getToken())) {
+            refreshTokenService.disableAllTokens(user);
+            throw new FunctionalException(new FunctionalExceptionDto("You need to login to generate a new token",HttpStatus.UNAUTHORIZED));
+        }
+        String token = jwtService.refreshToken(authenticationRequest.getToken());
+        refreshTokenService.saveRefreshToken(token, user);
+        return token;
     }
 
     @Override
@@ -125,12 +136,14 @@ public class UserService implements IUserService {
     @Override
     public void resetPassword(ResetPasswordRequest request) {
         EmailToken token = emailTokenService.isResetTokenValid(request);
-        Optional<User> opUser = userRepository.findByEmailAndActive(token.getEmail(),Boolean.TRUE);
+        Optional<User> opUser = userRepository.findByEmailAndEnabled(token.getEmail(), Boolean.TRUE);
         if (opUser.isPresent()) {
             User user = opUser.get();
             updatePasswordAfterReset(request, user);
             emailTokenService.setTokenUsed(token);
+            refreshTokenService.disableAllTokens(user);
         }
+
     }
 
     @Override
@@ -169,7 +182,7 @@ public class UserService implements IUserService {
 
     @Override
     public User isUserExistAndActive(String email) {
-        return userRepository.findByEmailAndActive(email, true).orElseThrow(() -> {
+        return userRepository.findByEmailAndEnabled(email, true).orElseThrow(() -> {
             throw new FunctionalException(new FunctionalExceptionDto(ErrorMessages.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED));
         });
     }
@@ -188,6 +201,7 @@ public class UserService implements IUserService {
         User user = getUserById(userId);
         user.setEnabled(false);
         userRepository.save(user);
+        refreshTokenService.disableAllTokens(user);
     }
 
     @Override

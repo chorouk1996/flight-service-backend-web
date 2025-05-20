@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,11 +22,13 @@ public class FlightController {
 
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<FlightDto> getFlight(@PathVariable Long id) {
         return new ResponseEntity<>(flightService.getFlight(id), HttpStatus.OK);
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<List<FlightDto>> getAllFlight() {
         return new ResponseEntity<>(flightService.getAllFlight(), HttpStatus.OK);
     }
@@ -33,6 +36,7 @@ public class FlightController {
 
 
     @PostMapping("/search")
+    @PreAuthorize("hasAuthority('USER')")
     public List<FlightDto> searchFlight(@RequestBody @Valid SearchFlightRequest searchCriteria) {
         return flightService.userSearchFlight(searchCriteria);
     }

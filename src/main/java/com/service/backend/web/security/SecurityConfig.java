@@ -29,17 +29,33 @@ public class SecurityConfig {
 
     @Autowired
     ExceptionHandlerFilter exceptionHandlerFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 //.httpBasic(Customizer.withDefaults())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**","/flight/search").permitAll()
+                .headers(httpSecurityHeadersConfigurer -> {
+                            httpSecurityHeadersConfigurer
+                                    .contentSecurityPolicy(contentSecurityPolicyConfig ->
+                                            contentSecurityPolicyConfig.policyDirectives(
+                                                    "default-src 'self'"
+                                            )
+                                    );
+                            httpSecurityHeadersConfigurer.frameOptions(frameOptionsConfig ->
+                                    frameOptionsConfig.deny()
+                            );
+                        }
+
+                )
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/flight/search").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+
+
     }
 
 

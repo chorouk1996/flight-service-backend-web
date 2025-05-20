@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.security.SignatureException;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
@@ -107,6 +108,18 @@ public class GlobalExceptionHandler {
         return exception.getFunctionalExceptionDto();
     }
 
+    @ExceptionHandler(exception = SignatureException.class)
+    @ResponseBody
+    public FunctionalExceptionDto signatureException(HttpServletResponse response, HttpServletRequest request){
+        FunctionalExceptionDto ex = new FunctionalExceptionDto();
+        ex.setMessage("Invalid token");
+        ex.setPath(request.getRequestURI());
+        ex.setStatus(HttpStatus.UNAUTHORIZED);
+        response.setStatus(ex.getStatus().value());
+        ex.setTimestamp(LocalDateTime.now());
+        ex.setError("Invalid token");
+        return ex;
+    }
     @ExceptionHandler(exception = Exception.class)
     @ResponseBody
     public FunctionalExceptionDto globalException(HttpServletResponse response, HttpServletRequest request, Exception exception){

@@ -3,6 +3,7 @@ package com.service.backend.web.filters;
 import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.security.UserDetailsServiceImpl;
 import com.service.backend.web.services.implementation.JwtService;
+import com.service.backend.web.services.interfaces.IRefreshTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
     JwtService jwtService;
+
+    @Autowired
+    IRefreshTokenService refreshTokenService;
 
     @Autowired
     UserDetailsServiceImpl userDetailsImpl;
