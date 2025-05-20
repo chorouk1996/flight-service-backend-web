@@ -2,16 +2,16 @@ package com.service.backend.web.scheduled;
 
 
 import com.service.backend.web.services.implementation.BookingService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 
 @Component
+@AllArgsConstructor
 public class CheckPendingPayments {
 
-    @Autowired
-    BookingService bookingService;
+    private final BookingService bookingService;
     @Scheduled(cron = "0 * * * * *")
     public  void checkPendingPayments(){
 

@@ -2,10 +2,14 @@ package com.service.backend.web.models.dto;
 
 
 import com.service.backend.web.models.enumerators.BookingStatusEnum;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Setter
+@Getter
 public class BookingDto {
     private Long id;
 
@@ -17,54 +21,8 @@ public class BookingDto {
 
     private BookingStatusEnum status;
 
-    private List<PassengerDto> passengerDtos;
+    private List<PassengerDto> passengers;
 
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UserDto getUser() {
-        return user;
-    }
-
-    public void setUser(UserDto user) {
-        this.user = user;
-    }
-
-    public FlightDto getFlight() {
-        return flight;
-    }
-
-    public void setFlight(FlightDto flight) {
-        this.flight = flight;
-    }
-
-    public LocalDateTime getBookingDate() {
-        return bookingDate;
-    }
-
-    public void setBookingDate(LocalDateTime bookingDate) {
-        this.bookingDate = bookingDate;
-    }
-
-    public BookingStatusEnum getStatus() {
-        return status;
-    }
-
-    public void setStatus(BookingStatusEnum status) {
-        this.status = status;
-    }
-
-    public List<PassengerDto> getPassengers() {
-        return passengerDtos;
-    }
-
-    public void setPassengers(List<PassengerDto> passengerDtos) {
-        this.passengerDtos = passengerDtos;
-    }
 }

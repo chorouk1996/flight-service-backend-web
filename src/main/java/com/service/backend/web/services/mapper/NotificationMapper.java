@@ -17,7 +17,7 @@ public  class NotificationMapper {
         notification.setFlight(FlightMapper.mapFlightDtoToEntity(dto.getFlight()));
         notification.setCreatedAt(dto.getCreatedAt());
         notification.setUser(UserMapper.mapUserDtoToEntity(dto.getUser()));
-        notification.setRead(dto.getRead());
+        notification.setIsRead(dto.getIsRead());
         notification.setType(dto.getType());
         notification.setMessage(dto.getMessage());
         notification.setTitle(dto.getTitle());
@@ -30,7 +30,7 @@ public  class NotificationMapper {
         dto.setFlight(FlightMapper.mapFlightEntityToDto(entity.getFlight()));
         dto.setCreatedAt(entity.getCreatedAt());
         dto.setUser(UserMapper.mapUserEntityToDto(entity.getUser()));
-        dto.setRead(entity.getRead());
+        dto.setIsRead(entity.getIsRead());
         dto.setType(entity.getType());
         dto.setMessage(entity.getMessage());
         dto.setTitle(entity.getTitle());
@@ -41,7 +41,7 @@ public  class NotificationMapper {
         NotificationResponse dto = new NotificationResponse();
         dto.setId(entity.getId());
         dto.setCreatedAt(entity.getCreatedAt());
-        dto.setRead(entity.getRead());
+        dto.setIsRead(entity.getIsRead());
         dto.setType(entity.getType());
         dto.setMessage(entity.getMessage());
         dto.setTitle(entity.getTitle());

@@ -2,9 +2,12 @@ package com.service.backend.web.models.dto;
 
 
 import com.service.backend.web.models.entities.User;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
 
+@Setter
+@Getter
 public class RefreshTokenDto {
 
 
@@ -21,51 +24,5 @@ public class RefreshTokenDto {
 
     private Boolean expired;
 
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getHashToken() {
-        return hashToken;
-    }
-
-    public void setHashToken(String hashToken) {
-        this.hashToken = hashToken;
-    }
-
-    public long getCreatedAT() {
-        return createdAT;
-    }
-
-    public void setCreatedAT(long createdAT) {
-        this.createdAT = createdAT;
-    }
-
-    public long getExpiredAT() {
-        return expiredAT;
-    }
-
-    public void setExpiredAT(long expiredAT) {
-        this.expiredAT = expiredAT;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Boolean getExpired() {
-        return expired;
-    }
-
-    public void setExpired(Boolean expired) {
-        this.expired = expired;
-    }
 }

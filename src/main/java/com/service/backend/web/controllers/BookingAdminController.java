@@ -7,10 +7,10 @@ import com.service.backend.web.models.requests.SearchBookingRequest;
 import com.service.backend.web.models.responses.CreateBookingResponse;
 import com.service.backend.web.models.responses.SearchBookingResponse;
 import com.service.backend.web.services.helper.SecurityHelper;
-import com.service.backend.web.services.implementation.BookingService;
+import com.service.backend.web.services.interfaces.IBookingService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,10 +20,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/booking")
+@AllArgsConstructor
 public class BookingAdminController {
 
-    @Autowired
-    BookingService bookingService;
+    private final IBookingService bookingService;
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")

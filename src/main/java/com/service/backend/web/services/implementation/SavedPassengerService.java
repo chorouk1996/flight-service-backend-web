@@ -10,6 +10,7 @@ import com.service.backend.web.repositories.SavedPassengerRepository;
 import com.service.backend.web.services.helper.UtilHelper;
 import com.service.backend.web.services.interfaces.ISavedPassengerService;
 import com.service.backend.web.services.mapper.SavedPassengerMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,10 @@ import static com.service.backend.web.services.mapper.SavedPassengerMapper.mapCr
 import static com.service.backend.web.services.mapper.SavedPassengerMapper.mapSavedPassengerEntityToDto;
 
 @Service
+@AllArgsConstructor
 public class SavedPassengerService implements ISavedPassengerService {
 
-    @Autowired
-    SavedPassengerRepository savedPassengerRepository;
+    private final SavedPassengerRepository savedPassengerRepository;
 
     @Autowired UserService userService;
     @Override

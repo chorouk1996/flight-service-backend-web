@@ -17,6 +17,7 @@ import com.service.backend.web.services.interfaces.IFlightService;
 import com.service.backend.web.services.interfaces.INotificationService;
 import com.service.backend.web.services.interfaces.IUserService;
 import com.service.backend.web.services.mapper.NotificationMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,19 +26,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class NotificationService implements INotificationService {
 
-    @Autowired
-    NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
 
-    @Autowired
-    IFlightService flightService;
+    private final IFlightService flightService;
 
-    @Autowired
-    IBookingService bookingService;
+    private final IBookingService bookingService;
 
-    @Autowired
-    IUserService userService;
+    private final IUserService userService;
 
     private static final String MESSAGE = """
                             Dear Passenger,
@@ -66,7 +64,7 @@ public class NotificationService implements INotificationService {
                     );
                     notification.setTitle("Flight " + flight.getFlightNumber() + " - Schedule Update");
                     notification.setUser(user);
-                    notification.setRead(false);
+                    notification.setIsRead(false);
                     notification.setType(NotificationTypeEnum.INFO);
                     notificationRepository.save(NotificationMapper.mapNotificationDtoToEntity(notification));
                 }
@@ -88,7 +86,7 @@ public class NotificationService implements INotificationService {
                 }
 
         );
-        notification.setRead(true);
+        notification.setIsRead(true);
         notificationRepository.save(notification);
     }
 
@@ -114,7 +112,7 @@ public class NotificationService implements INotificationService {
         );
         notification.setTitle(String.format("Confirmation: Your Flight %s Booking is Successful", booking.getFlight().getFlightNumber()));
         notification.setUser(booking.getUser());
-        notification.setRead(false);
+        notification.setIsRead(false);
         notification.setType(NotificationTypeEnum.INFO);
         notificationRepository.save(NotificationMapper.mapNotificationDtoToEntity(notification));
     }

@@ -48,7 +48,7 @@ public interface IBookingService {
 
     List<SearchBookingResponse> searchBooking(SearchBookingRequest request);
 
-    public void exportAllBookingto(HttpServletResponse response) throws IOException;
+     void exportAllBookingto(HttpServletResponse response);
 
     List<BookingByMonthResponse> getBookingsByMonth();
 }

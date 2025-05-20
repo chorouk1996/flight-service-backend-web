@@ -5,18 +5,18 @@ import com.service.backend.web.models.dto.BookingDto;
 import com.service.backend.web.models.responses.PaymentResponse;
 import com.service.backend.web.services.interfaces.IBookingService;
 import com.service.backend.web.services.interfaces.IPaymentService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class PaymentService implements IPaymentService {
 
-    @Autowired
-    IBookingService bookingService;
+    private final IBookingService bookingService;
 
-    @Autowired
-    ApplicationEventPublisher applicationEventPublisher;
+    private final ApplicationEventPublisher applicationEventPublisher;
     @Override
     public PaymentResponse pay(Long id, String username) {
 

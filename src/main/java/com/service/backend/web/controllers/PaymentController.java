@@ -4,6 +4,7 @@ package com.service.backend.web.controllers;
 import com.service.backend.web.models.responses.PaymentResponse;
 import com.service.backend.web.services.helper.SecurityHelper;
 import com.service.backend.web.services.interfaces.IPaymentService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user/bookings")
+@AllArgsConstructor
 public class PaymentController {
 
 
-    @Autowired
-    IPaymentService paymentService;
+    private final IPaymentService paymentService;
 
     @PutMapping("{bookingId}/pay")
     @PreAuthorize("hasAuthority('USER')")

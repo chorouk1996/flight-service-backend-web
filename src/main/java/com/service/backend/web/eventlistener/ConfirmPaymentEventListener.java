@@ -2,16 +2,16 @@ package com.service.backend.web.eventlistener;
 
 import com.service.backend.web.events.ConfirmPaymentEvent;
 import com.service.backend.web.services.interfaces.INotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 
 @Component
+@AllArgsConstructor
 public class ConfirmPaymentEventListener {
 
-    @Autowired
-    INotificationService notificationService;
+    private final INotificationService notificationService;
 
     @EventListener
     public void confirmPayment(ConfirmPaymentEvent event) {

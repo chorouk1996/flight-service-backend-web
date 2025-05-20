@@ -2,9 +2,13 @@ package com.service.backend.web.models.entities;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
+@Setter
+@Getter
 public class RefreshToken {
 
     @Id
@@ -27,51 +31,5 @@ public class RefreshToken {
     @Column
     private Boolean expired;
 
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getHashToken() {
-        return hashToken;
-    }
-
-    public void setHashToken(String hashToken) {
-        this.hashToken = hashToken;
-    }
-
-    public long getCreatedAT() {
-        return createdAT;
-    }
-
-    public void setCreatedAT(long createdAT) {
-        this.createdAT = createdAT;
-    }
-
-    public long getExpiredAT() {
-        return expiredAT;
-    }
-
-    public void setExpiredAT(long expiredAT) {
-        this.expiredAT = expiredAT;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Boolean getExpired() {
-        return expired;
-    }
-
-    public void setExpired(Boolean expired) {
-        this.expired = expired;
-    }
 }

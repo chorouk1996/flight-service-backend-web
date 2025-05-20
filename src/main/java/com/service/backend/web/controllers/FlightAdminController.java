@@ -8,7 +8,9 @@ import com.service.backend.web.models.requests.UpdateFlightRequest;
 import com.service.backend.web.models.requests.UpdateFlightStatusRequest;
 import com.service.backend.web.models.responses.CreateFlightResponse;
 import com.service.backend.web.services.implementation.FlightService;
+import com.service.backend.web.services.interfaces.IFlightService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +19,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/flight")
+@AllArgsConstructor
 public class FlightAdminController {
 
-    @Autowired
-    FlightService flightService;
+    IFlightService flightService;
 
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")

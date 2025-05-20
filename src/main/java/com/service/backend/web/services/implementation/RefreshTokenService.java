@@ -6,6 +6,7 @@ import com.service.backend.web.models.entities.User;
 import com.service.backend.web.repositories.RefreshTokenRepository;
 import com.service.backend.web.services.interfaces.IRefreshTokenService;
 import com.service.backend.web.services.mapper.RefreshTokenMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,10 @@ import java.util.Optional;
 
 
 @Service
+@AllArgsConstructor
 public class RefreshTokenService implements IRefreshTokenService {
 
-    @Autowired
-    RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     @Override

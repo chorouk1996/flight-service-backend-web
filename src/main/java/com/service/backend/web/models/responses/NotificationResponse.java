@@ -2,9 +2,13 @@ package com.service.backend.web.models.responses;
 
 
 import com.service.backend.web.models.enumerators.NotificationTypeEnum;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Setter
+@Getter
 public class NotificationResponse {
 
     private Long id;
@@ -17,52 +21,5 @@ public class NotificationResponse {
     private NotificationTypeEnum type;
 
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Boolean getRead() {
-        return isRead;
-    }
-
-    public void setRead(Boolean read) {
-        isRead = read;
-    }
-
-    public NotificationTypeEnum getType() {
-        return type;
-    }
-
-    public void setType(NotificationTypeEnum type) {
-        this.type = type;
-    }
 }

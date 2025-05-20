@@ -25,6 +25,7 @@ import com.service.backend.web.services.mapper.FlightMapper;
 import com.service.backend.web.services.mapper.PassengerMapper;
 import com.service.backend.web.services.mapper.UserMapper;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,28 +42,23 @@ import java.util.List;
 import static com.service.backend.web.services.mapper.PassengerMapper.mapSavedPassengerToPassenger;
 
 @Service
+@AllArgsConstructor
 public class BookingService implements IBookingService {
 
     private static final String ALREADY_CANCELED_BOOKING = "This booking does not exist or has already been cancelled";
 
-    @Autowired
-    BookingRepository bookingRepository;
+    private final BookingRepository bookingRepository;
 
-    @Autowired
-    ISavedPassengerService savedPassengerService;
+    private final ISavedPassengerService savedPassengerService;
 
 
-    @Autowired
-    FlightService flightService;
+    private final FlightService flightService;
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    BookingCustomRepository bookingCustomRepository;
+    private final BookingCustomRepository bookingCustomRepository;
 
-    @Autowired
-    IAuditLogService auditLogService;
+    private final IAuditLogService auditLogService;
 
     @Override
     public CreateBookingResponse addBooking(CreateBookingRequest booking, String username) {

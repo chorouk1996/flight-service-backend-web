@@ -21,17 +21,13 @@ import java.util.List;
 public class TestCommandLineRunner implements CommandLineRunner {
 
 
-  /*@Autowired
-    private  IUserService userService ;
+  /*private final private  IUserService userService ;
 
-    @Autowired
-    private  IFlightService flightService;
+    private final private  IFlightService flightService;
 
-    @Autowired
-    private  IPassengerService passService;
+    private final private  IPassengerService passService;
 
-    @Autowired
-    private  IBookingService bookingService;
+    private final private  IBookingService bookingService;
 */
     @Override
     public void run(String... args) throws Exception {

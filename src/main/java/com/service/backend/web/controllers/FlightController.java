@@ -3,9 +3,9 @@ package com.service.backend.web.controllers;
 
 import com.service.backend.web.models.dto.FlightDto;
 import com.service.backend.web.models.requests.SearchFlightRequest;
-import com.service.backend.web.services.implementation.FlightService;
+import com.service.backend.web.services.interfaces.IFlightService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,10 +15,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/flight")
+@AllArgsConstructor
 public class FlightController {
 
-    @Autowired
-    FlightService flightService;
+    private final IFlightService flightService;
 
 
     @GetMapping("/{id}")

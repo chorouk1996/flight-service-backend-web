@@ -9,6 +9,7 @@ import com.service.backend.web.models.requests.ResetPasswordRequest;
 import com.service.backend.web.repositories.EmailTokenRepository;
 import com.service.backend.web.services.interfaces.IEmailTokenService;
 import com.service.backend.web.services.mapper.EmailTokenMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class EmailTokenService implements IEmailTokenService {
 
-    @Autowired
-    EmailTokenRepository emailTokenRepository;
+    private final EmailTokenRepository emailTokenRepository;
 
 
     @Override

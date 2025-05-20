@@ -6,9 +6,9 @@ import com.service.backend.web.models.requests.CreateBookingRequest;
 import com.service.backend.web.models.responses.CreateBookingResponse;
 import com.service.backend.web.models.responses.MyBookingResponse;
 import com.service.backend.web.services.helper.SecurityHelper;
-import com.service.backend.web.services.implementation.BookingService;
+import com.service.backend.web.services.interfaces.IBookingService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,10 +18,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/booking")
+@AllArgsConstructor
 public class BookingController {
 
-    @Autowired
-    BookingService bookingService;
+    private final IBookingService bookingService;
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('USER')")

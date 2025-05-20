@@ -7,7 +7,7 @@ import com.service.backend.web.models.requests.UpdateSavedPassengerRequest;
 import com.service.backend.web.services.helper.SecurityHelper;
 import com.service.backend.web.services.interfaces.ISavedPassengerService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +16,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user/passengers")
+@AllArgsConstructor
 public class PassengerController {
 
-    @Autowired
-    ISavedPassengerService passengerService;
+    private final ISavedPassengerService passengerService;
 
 
     @PostMapping()
@@ -36,25 +36,24 @@ public class PassengerController {
     }
 
 
-
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('USER')")
     public SavedPassengerDto getSavedPassenger(@PathVariable(required = true) Long id) {
-        return passengerService.getSavedPassengerById(SecurityHelper.getUserConnected().getUsername(),id);
+        return passengerService.getSavedPassengerById(SecurityHelper.getUserConnected().getUsername(), id);
     }
 
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('USER')")
     public SavedPassengerDto updateSavedPassenger(@PathVariable(required = true) Long id, @RequestBody @Valid UpdateSavedPassengerRequest passenger) {
-        return passengerService.updateSavedPassengerByUser(SecurityHelper.getUserConnected().getUsername(),passenger,id);
+        return passengerService.updateSavedPassengerByUser(SecurityHelper.getUserConnected().getUsername(), passenger, id);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('USER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSavedPassenger(@PathVariable(required = true) Long id) {
-         passengerService.deleteSavedPassengerByUser(SecurityHelper.getUserConnected().getUsername(),id);
+        passengerService.deleteSavedPassengerByUser(SecurityHelper.getUserConnected().getUsername(), id);
     }
 }
 

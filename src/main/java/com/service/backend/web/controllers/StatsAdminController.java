@@ -6,6 +6,7 @@ import com.service.backend.web.models.responses.BookingByMonthResponse;
 import com.service.backend.web.models.responses.FlightByAirlineResponse;
 import com.service.backend.web.services.interfaces.IBookingService;
 import com.service.backend.web.services.interfaces.IFlightService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/stats")
+@AllArgsConstructor
 public class StatsAdminController {
 
-    @Autowired
-    IFlightService flightService;
+    private final IFlightService flightService;
 
-    @Autowired
-    IBookingService bookingService;
+    private final IBookingService bookingService;
     @GetMapping("/flights-by-airline")
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<FlightByAirlineResponse> getFlightsByAirline() {

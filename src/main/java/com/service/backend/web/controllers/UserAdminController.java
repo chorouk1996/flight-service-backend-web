@@ -6,6 +6,7 @@ import com.service.backend.web.models.responses.CreateUserResponse;
 import com.service.backend.web.models.responses.UserPaginationResponse;
 import com.service.backend.web.services.interfaces.IUserService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +15,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/users")
+@AllArgsConstructor
 public class UserAdminController {
 
-    @Autowired
-    private IUserService userService;
+
+    private final IUserService userService;
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")

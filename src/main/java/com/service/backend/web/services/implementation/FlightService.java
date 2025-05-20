@@ -18,6 +18,7 @@ import com.service.backend.web.repositories.FlightRepository;
 import com.service.backend.web.services.helper.FlightHelper;
 import com.service.backend.web.services.interfaces.IFlightService;
 import com.service.backend.web.services.mapper.FlightMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -34,16 +35,14 @@ import static com.service.backend.web.services.mapper.FlightMapper.mapCreateFlig
 import static com.service.backend.web.services.mapper.FlightMapper.mapFlightEntityToCreateFlightResponse;
 
 @Service
+@AllArgsConstructor
 public class FlightService implements IFlightService {
 
-    @Autowired
-    FlightRepository flightRepository;
+    private final FlightRepository flightRepository;
 
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
+    private final  ApplicationEventPublisher eventPublisher;
 
-    @Autowired
-    FlightCustomRepository flightCustomRepository;
+    private final FlightCustomRepository flightCustomRepository;
 
     @Override
     public CreateFlightResponse addFlight(CreateFlightRequest flight) {

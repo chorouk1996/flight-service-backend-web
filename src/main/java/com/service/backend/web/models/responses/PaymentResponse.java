@@ -1,18 +1,15 @@
 package com.service.backend.web.models.responses;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor
 public class PaymentResponse {
 
     String message;
 
-    public String getMessage() {
-        return message;
-    }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public PaymentResponse(String message) {
-        this.message = message;
-    }
 }

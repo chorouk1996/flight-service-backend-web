@@ -2,11 +2,15 @@ package com.service.backend.web.models.entities;
 
 import com.service.backend.web.models.enumerators.BookingStatusEnum;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Setter
+@Getter
 public class Booking {
     @Id
     @GeneratedValue
@@ -32,52 +36,4 @@ public class Booking {
     private List<Passenger> passengers;
 
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Flight getFlight() {
-        return flight;
-    }
-
-    public void setFlight(Flight flight) {
-        this.flight = flight;
-    }
-
-    public LocalDateTime getBookingDate() {
-        return bookingDate;
-    }
-
-    public void setBookingDate(LocalDateTime bookingDate) {
-        this.bookingDate = bookingDate;
-    }
-
-    public BookingStatusEnum getStatus() {
-        return status;
-    }
-
-    public void setStatus(BookingStatusEnum status) {
-        this.status = status;
-    }
-
-    public List<Passenger> getPassengers() {
-        return passengers;
-    }
-
-    public void setPassengers(List<Passenger> passengers) {
-        this.passengers = passengers;
-    }
 }

@@ -5,6 +5,7 @@ import com.service.backend.web.models.dto.UserDto;
 import com.service.backend.web.services.interfaces.IBookingService;
 import com.service.backend.web.services.interfaces.INotificationService;
 import com.service.backend.web.services.interfaces.IPassengerService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -12,15 +13,13 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
+@AllArgsConstructor
 public class DelayFlightEventListener {
 
-    @Autowired
-    INotificationService notificationService;
-    @Autowired
-    IBookingService bookingService;
+    private final INotificationService notificationService;
+    private final IBookingService bookingService;
 
-    @Autowired
-    IPassengerService passengerService;
+    private final IPassengerService passengerService;
 
 
     @EventListener

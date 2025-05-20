@@ -1,5 +1,14 @@
 package com.service.backend.web.models.responses;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BookingByMonthResponse {
 
     private String month;
@@ -12,29 +21,5 @@ public class BookingByMonthResponse {
         this.month = res.getMonth();
         this.bookingCount = res.getBookingCount();
         this.revenue = res.getRevenue();
-    }
-
-    public String getMonth() {
-        return month;
-    }
-
-    public void setMonth(String month) {
-        this.month = month;
-    }
-
-    public long getBookingCount() {
-        return bookingCount;
-    }
-
-    public void setBookingCount(long bookingCount) {
-        this.bookingCount = bookingCount;
-    }
-
-    public double getRevenue() {
-        return revenue;
-    }
-
-    public void setRevenue(double revenue) {
-        this.revenue = revenue;
     }
 }

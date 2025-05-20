@@ -8,21 +8,27 @@ import com.service.backend.web.models.responses.ResetTokenResponse;
 import com.service.backend.web.services.interfaces.IUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping("/auth")
+@AllArgsConstructor
 public class AuthenticationController {
 
-    @Autowired
-    private IUserService userService;
+    private final IUserService userService;
 
     @PostMapping("/login")
     public AuthenticationResponse loginUser(@RequestBody @Valid AuthentUserRequest user) {
         return new AuthenticationResponse(userService.authenticate(user));
+    }
+
+    @DeleteMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logoutUser() {
+        userService.logout();
     }
 
     @PostMapping("/refresh")

@@ -4,6 +4,7 @@ package com.service.backend.web.controllers;
 import com.service.backend.web.models.responses.NotificationResponse;
 import com.service.backend.web.services.helper.SecurityHelper;
 import com.service.backend.web.services.interfaces.INotificationService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user/notification")
+@AllArgsConstructor
 public class NotificationController {
 
-    @Autowired
-    private INotificationService notificationService;
+    private final INotificationService notificationService;
 
 
     @GetMapping("/all")

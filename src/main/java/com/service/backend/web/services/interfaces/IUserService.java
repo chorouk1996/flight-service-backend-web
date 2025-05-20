@@ -20,6 +20,8 @@ public interface IUserService {
     UserPaginationResponse getAllUsers(int page, int size);
     String authenticate(AuthentUserRequest user);
 
+    void logout();
+
     String refreshToken(AuthenticationResponse token);
 
     void resetToken(ResetTokenRequest tokenRequest, HttpServletRequest request);

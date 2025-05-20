@@ -2,9 +2,13 @@ package com.service.backend.web.models.requests;
 
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
+@Setter
+@Getter
 public class CreateBookingRequest {
 
     @NotNull
@@ -14,27 +18,4 @@ public class CreateBookingRequest {
 
     private List<Long> passengerIds;
 
-    public long getFlightId() {
-        return flightId;
-    }
-
-    public void setFlightId(long flightId) {
-        this.flightId = flightId;
-    }
-
-    public List<CreateSavedPassengerRequest> getPassengers() {
-        return passengers;
-    }
-
-    public void setPassengers(List<CreateSavedPassengerRequest> passengers) {
-        this.passengers = passengers;
-    }
-
-    public List<Long> getPassengerIds() {
-        return passengerIds;
-    }
-
-    public void setPassengerIds(List<Long> passengerIds) {
-        this.passengerIds = passengerIds;
-    }
 }

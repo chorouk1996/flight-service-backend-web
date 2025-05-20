@@ -13,10 +13,12 @@ import com.service.backend.web.models.responses.CreateUserResponse;
 import com.service.backend.web.models.responses.UserPaginationResponse;
 import com.service.backend.web.repositories.UserRepository;
 import com.service.backend.web.security.UserDetailsImpl;
+import com.service.backend.web.services.helper.SecurityHelper;
 import com.service.backend.web.services.interfaces.IRefreshTokenService;
 import com.service.backend.web.services.interfaces.IUserService;
 import com.service.backend.web.services.mapper.UserMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,24 +40,19 @@ import static com.service.backend.web.services.mapper.UserMapper.mapEntityToCrea
 
 
 @Service
+@AllArgsConstructor
 public class UserService implements IUserService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    JwtService jwtService;
-    @Autowired
-    AuthenticationManager manager;
+    private final JwtService jwtService;
+    private final AuthenticationManager manager;
 
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Autowired
-    EmailTokenService emailTokenService;
+    private final EmailTokenService emailTokenService;
 
-    @Autowired
-    IRefreshTokenService refreshTokenService;
+    private final IRefreshTokenService refreshTokenService;
 
     @Override
     public CreateUserResponse addUser(CreateUserRequest user) {
@@ -99,6 +96,11 @@ public class UserService implements IUserService {
             return "Bad Credentials";
         }
         return null;
+    }
+
+    @Override
+    public void logout() {
+        refreshTokenService.disableAllTokens(getUserByEmail(SecurityHelper.getUserConnected().getUsername()));
     }
 
     @Override

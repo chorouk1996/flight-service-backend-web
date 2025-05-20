@@ -4,17 +4,17 @@ import com.service.backend.web.models.responses.DashboardResponse;
 import com.service.backend.web.services.interfaces.IBookingService;
 import com.service.backend.web.services.interfaces.IDashboardService;
 import com.service.backend.web.services.interfaces.IFlightService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class DashboardService implements IDashboardService {
 
-    @Autowired
-    IBookingService bookingService;
+    private final IBookingService bookingService;
 
-    @Autowired
-    IFlightService flightService;
+    private final IFlightService flightService;
     @Override
     public DashboardResponse getOverview() {
         DashboardResponse response = new DashboardResponse();

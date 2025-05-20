@@ -10,6 +10,7 @@ import com.service.backend.web.repositories.AuditLogRepository;
 import com.service.backend.web.security.UserDetailsImpl;
 import com.service.backend.web.services.interfaces.IAuditLogService;
 import com.service.backend.web.services.mapper.AuditLogMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,14 +21,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class AuditLogService implements IAuditLogService {
 
     private static final String SYSTEM = "SYSTEM";
 
-    @Autowired
-    AuditLogCustomRepository auditLogCustomRepository;
-    @Autowired
-    AuditLogRepository auditLogRepository;
+    private final AuditLogCustomRepository auditLogCustomRepository;
+    private final AuditLogRepository auditLogRepository;
     @Override
     @Transactional
     public void auditBookingCancel(BookingStatusEnum oldStatus, long entityId) {
