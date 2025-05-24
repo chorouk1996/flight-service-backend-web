@@ -8,11 +8,9 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class AuthenticationResponse {
+public class RefreshTokenResponse {
 
     @NotBlank
     private String token;
 
-    @NotBlank
-    private String refreshToken;
 }

@@ -4,6 +4,7 @@ import com.service.backend.web.models.requests.*;
 import com.service.backend.web.models.responses.AuthenticationResponse;
 import com.service.backend.web.models.responses.CreateUserResponse;
 import com.service.backend.web.models.entities.User;
+import com.service.backend.web.models.responses.RefreshTokenResponse;
 import com.service.backend.web.models.responses.UserPaginationResponse;
 import com.service.backend.web.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,11 +19,11 @@ public interface IUserService {
      List<CreateUserResponse>getAllUsers();
 
     UserPaginationResponse getAllUsers(int page, int size);
-    String authenticate(AuthentUserRequest user);
+    AuthenticationResponse authenticate(AuthentUserRequest user);
 
-    void logout();
+    void logout(String refreshToken);
 
-    String refreshToken(AuthenticationResponse token);
+    RefreshTokenResponse refreshToken(String token);
 
     void resetToken(ResetTokenRequest tokenRequest, HttpServletRequest request);
 

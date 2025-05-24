@@ -45,7 +45,7 @@ public class RefreshTokenService implements IRefreshTokenService {
 
     @Override
     public boolean isTokenNotValid(String token) {
-        return refreshTokenRepository.findByTokenAndExpired(token,true).isPresent();
+        return refreshTokenRepository.findByHashTokenAndExpired(token,true).isPresent();
     }
 
     private String bytesToHex(byte[] bytes) {

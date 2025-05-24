@@ -3,13 +3,11 @@ package com.service.backend.web.filters;
 import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.security.UserDetailsServiceImpl;
 import com.service.backend.web.services.implementation.JwtService;
-import com.service.backend.web.services.interfaces.IRefreshTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,14 +24,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
 
-    private final IRefreshTokenService refreshTokenService;
 
     private final UserDetailsServiceImpl userDetailsImpl;
-    String username = null;
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
+        String username = null;
         String authToken = request.getHeader("Authorization");
         if (authToken != null && authToken.startsWith("Bearer ")) {
             String token = authToken.substring(7);

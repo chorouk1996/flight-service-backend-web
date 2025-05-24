@@ -18,9 +18,9 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class JwtService {
 
     @Value("${secret_key}")
@@ -54,8 +54,11 @@ public class JwtService {
                 .compact();
 
     }
-    public String refreshToken(String token){
-            return  generateToken(extractUsername(token));
+    public String generateRefreshToken(String username){
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "refresh");
+        claims.put("jti", UUID.randomUUID().toString());
+        return tokenGeneration(username,claims,new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 30));
     }
 
     public String resetToken(String token){

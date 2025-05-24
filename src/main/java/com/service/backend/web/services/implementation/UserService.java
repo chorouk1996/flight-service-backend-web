@@ -10,18 +10,18 @@ import com.service.backend.web.models.enumerators.TypeTokenEnum;
 import com.service.backend.web.models.requests.*;
 import com.service.backend.web.models.responses.AuthenticationResponse;
 import com.service.backend.web.models.responses.CreateUserResponse;
+import com.service.backend.web.models.responses.RefreshTokenResponse;
 import com.service.backend.web.models.responses.UserPaginationResponse;
 import com.service.backend.web.repositories.UserRepository;
 import com.service.backend.web.security.UserDetailsImpl;
-import com.service.backend.web.services.helper.SecurityHelper;
 import com.service.backend.web.services.interfaces.IRefreshTokenService;
 import com.service.backend.web.services.interfaces.IUserService;
 import com.service.backend.web.services.mapper.UserMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -30,7 +30,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +55,8 @@ public class UserService implements IUserService {
     private final EmailTokenService emailTokenService;
 
     private final IRefreshTokenService refreshTokenService;
+
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public CreateUserResponse addUser(CreateUserRequest user) {
@@ -84,36 +88,50 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public String authenticate(AuthentUserRequest user) {
+    public AuthenticationResponse authenticate(AuthentUserRequest user) {
         Authentication auth = manager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         try {
             if (auth.isAuthenticated()) {
-                String token = jwtService.generateToken((user.getEmail()));
-                refreshTokenService.saveRefreshToken(token, getUserByEmail(user.getEmail()));
-                return token;
+                String token = jwtService.generateToken(user.getEmail());
+                String refreshToken = jwtService.generateRefreshToken(user.getEmail());
+                AuthenticationResponse response = new AuthenticationResponse(token, refreshToken);
+                redisTemplate.opsForValue().set("refresh_token:" + refreshToken, user.getEmail(), Duration.ofDays(30));
+                return response;
             }
         } catch (BadCredentialsException badCredentialsException) {
-            return "Bad Credentials";
+            throw new FunctionalException(new FunctionalExceptionDto("Bad Credentials", HttpStatus.BAD_REQUEST));
         }
         return null;
     }
 
     @Override
-    public void logout() {
-        refreshTokenService.disableAllTokens(getUserByEmail(SecurityHelper.getUserConnected().getUsername()));
+    public RefreshTokenResponse refreshToken(String token) {
+        String userEmail = redisTemplate.opsForValue().get("refresh_token:" + token);
+        if (StringUtils.hasText(userEmail))
+            if (userEmail.equals(jwtService.extractUsername(token))) {
+                return new RefreshTokenResponse(jwtService.generateToken(userEmail));
+            }
+        throw new FunctionalException(new FunctionalExceptionDto("You should signin", HttpStatus.UNAUTHORIZED));
+
     }
 
     @Override
-    public String refreshToken(AuthenticationResponse authenticationRequest) {
-        User user = getUserByEmail(jwtService.extractUsername(authenticationRequest.getToken()));
-        if (refreshTokenService.isTokenNotValid(authenticationRequest.getToken())) {
+    public void logout(String refreshToken) {
+        redisTemplate.delete("refresh_token:" + refreshToken);
+    }
+
+   /* @Override
+    public String refreshToken(String authenticationRequest) {
+        User user = getUserByEmail(jwtService.extractUsername(authenticationRequest));
+        if (refreshTokenService.isTokenNotValid(authenticationRequest)) {
             refreshTokenService.disableAllTokens(user);
             throw new FunctionalException(new FunctionalExceptionDto("You need to login to generate a new token",HttpStatus.UNAUTHORIZED));
         }
-        String token = jwtService.refreshToken(authenticationRequest.getToken());
+        String token = jwtService.refreshToken(authenticationRequest);
         refreshTokenService.saveRefreshToken(token, user);
         return token;
-    }
+    }*/
+
 
     @Override
     public void resetToken(ResetTokenRequest tokenRequest, HttpServletRequest request) {
