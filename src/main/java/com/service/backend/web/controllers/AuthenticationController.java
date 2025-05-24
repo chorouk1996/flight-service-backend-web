@@ -37,7 +37,10 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<RefreshTokenResponse> loginUser(@RequestBody @Valid AuthentUserRequest user) {
+        LOGGER.info("Login attempt for user: {}", user.getEmail());
         AuthenticationResponse authenticationResponse = userService.authenticate(user);
+        LOGGER.info("Login successful for user: {}", user.getEmail());
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, setCookies(authenticationResponse.getRefreshToken(), Duration.ofDays(30)))
                 .body(new RefreshTokenResponse(authenticationResponse.getToken()));
@@ -46,19 +49,28 @@ public class AuthenticationController {
     @DeleteMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> logoutUser(HttpServletRequest request) {
-        userService.logout(getCookie(request));
+        String token = getCookie(request);
+        LOGGER.info("Logout requested for token: {}", token);
+        userService.logout(token);
+        LOGGER.info("Logout successful for token: {}", token);
+
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, setCookies("", Duration.ofSeconds(0))).build();
+                .header(HttpHeaders.SET_COOKIE, setCookies("", Duration.ofSeconds(0)))
+                .build();
     }
 
     @PostMapping("/refresh")
     public RefreshTokenResponse refreshToken(HttpServletRequest request) {
-        userService.logout(getCookie(request));
-        return userService.refreshToken(getCookie(request));
+        String token = getCookie(request);
+        LOGGER.info("Token refresh requested for token: {}", token);
+        RefreshTokenResponse response = userService.refreshToken(token);
+        LOGGER.info("Access token successfully refreshed");
+        return response;
     }
 
     @PostMapping("/request-reset")
     public ResetTokenResponse requestResetToken(@RequestBody ResetTokenRequest tokenRequest, HttpServletRequest request) {
+        LOGGER.info("Password reset requested for email: {}", tokenRequest.getEmail());
         userService.resetToken(tokenRequest, request);
         return new ResetTokenResponse("If an active account with this email exists, a reset link has been sent.");
     }
@@ -80,11 +92,15 @@ public class AuthenticationController {
     }
 
     private String getCookie(HttpServletRequest request) {
-        Optional<Cookie> cookie = Arrays.stream(request.getCookies()).filter(c -> "refresh_token".equals(c.getName())).findFirst();
-        return cookie.orElseThrow(
-                () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto("the refresh token is mandatory", HttpStatus.BAD_REQUEST));
-                }
-        ).getValue();
+        Optional<Cookie> cookie = Arrays.stream(request.getCookies())
+                .filter(c -> "refresh_token".equals(c.getName()))
+                .findFirst();
+
+        return cookie.orElseThrow(() -> {
+            LOGGER.warn("Missing refresh token in cookie");
+            throw new FunctionalException(
+                    new FunctionalExceptionDto("the refresh token is mandatory", HttpStatus.BAD_REQUEST)
+            );
+        }).getValue();
     }
 }

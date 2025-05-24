@@ -5,9 +5,12 @@ import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -23,11 +26,13 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(exception = {HttpMessageNotReadableException.class, NoResourceFoundException.class})
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler({HttpMessageNotReadableException.class, NoResourceFoundException.class})
     @ResponseBody
-    public FunctionalExceptionDto httpMessageNotReadableException(HttpServletResponse response, HttpServletRequest request, Exception exception){
+    public FunctionalExceptionDto httpMessageNotReadableException(HttpServletResponse response, HttpServletRequest request, Exception exception) {
+        LOGGER.warn("Malformed request at {}: {}", request.getRequestURI(), exception.getMessage());
         FunctionalExceptionDto ex = new FunctionalExceptionDto();
-        request.getRequestURL();
         ex.setMessage(exception.getMessage());
         ex.setPath(request.getRequestURI());
         ex.setStatus(HttpStatus.CONFLICT);
@@ -36,11 +41,11 @@ public class GlobalExceptionHandler {
         return ex;
     }
 
-    @ExceptionHandler(exception = UsernameNotFoundException.class)
+    @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseBody
-    public FunctionalExceptionDto usernameNotFoundException(HttpServletResponse response,HttpServletRequest request){
+    public FunctionalExceptionDto usernameNotFoundException(HttpServletResponse response, HttpServletRequest request) {
+        LOGGER.warn("Username not found at {}", request.getRequestURI());
         FunctionalExceptionDto ex = new FunctionalExceptionDto();
-        request.getRequestURL();
         ex.setMessage(ErrorMessages.USER_NOT_FOUND);
         ex.setPath(request.getRequestURI());
         ex.setStatus(HttpStatus.NOT_FOUND);
@@ -50,37 +55,38 @@ public class GlobalExceptionHandler {
         return ex;
     }
 
-    @ExceptionHandler(exception = BadCredentialsException.class)
+    @ExceptionHandler(BadCredentialsException.class)
     @ResponseBody
-    public FunctionalExceptionDto badCredentialsException(HttpServletResponse response, HttpServletRequest request){
+    public FunctionalExceptionDto badCredentialsException(HttpServletResponse response, HttpServletRequest request) {
+        LOGGER.warn("Bad credentials attempt at {}", request.getRequestURI());
         FunctionalExceptionDto ex = new FunctionalExceptionDto();
-        ex.setMessage("bad credentials");
+        ex.setMessage("Incorrect email or password");
         ex.setPath(request.getRequestURI());
         ex.setStatus(HttpStatus.UNAUTHORIZED);
         response.setStatus(ex.getStatus().value());
         ex.setTimestamp(LocalDateTime.now());
-        ex.setError("Bad_Credentials");
+        ex.setError("BAD_CREDENTIALS");
         return ex;
     }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public FunctionalExceptionDto handleValidationException(HttpServletResponse response, HttpServletRequest request, MethodArgumentNotValidException exception) {
-        FunctionalExceptionDto ex = new FunctionalExceptionDto();
-        ex.setTimestamp(LocalDateTime.now());
-        ex.setStatus(HttpStatus.BAD_REQUEST);
-        response.setStatus(ex.getStatus().value());
-        ex.setError("INVALID_REQUEST_DATA");
-        ex.setPath(request.getRequestURI());
-
-        // Extract the first validation error message
         String defaultMessage = exception.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .findFirst()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .orElse("Invalid request data");
+
+        LOGGER.warn("Validation error at {}: {}", request.getRequestURI(), defaultMessage);
+
+        FunctionalExceptionDto ex = new FunctionalExceptionDto();
+        ex.setTimestamp(LocalDateTime.now());
+        ex.setStatus(HttpStatus.BAD_REQUEST);
+        response.setStatus(ex.getStatus().value());
+        ex.setError("INVALID_REQUEST_DATA");
+        ex.setPath(request.getRequestURI());
         ex.setMessage(defaultMessage);
         return ex;
     }
@@ -88,49 +94,62 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseBody
     public FunctionalExceptionDto httpRequestMethodNotSupportedException(HttpServletResponse response, HttpServletRequest request, HttpRequestMethodNotSupportedException exception) {
+        LOGGER.warn("Unsupported method {} on {}", exception.getMethod(), request.getRequestURI());
         FunctionalExceptionDto ex = new FunctionalExceptionDto();
         ex.setTimestamp(LocalDateTime.now());
         ex.setStatus(HttpStatus.BAD_REQUEST);
         ex.setError("METHOD_NOT_SUPPORTED");
         ex.setPath(request.getRequestURI());
         response.setStatus(ex.getStatus().value());
-        // Extract the first validation error message
-
         ex.setMessage("Method " + exception.getMethod() + " is not supported");
         return ex;
     }
 
-    @ExceptionHandler(exception = FunctionalException.class)
+    @ExceptionHandler(FunctionalException.class)
     @ResponseBody
-    public FunctionalExceptionDto expiredJwtException(HttpServletResponse response, HttpServletRequest request,FunctionalException exception){
-
-        exception.getFunctionalExceptionDto().setPath(request.getMethod()+" " + request.getRequestURI());
+    public FunctionalExceptionDto handleFunctional(HttpServletResponse response, HttpServletRequest request, FunctionalException exception) {
+        LOGGER.warn("Functional exception at {} {}: {}", request.getMethod(), request.getRequestURI(), exception.getMessage());
+        exception.getFunctionalExceptionDto().setPath(request.getMethod() + " " + request.getRequestURI());
         return exception.getFunctionalExceptionDto();
     }
 
-    @ExceptionHandler(exception = SignatureException.class)
+    @ExceptionHandler(SignatureException.class)
     @ResponseBody
-    public FunctionalExceptionDto signatureException(HttpServletResponse response, HttpServletRequest request){
+    public FunctionalExceptionDto signatureException(HttpServletResponse response, HttpServletRequest request) {
+        LOGGER.warn("Invalid token signature at {}", request.getRequestURI());
         FunctionalExceptionDto ex = new FunctionalExceptionDto();
         ex.setMessage("Invalid token");
         ex.setPath(request.getRequestURI());
         ex.setStatus(HttpStatus.UNAUTHORIZED);
         response.setStatus(ex.getStatus().value());
         ex.setTimestamp(LocalDateTime.now());
-        ex.setError("Invalid token");
+        ex.setError("INVALID_TOKEN");
         return ex;
     }
-    @ExceptionHandler(exception = Exception.class)
+
+    @ExceptionHandler(Exception.class)
     @ResponseBody
-    public FunctionalExceptionDto globalException(HttpServletResponse response, HttpServletRequest request, Exception exception){
+    public FunctionalExceptionDto globalException(HttpServletResponse response, HttpServletRequest request, Exception exception) {
+        LOGGER.error("Unexpected error at {}: {}", request.getRequestURI(), exception.getMessage(), exception);
         FunctionalExceptionDto ex = new FunctionalExceptionDto();
-        request.getRequestURL();
-        ex.setMessage(exception.getMessage());
+        ex.setMessage("An unexpected error occurred.");
         ex.setPath(request.getRequestURI());
         ex.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
         response.setStatus(ex.getStatus().value());
         ex.setTimestamp(LocalDateTime.now());
+        ex.setError("INTERNAL_ERROR");
         return ex;
     }
-
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseBody
+    public FunctionalExceptionDto accessDenied(HttpServletResponse response, HttpServletRequest request) {
+        FunctionalExceptionDto ex = new FunctionalExceptionDto();
+        ex.setMessage("Access is denied");
+        ex.setPath(request.getRequestURI());
+        ex.setStatus(HttpStatus.FORBIDDEN);
+        ex.setError("ACCESS_DENIED");
+        ex.setTimestamp(LocalDateTime.now());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        return ex;
+    }
 }
