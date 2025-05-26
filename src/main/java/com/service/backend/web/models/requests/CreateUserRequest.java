@@ -1,13 +1,13 @@
 package com.service.backend.web.models.requests;
 
+import com.service.backend.web.models.enumerators.RoleEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
 
-@Setter
-@Getter
+import lombok.Data;
+
+@Data
 public class CreateUserRequest {
 
 
@@ -23,7 +23,7 @@ public class CreateUserRequest {
     @Size(min = 8) @NotBlank
     private String password;
 
-    private String role;
+    private RoleEnum role;
 
 
 }

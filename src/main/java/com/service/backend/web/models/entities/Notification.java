@@ -2,14 +2,13 @@ package com.service.backend.web.models.entities;
 
 import com.service.backend.web.models.enumerators.NotificationTypeEnum;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Setter
-@Getter
+@Data
 public class Notification {
     @Id
     @GeneratedValue

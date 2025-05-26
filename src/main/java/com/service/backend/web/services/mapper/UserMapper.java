@@ -1,15 +1,15 @@
 package com.service.backend.web.services.mapper;
 
 import com.service.backend.web.models.dto.UserDto;
-import com.service.backend.web.models.requests.CreateUserRequest;
-import com.service.backend.web.models.responses.CreateUserResponse;
 import com.service.backend.web.models.entities.User;
 import com.service.backend.web.models.enumerators.RoleEnum;
+import com.service.backend.web.models.requests.CreateUserRequest;
+import com.service.backend.web.models.responses.CreateUserResponse;
 
 
 public final class UserMapper {
 
-    private UserMapper()  {
+    private UserMapper() {
         throw new UnsupportedOperationException("Don't instantiate this  Utility class");
     }
 
@@ -29,7 +29,12 @@ public final class UserMapper {
         user.setLastName(userRequest.getLastName());
         user.setPassword(userRequest.getPassword());
         user.setEmail(userRequest.getEmail());
-        user.setRole(RoleEnum.valueOf(userRequest.getRole()));
+        if (user.getRole() == null) {
+            user.setRole(RoleEnum.USER);
+        } else {
+            user.setRole(userRequest.getRole());
+
+        }
         return user;
     }
 

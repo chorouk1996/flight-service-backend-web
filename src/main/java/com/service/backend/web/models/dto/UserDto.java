@@ -2,13 +2,12 @@ package com.service.backend.web.models.dto;
 
 
 import com.service.backend.web.models.enumerators.RoleEnum;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 import java.util.List;
 
-@Setter
-@Getter
+@Data
 public class UserDto {
 
     private Long id;

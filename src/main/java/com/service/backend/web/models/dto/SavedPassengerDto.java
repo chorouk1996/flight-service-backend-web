@@ -1,10 +1,9 @@
 package com.service.backend.web.models.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 
-@Setter
-@Getter
+import lombok.Data;
+
+@Data
 public class SavedPassengerDto {
 
     private Long id;

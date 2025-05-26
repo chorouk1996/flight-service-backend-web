@@ -19,6 +19,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -35,17 +38,19 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 //.httpBasic(Customizer.withDefaults())
-                .headers(httpSecurityHeadersConfigurer -> {
-                            httpSecurityHeadersConfigurer
-                                    .contentSecurityPolicy(contentSecurityPolicyConfig ->
-                                            contentSecurityPolicyConfig.policyDirectives(
-                                                    "default-src 'self'"
-                                            )
-                                    );
-                            httpSecurityHeadersConfigurer.frameOptions(frameOptionsConfig ->
-                                    frameOptionsConfig.deny()
-                            );
-                        }
+                .headers(httpSecurityHeadersConfigurer ->
+                        httpSecurityHeadersConfigurer
+                                .contentSecurityPolicy(contentSecurityPolicyConfig ->
+                                        contentSecurityPolicyConfig.policyDirectives(
+                                                "default-src 'self'; script-src 'self'; object-src 'none'; style-src 'self' 'unsafe-inline';")
+                                )
+                                .referrerPolicy(referrer -> referrer
+                                        .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN)
+                                ).contentTypeOptions(withDefaults())
+                                .frameOptions(frameOptionsConfig ->
+                                        frameOptionsConfig.deny()
+                                )
+
 
                 )
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/flight/search").permitAll()

@@ -33,7 +33,7 @@ public interface IUserService {
 
     User getUserByEmail(String email);
 
-    User isUserExistAndActive(String email);
+    boolean isUserExistAndActive(String email);
 
     User getUserById(long id);
 

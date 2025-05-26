@@ -2,15 +2,14 @@ package com.service.backend.web.models.entities;
 
 import com.service.backend.web.models.enumerators.RoleEnum;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "Users")
-@Setter
-@Getter
+@Data
 public class User implements Serializable {
 
     @Id

@@ -3,15 +3,14 @@ package com.service.backend.web.models.dto;
 import com.service.backend.web.models.enumerators.EntityActionEnum;
 import com.service.backend.web.models.enumerators.EntityTypeEnum;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuditLogDto {

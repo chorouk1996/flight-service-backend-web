@@ -3,7 +3,8 @@ package com.service.backend.web.scheduled;
 
 import com.service.backend.web.services.implementation.EmailTokenService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +15,11 @@ public class DeleteExpiredUnusedToken {
 
     private final EmailTokenService emailTokenService;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeleteExpiredUnusedToken.class);
+
     @Scheduled(cron = "0 0 * * * ?")
     public void deleteExpiredUnusedToken() {
-        System.out.println("Deleting expired unused tokens.... ");
+        LOGGER.info("Deleting expired unused tokens.... ");
         emailTokenService.deleteExpiredUnusedTokens();
     }
 }

@@ -1,14 +1,13 @@
 package com.service.backend.web.models.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Setter
-@Getter
+@Data
 public class LoyaltyPoint {
 
     @Id

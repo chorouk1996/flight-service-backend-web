@@ -7,7 +7,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,6 +21,8 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandlerFilter.class);
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -28,6 +31,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (FunctionalException exception) {
+            LOGGER.error(exception.getFunctionalExceptionDto().getMessage());
             if (!response.isCommitted()) {
                 var dto = exception.getFunctionalExceptionDto();
                 dto.setPath(request.getRequestURI());

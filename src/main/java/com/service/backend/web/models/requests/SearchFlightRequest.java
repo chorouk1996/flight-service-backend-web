@@ -3,13 +3,12 @@ package com.service.backend.web.models.requests;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.service.backend.web.models.enumerators.FlightStatusEnum;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 import java.time.LocalDate;
 
-@Setter
-@Getter
+@Data
 public class SearchFlightRequest {
 
 

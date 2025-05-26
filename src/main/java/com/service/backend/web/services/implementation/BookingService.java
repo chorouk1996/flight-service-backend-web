@@ -12,6 +12,7 @@ import com.service.backend.web.models.entities.Flight;
 import com.service.backend.web.models.entities.Passenger;
 import com.service.backend.web.models.entities.User;
 import com.service.backend.web.models.enumerators.BookingStatusEnum;
+import com.service.backend.web.models.enumerators.FlightStatusEnum;
 import com.service.backend.web.models.requests.CreateBookingRequest;
 import com.service.backend.web.models.requests.SearchBookingRequest;
 import com.service.backend.web.models.responses.*;
@@ -26,7 +27,8 @@ import com.service.backend.web.services.mapper.PassengerMapper;
 import com.service.backend.web.services.mapper.UserMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -60,6 +62,8 @@ public class BookingService implements IBookingService {
 
     private final IAuditLogService auditLogService;
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(BookingService.class);
+
     @Override
     public CreateBookingResponse addBooking(CreateBookingRequest booking, String username) {
         validatePassengers(booking);
@@ -69,7 +73,12 @@ public class BookingService implements IBookingService {
 
         User user = userService.getUserByEmail(username);
         Flight flight = FlightMapper.mapFlightDtoToEntity(flightService.getAvailableFlight(booking.getFlightId()));
-
+        if (FlightStatusEnum.CANCELLED.equals(flight.getFlightStatus()))
+            throw new FunctionalException(new FunctionalExceptionDto(
+                    "The flight was cancelled", HttpStatus.UNAUTHORIZED));
+        if (FlightStatusEnum.DEPARTED.equals(flight.getFlightStatus()))
+            throw new FunctionalException(new FunctionalExceptionDto(
+                    "The flight has departed", HttpStatus.UNAUTHORIZED));
         Booking bookingToAdd = initializeBooking(user, flight);
         List<Passenger> passengers = collectPassengers(booking, user, bookingToAdd);
 
@@ -99,15 +108,9 @@ public class BookingService implements IBookingService {
     private List<Passenger> collectPassengers(CreateBookingRequest booking, User user, Booking bookingEntity) {
         List<Passenger> passengers = new ArrayList<>();
 
-        if (!booking.getPassengers().isEmpty()) {
-            booking.getPassengers().stream()
-                    .map(PassengerMapper::mapCreatePassengerRequestToEntity)
-                    .forEach(p -> {
-                        p.setBookedByUserEmail(user.getEmail());
-                        p.setBooking(bookingEntity);
-                        passengers.add(p);
-                    });
-        }
+        if (booking.getPassengers().isEmpty() && booking.getPassengerIds().isEmpty())
+            throw new FunctionalException(new FunctionalExceptionDto(
+                    "A booking must contain at least one passenger.", HttpStatus.BAD_REQUEST));
 
         if (!booking.getPassengerIds().isEmpty()) {
             booking.getPassengerIds().forEach(id -> {
@@ -118,10 +121,20 @@ public class BookingService implements IBookingService {
                 passengers.add(passenger);
             });
         }
+        if (!booking.getPassengers().isEmpty()) {
+           List<String> passengersMails =  passengers.stream().map(p->p.getEmail()).toList();
+            booking.getPassengers().stream()
+                    .map(PassengerMapper::mapCreatePassengerRequestToEntity)
+                    .filter(passenger -> !passengersMails.contains(passenger.getEmail()))
+                    .forEach(p -> {
+                        p.setBookedByUserEmail(user.getEmail());
+                        p.setBooking(bookingEntity);
+                        passengers.add(p);
+                    });
+        }
 
         return passengers;
     }
-
 
 
     @Override
@@ -132,7 +145,7 @@ public class BookingService implements IBookingService {
                 booking -> {
                     booking.setStatus(BookingStatusEnum.CANCELLED);
                     flightService.increaseSeat(booking.getFlight().getId(), booking.getPassengers().size());
-                    auditLogService.auditBookingCancel(BookingStatusEnum.PENDING_PAYMENT,booking.getId());
+                    auditLogService.auditBookingCancel(BookingStatusEnum.PENDING_PAYMENT, booking.getId());
                 }
         );
         bookingRepository.saveAll(bookings);
@@ -170,10 +183,10 @@ public class BookingService implements IBookingService {
                     if (!(myBooking.getStatus().equals(BookingStatusEnum.PENDING_PAYMENT) || myBooking.getStatus().equals(BookingStatusEnum.CONFIRMED)))
                         throw new FunctionalException(new FunctionalExceptionDto("Only pending payment bookings can be cancelled manually", HttpStatus.CONFLICT));
                     flightService.increaseSeat(myBooking.getFlight().getId(), myBooking.getPassengers().size());
-                    BookingStatusEnum oldStatus  = myBooking.getStatus();
+                    BookingStatusEnum oldStatus = myBooking.getStatus();
                     myBooking.setStatus(BookingStatusEnum.CANCELLED);
                     bookingRepository.save(myBooking);
-                    auditLogService.auditBookingCancel(oldStatus,myBooking.getId());
+                    auditLogService.auditBookingCancel(oldStatus, myBooking.getId());
 
                 },
 
@@ -191,10 +204,10 @@ public class BookingService implements IBookingService {
         bookingRepository.findByIdAndUserAndStatusNot(booking, userService.getUserByEmail(username), BookingStatusEnum.CANCELLED).ifPresentOrElse(
                 myBooking -> {
                     flightService.increaseSeat(myBooking.getFlight().getId(), myBooking.getPassengers().size());
-                    BookingStatusEnum oldStatus  = myBooking.getStatus();
+                    BookingStatusEnum oldStatus = myBooking.getStatus();
                     myBooking.setStatus(BookingStatusEnum.CANCELLED);
                     bookingRepository.save(myBooking);
-                    auditLogService.auditBookingCancel(oldStatus,myBooking.getId());
+                    auditLogService.auditBookingCancel(oldStatus, myBooking.getId());
 
                 },
 
@@ -211,7 +224,7 @@ public class BookingService implements IBookingService {
         bookingRepository.findByIdAndStatus(booking, BookingStatusEnum.PENDING_PAYMENT).ifPresentOrElse(
                 myBooking -> {
                     myBooking.setStatus(BookingStatusEnum.CONFIRMED);
-                    System.out.println("Admin confirmed booking " + myBooking.getId());
+                    LOGGER.info("Admin confirmed booking " + myBooking.getId());
                     bookingRepository.save(myBooking);
                     auditLogService.auditBookingConfirmation(myBooking.getId());
                 },
@@ -278,16 +291,15 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public void exportAllBookingto(HttpServletResponse response){
+    public void exportAllBookingto(HttpServletResponse response) {
         List<BookingCSV> bookings = getBookingDtoExport();
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition","attachment; filename=bookings");
+        response.setHeader("Content-Disposition", "attachment; filename=bookings");
         try {
             StatefulBeanToCsv<BookingCSV> writer = new StatefulBeanToCsvBuilder<BookingCSV>(response.getWriter()).withSeparator(ICSVWriter.DEFAULT_SEPARATOR).build();
             writer.write(bookings);
-        }
-        catch(Exception ex){
-            throw new FunctionalException(new FunctionalExceptionDto("can't export cvs, try later",HttpStatus.SERVICE_UNAVAILABLE));
+        } catch (Exception ex) {
+            throw new FunctionalException(new FunctionalExceptionDto("can't export cvs, try later", HttpStatus.SERVICE_UNAVAILABLE));
         }
 
     }

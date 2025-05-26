@@ -7,13 +7,13 @@ import com.service.backend.web.repositories.RefreshTokenRepository;
 import com.service.backend.web.services.interfaces.IRefreshTokenService;
 import com.service.backend.web.services.mapper.RefreshTokenMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -22,6 +22,7 @@ public class RefreshTokenService implements IRefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RefreshTokenService.class);
 
     @Override
     public void saveRefreshToken(String token, User user) {

@@ -3,13 +3,12 @@ package com.service.backend.web.models.responses;
 
 
 import com.service.backend.web.models.enumerators.FlightStatusEnum;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Setter
-@Getter
+@Data
 public class CreateFlightResponse {
 
 

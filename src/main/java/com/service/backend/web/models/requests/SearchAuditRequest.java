@@ -3,12 +3,11 @@ package com.service.backend.web.models.requests;
 import com.service.backend.web.models.enumerators.EntityActionEnum;
 import com.service.backend.web.models.enumerators.EntityTypeEnum;
 import jakarta.validation.constraints.Pattern;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 
-@Setter
-@Getter
+@Data
 public class SearchAuditRequest {
 
     private EntityTypeEnum entityType;

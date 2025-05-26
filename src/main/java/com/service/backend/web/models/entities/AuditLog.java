@@ -4,15 +4,14 @@ package com.service.backend.web.models.entities;
 import com.service.backend.web.models.enumerators.EntityActionEnum;
 import com.service.backend.web.models.enumerators.EntityTypeEnum;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Setter
-@Getter
+@Data
 public class AuditLog {
 
     @Id

@@ -1,12 +1,11 @@
 package com.service.backend.web.models.responses;
 
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 import java.util.List;
 
-@Setter
-@Getter
+@Data
 public class UserPaginationResponse {
 
    List<CreateUserResponse> users;

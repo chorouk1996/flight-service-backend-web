@@ -1,11 +1,10 @@
 package com.service.backend.web.models.responses;
 
 
-import lombok.Getter;
-import lombok.Setter;
 
-@Setter
-@Getter
+import lombok.Data;
+
+@Data
 public class CreateUserResponse {
 
     private Long id;

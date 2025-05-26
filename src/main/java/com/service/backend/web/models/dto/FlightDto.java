@@ -2,15 +2,14 @@ package com.service.backend.web.models.dto;
 
 
 import com.service.backend.web.models.enumerators.FlightStatusEnum;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Setter
-@Getter
+@Data
 public class FlightDto {
 
     private Long id;

@@ -142,26 +142,29 @@ public class UserService implements IUserService {
     }
 
 
-
     @Override
     public void resetToken(ResetTokenRequest tokenRequest, HttpServletRequest request) {
-        LOGGER.info("Reset token requested for email: {}", tokenRequest.getEmail());
-        isUserExistAndActive(tokenRequest.getEmail());
-        String token = jwtService.generateResetToken(tokenRequest.getEmail());
-        EmailTokenDto dto = new EmailTokenDto();
-        dto.setCreatedAt(LocalDateTime.now());
-        dto.setExpireAt(LocalDateTime.now().plusMinutes(15));
-        dto.setToken(token);
-        dto.setType(TypeTokenEnum.RESET_TOKEN);
-        String ipAddress = request.getHeader("X-Forwarded-For");
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getRemoteAddr();
+        if (!isUserExistAndActive(tokenRequest.getEmail())) {
+            LOGGER.error(ErrorMessages.USER_NOT_FOUND);
+        } else {
+            LOGGER.info("Reset token requested for email: {}", tokenRequest.getEmail());
+            String token = jwtService.generateResetToken(tokenRequest.getEmail());
+            EmailTokenDto dto = new EmailTokenDto();
+            dto.setCreatedAt(LocalDateTime.now());
+            dto.setExpireAt(LocalDateTime.now().plusMinutes(15));
+            dto.setToken(token);
+            dto.setType(TypeTokenEnum.RESET_TOKEN);
+            String ipAddress = request.getHeader("X-Forwarded-For");
+            if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+                ipAddress = request.getRemoteAddr();
+            }
+            dto.setIpAddress(ipAddress);
+            dto.setEmail(tokenRequest.getEmail());
+            dto.setUsed(Boolean.FALSE);
+            emailTokenService.addEmailToken(dto);
+            LOGGER.info("this is the reset-link https://yourdomain.com/reset-password?token= {}", token);
+
         }
-        dto.setIpAddress(ipAddress);
-        dto.setEmail(tokenRequest.getEmail());
-        dto.setUsed(Boolean.FALSE);
-        emailTokenService.addEmailToken(dto);
-        System.out.println("this is the reset-link https://yourdomain.com/reset-password?token=" + token);
     }
 
     @Override
@@ -175,7 +178,6 @@ public class UserService implements IUserService {
             emailTokenService.setTokenUsed(token);
             refreshTokenService.disableAllTokens(user);
         }
-
     }
 
     @Override
@@ -213,10 +215,8 @@ public class UserService implements IUserService {
 
 
     @Override
-    public User isUserExistAndActive(String email) {
-        return userRepository.findByEmailAndEnabled(email, true).orElseThrow(() -> {
-            throw new FunctionalException(new FunctionalExceptionDto(ErrorMessages.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED));
-        });
+    public boolean isUserExistAndActive(String email) {
+        return userRepository.findByEmailAndEnabled(email, true).isPresent();
     }
 
     @Override

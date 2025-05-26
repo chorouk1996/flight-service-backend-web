@@ -129,16 +129,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public FunctionalExceptionDto globalException(HttpServletResponse response, HttpServletRequest request, Exception exception) {
-        LOGGER.error("Unexpected error at {}: {}", request.getRequestURI(), exception.getMessage(), exception);
-        FunctionalExceptionDto ex = new FunctionalExceptionDto();
-        ex.setMessage("An unexpected error occurred.");
-        ex.setPath(request.getRequestURI());
-        ex.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-        response.setStatus(ex.getStatus().value());
-        ex.setTimestamp(LocalDateTime.now());
-        ex.setError("INTERNAL_ERROR");
-        return ex;
+    public FunctionalExceptionDto handleAll(Exception ex, HttpServletRequest request) {
+        LOGGER.error("Unhandled exception", ex); // côté backend : tout est loggué
+
+        return FunctionalExceptionDto.builder()
+                .message("Une erreur interne est survenue. Merci de réessayer plus tard.")
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .timestamp(LocalDateTime.now())
+                .path(request.getMethod() + " " + request.getRequestURI())
+                .error("UNEXPECTED_ERROR")
+                .build();
     }
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseBody

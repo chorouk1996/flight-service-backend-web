@@ -2,15 +2,14 @@ package com.service.backend.web.models.entities;
 
 import com.service.backend.web.models.enumerators.BookingStatusEnum;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Setter
-@Getter
+@Data
 public class Booking {
     @Id
     @GeneratedValue

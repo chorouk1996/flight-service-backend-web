@@ -1,11 +1,19 @@
 package com.service.backend.web.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class FunctionalExceptionDto implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -18,50 +26,6 @@ public class FunctionalExceptionDto implements Serializable {
 
     private String path;
 
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(HttpStatus status) {
-        this.status = status;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public FunctionalExceptionDto() {
-        super();
-    }
 
     public FunctionalExceptionDto(String message,HttpStatus status){
         super();

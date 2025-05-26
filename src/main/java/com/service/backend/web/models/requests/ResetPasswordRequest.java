@@ -2,11 +2,10 @@ package com.service.backend.web.models.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.Getter;
-import lombok.Setter;
 
-@Setter
-@Getter
+import lombok.Data;
+
+@Data
 public class ResetPasswordRequest {
 
     @NotBlank(message = "the token should not be empty")

@@ -2,13 +2,12 @@ package com.service.backend.web.models.requests;
 
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 import java.util.List;
 
-@Setter
-@Getter
+@Data
 public class CreateBookingRequest {
 
     @NotNull

@@ -2,12 +2,11 @@ package com.service.backend.web.models.dto;
 
 
 import com.service.backend.web.models.entities.User;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 
-@Setter
-@Getter
+@Data
 public class RefreshTokenDto {
 
 

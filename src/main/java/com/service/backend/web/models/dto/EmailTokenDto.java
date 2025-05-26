@@ -2,14 +2,13 @@ package com.service.backend.web.models.dto;
 
 
 import com.service.backend.web.models.enumerators.TypeTokenEnum;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 
-@Setter
-@Getter
+@Data
 public class EmailTokenDto {
 
 

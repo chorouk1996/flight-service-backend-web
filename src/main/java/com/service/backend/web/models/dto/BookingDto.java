@@ -2,14 +2,13 @@ package com.service.backend.web.models.dto;
 
 
 import com.service.backend.web.models.enumerators.BookingStatusEnum;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Setter
-@Getter
+@Data
 public class BookingDto {
     private Long id;
 
