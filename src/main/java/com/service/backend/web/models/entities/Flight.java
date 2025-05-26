@@ -54,8 +54,8 @@ public class Flight {
     @Column
     private String delayReason;
 
-    @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL)
-    private List<Booking> booking;
+    @OneToMany(mappedBy = "flight")
+    private List<Booking> bookings;
 
 
 }

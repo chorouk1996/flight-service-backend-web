@@ -68,17 +68,9 @@ public class BookingService implements IBookingService {
     public CreateBookingResponse addBooking(CreateBookingRequest booking, String username) {
         validatePassengers(booking);
 
-        int totalPassengers = booking.getPassengerIds().size() + booking.getPassengers().size();
-        flightService.checkAvailableSeat(booking.getFlightId(), totalPassengers);
-
         User user = userService.getUserByEmail(username);
         Flight flight = FlightMapper.mapFlightDtoToEntity(flightService.getAvailableFlight(booking.getFlightId()));
-        if (FlightStatusEnum.CANCELLED.equals(flight.getFlightStatus()))
-            throw new FunctionalException(new FunctionalExceptionDto(
-                    "The flight was cancelled", HttpStatus.UNAUTHORIZED));
-        if (FlightStatusEnum.DEPARTED.equals(flight.getFlightStatus()))
-            throw new FunctionalException(new FunctionalExceptionDto(
-                    "The flight has departed", HttpStatus.UNAUTHORIZED));
+
         Booking bookingToAdd = initializeBooking(user, flight);
         List<Passenger> passengers = collectPassengers(booking, user, bookingToAdd);
 
