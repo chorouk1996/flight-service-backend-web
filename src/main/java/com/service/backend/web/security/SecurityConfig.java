@@ -53,8 +53,8 @@ public class SecurityConfig {
 
 
                 )
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/flight/search").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/user/**").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/auth/**", "/api/v1/flight/search").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/user/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

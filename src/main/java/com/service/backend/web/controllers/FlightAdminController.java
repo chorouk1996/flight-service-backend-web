@@ -7,48 +7,87 @@ import com.service.backend.web.models.requests.SearchFlightRequest;
 import com.service.backend.web.models.requests.UpdateFlightRequest;
 import com.service.backend.web.models.requests.UpdateFlightStatusRequest;
 import com.service.backend.web.models.responses.CreateFlightResponse;
-import com.service.backend.web.services.implementation.FlightService;
 import com.service.backend.web.services.interfaces.IFlightService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/flight")
+@RequestMapping("/api/v1/admin/flight")
 @AllArgsConstructor
+@Tag(name = "Flight Management (Admin)", description = "Administrative actions for creating, updating, cancelling, and searching flights.")
 public class FlightAdminController {
 
-    IFlightService flightService;
+    private final IFlightService flightService;
 
+    @Operation(summary = "Create a new flight", description = "Adds a new flight to the system. Requires ADMIN authority.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Flight created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid flight data"),
+            @ApiResponse(responseCode = "403", description = "Access denied")
+    })
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
     public CreateFlightResponse addFlight(@RequestBody @Valid CreateFlightRequest flight) {
         return flightService.addFlight(flight);
     }
 
+    @Operation(summary = "Update a flight", description = "Updates flight details by ID. Requires ADMIN authority.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Flight updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid update data"),
+            @ApiResponse(responseCode = "404", description = "Flight not found"),
+            @ApiResponse(responseCode = "403", description = "Access denied")
+    })
     @PutMapping("/{flightId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public CreateFlightResponse updateFlight(@PathVariable (required = true) Long flightId,@RequestBody UpdateFlightRequest flight) {
-        return flightService.updateFlight(flightId,flight);
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    public CreateFlightResponse updateFlight(
+            @PathVariable Long flightId,
+            @RequestBody @Valid UpdateFlightRequest flight) {
+        return flightService.updateFlight(flightId, flight);
     }
 
+    @Operation(summary = "Update flight status", description = "Updates the status (e.g., CANCELLED, DEPARTED) of a flight. Requires ADMIN authority.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Flight status updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid status value"),
+            @ApiResponse(responseCode = "404", description = "Flight not found"),
+            @ApiResponse(responseCode = "403", description = "Access denied")
+    })
     @PutMapping("/{flightId}/status")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public CreateFlightResponse updateFlightStatus(@PathVariable (required = true) Long flightId,@RequestBody UpdateFlightStatusRequest request) {
-        return flightService.updateFlightStatus(flightId,request);
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    public CreateFlightResponse updateFlightStatus(
+            @PathVariable Long flightId,
+            @RequestBody @Valid UpdateFlightStatusRequest request) {
+        return flightService.updateFlightStatus(flightId, request);
     }
 
+    @Operation(summary = "Delete (cancel) a flight", description = "Cancels an existing flight. Requires ADMIN authority.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Flight cancelled successfully"),
+            @ApiResponse(responseCode = "404", description = "Flight not found"),
+            @ApiResponse(responseCode = "403", description = "Access denied")
+    })
     @DeleteMapping("/{flightId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFlight(@PathVariable Long flightId) {
-         flightService.cancelFlight(flightId);
+        flightService.cancelFlight(flightId);
     }
 
-
+    @Operation(summary = "Search flights (admin)", description = "Searches for flights using flexible admin-side filters.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Flights found"),
+            @ApiResponse(responseCode = "400", description = "Invalid search parameters")
+    })
     @PostMapping("/search")
     public List<FlightDto> searchFlight(@RequestBody @Valid SearchFlightRequest searchCriteria) {
         return flightService.adminSearchFlight(searchCriteria);

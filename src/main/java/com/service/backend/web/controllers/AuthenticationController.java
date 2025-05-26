@@ -9,6 +9,10 @@ import com.service.backend.web.models.responses.AuthenticationResponse;
 import com.service.backend.web.models.responses.RefreshTokenResponse;
 import com.service.backend.web.models.responses.ResetTokenResponse;
 import com.service.backend.web.services.interfaces.IUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -27,14 +31,21 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @AllArgsConstructor
+@Tag(name = "Authentication", description = "Handles login, logout, refresh tokens, and password resets.")
 public class AuthenticationController {
 
     private final IUserService userService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
 
+    @Operation(summary = "User login", description = "Authenticates the user and returns an access token and sets a refresh token as an HttpOnly cookie.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login successful, tokens returned"),
+            @ApiResponse(responseCode = "400", description = "Invalid credentials"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PostMapping("/login")
     public ResponseEntity<RefreshTokenResponse> loginUser(@RequestBody @Valid AuthentUserRequest user) {
         LOGGER.info("Login attempt for user: {}", user.getEmail());
@@ -46,6 +57,12 @@ public class AuthenticationController {
                 .body(new RefreshTokenResponse(authenticationResponse.getToken()));
     }
 
+    @Operation(summary = "User logout", description = "Logs out the user by deleting the refresh token and clearing the cookie.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Logout successful"),
+            @ApiResponse(responseCode = "400", description = "Refresh token is missing"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @DeleteMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> logoutUser(HttpServletRequest request) {
@@ -59,6 +76,12 @@ public class AuthenticationController {
                 .build();
     }
 
+    @Operation(summary = "Refresh access token", description = "Generates a new access token using a valid refresh token stored in the cookie.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Access token successfully refreshed"),
+            @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PostMapping("/refresh")
     public RefreshTokenResponse refreshToken(HttpServletRequest request) {
         String token = getCookie(request);
@@ -68,15 +91,27 @@ public class AuthenticationController {
         return response;
     }
 
+    @Operation(summary = "Request password reset token", description = "Sends a password reset link if the email is associated with an active account.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reset link sent if the email exists"),
+            @ApiResponse(responseCode = "400", description = "Invalid email format or missing data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PostMapping("/request-reset")
-    public ResetTokenResponse requestResetToken(@RequestBody ResetTokenRequest tokenRequest, HttpServletRequest request) {
+    public ResetTokenResponse requestResetToken(@RequestBody @Valid ResetTokenRequest tokenRequest, HttpServletRequest request) {
         LOGGER.info("Password reset requested for email: {}", tokenRequest.getEmail());
         userService.resetToken(tokenRequest, request);
         return new ResetTokenResponse("If an active account with this email exists, a reset link has been sent.");
     }
 
+    @Operation(summary = "Reset password", description = "Resets the user's password if a valid reset token is provided.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Password reset successfully if the token is valid"),
+            @ApiResponse(responseCode = "400", description = "Invalid or expired reset token"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PostMapping("/reset-password")
-    public ResetTokenResponse resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+    public ResetTokenResponse resetPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest) {
         userService.resetPassword(resetPasswordRequest);
         return new ResetTokenResponse("If an active account with this email exists, the password will be changed.");
 

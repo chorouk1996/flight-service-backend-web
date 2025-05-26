@@ -5,6 +5,7 @@ import com.service.backend.web.exceptions.FunctionalException;
 import com.service.backend.web.exceptions.FunctionalExceptionDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -102,6 +103,19 @@ public class GlobalExceptionHandler {
         ex.setPath(request.getRequestURI());
         response.setStatus(ex.getStatus().value());
         ex.setMessage("Method " + exception.getMethod() + " is not supported");
+        return ex;
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseBody
+    public FunctionalExceptionDto constraintViolationException(HttpServletResponse response, HttpServletRequest request, ConstraintViolationException exception) {
+        FunctionalExceptionDto ex = new FunctionalExceptionDto();
+        ex.setTimestamp(LocalDateTime.now());
+        ex.setStatus(HttpStatus.BAD_REQUEST);
+        ex.setError("INVALID_REQUEST_DATA");
+        ex.setPath(request.getRequestURI());
+        response.setStatus(ex.getStatus().value());
+        ex.setMessage(exception.getMessage());
         return ex;
     }
 
