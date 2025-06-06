@@ -4,6 +4,7 @@ package com.service.backend.web.controllers;
 import com.service.backend.web.models.requests.CreateUserRequest;
 import com.service.backend.web.models.responses.CreateUserResponse;
 import com.service.backend.web.models.responses.UserPaginationResponse;
+import com.service.backend.web.services.helper.SecurityHelper;
 import com.service.backend.web.services.interfaces.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +29,7 @@ import java.util.List;
 @Tag(name = "User Management (Admin)", description = "Admin-only endpoints to manage platform users including creation, blocking, and listing.")
 public class UserAdminController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserAdminController.class);
     private final IUserService userService;
 
     @Operation(summary = "Get all users (non-paginated)", description = "Returns a complete list of all users.")
@@ -74,6 +78,7 @@ public class UserAdminController {
     @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void blockUser(@PathVariable long userId) {
+        LOGGER.info("Admin {} blocked user {}", SecurityHelper.getUserConnected().getUsername(), userId);
         userService.blockUser(userId);
     }
 
@@ -87,6 +92,7 @@ public class UserAdminController {
     @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unBlockUser(@PathVariable long userId) {
+        LOGGER.info("Admin {} unblocked user {}", SecurityHelper.getUserConnected().getUsername(), userId);
         userService.unBlockUser(userId);
     }
 }

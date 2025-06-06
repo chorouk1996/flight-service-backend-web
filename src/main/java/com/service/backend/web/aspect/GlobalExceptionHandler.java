@@ -144,8 +144,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public FunctionalExceptionDto handleAll(Exception ex, HttpServletRequest request) {
-        LOGGER.error("Unhandled exception", ex); // côté backend : tout est loggué
-
+        LOGGER.error("Unhandled exception at {} {}: {}", request.getMethod(), request.getRequestURI(), ex.getMessage(), ex);
         return FunctionalExceptionDto.builder()
                 .message("Une erreur interne est survenue. Merci de réessayer plus tard.")
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -7,6 +7,7 @@ import com.service.backend.web.models.requests.SearchFlightRequest;
 import com.service.backend.web.models.requests.UpdateFlightRequest;
 import com.service.backend.web.models.requests.UpdateFlightStatusRequest;
 import com.service.backend.web.models.responses.CreateFlightResponse;
+import com.service.backend.web.services.helper.SecurityHelper;
 import com.service.backend.web.services.interfaces.IFlightService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,6 +15,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +31,7 @@ public class FlightAdminController {
 
     private final IFlightService flightService;
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(FlightAdminController.class);
     @Operation(summary = "Create a new flight", description = "Adds a new flight to the system. Requires ADMIN authority.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Flight created successfully"),
@@ -67,6 +71,8 @@ public class FlightAdminController {
     public CreateFlightResponse updateFlightStatus(
             @PathVariable Long flightId,
             @RequestBody @Valid UpdateFlightStatusRequest request) {
+
+        LOGGER.info("Admin {} updated flight {}  status to {}", SecurityHelper.getUserConnected().getUsername(), flightId,request.getStatus());
         return flightService.updateFlightStatus(flightId, request);
     }
 
@@ -79,7 +85,9 @@ public class FlightAdminController {
     @DeleteMapping("/{flightId}")
     @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteFlight(@PathVariable Long flightId) {
+    public void deleteFlight(@PathVariable Long flightId)
+    {
+        LOGGER.info("Admin {} cancelled flight {}", SecurityHelper.getUserConnected().getUsername(), flightId);
         flightService.cancelFlight(flightId);
     }
 

@@ -34,7 +34,7 @@ public class NotificationController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public List<NotificationResponse> getAllNotifications() {
         return notificationService.getAlNotifications(SecurityHelper.getUserConnected().getUsername());
     }
@@ -49,7 +49,7 @@ public class NotificationController {
             @ApiResponse(responseCode = "404", description = "Notification not found")
     })
     @PostMapping("/{notificationId}/mark-as-read")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> markAsRead(@PathVariable Long notificationId) {
         notificationService.markAsRead(notificationId, SecurityHelper.getUserConnected().getUsername());

@@ -37,8 +37,8 @@ public class BookingController {
             @ApiResponse(responseCode = "403", description = "Access denied"),
             @ApiResponse(responseCode = "404", description = "Booking not found")
     })
-    @GetMapping("/c")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @GetMapping("/{bookingId}")
+    @PreAuthorize("hasAuthority('USER')")
     public BookingDto getBooking(@PathVariable Long bookingId) {
         return bookingService.getBookingById(bookingId);
     }
@@ -49,7 +49,7 @@ public class BookingController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @GetMapping("/my-bookings")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public List<MyBookingResponse> getMyBookings(
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") @Max(100) int size) {
@@ -63,7 +63,7 @@ public class BookingController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PostMapping()
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public CreateBookingResponse addBooking(@RequestBody @Valid CreateBookingRequest booking) {
         return bookingService.addBooking(booking, SecurityHelper.getUserConnected().getUsername());
     }
@@ -75,7 +75,7 @@ public class BookingController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PutMapping()
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<BookingDto> updateBooking(@RequestBody @Valid BookingDto booking) {
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
@@ -86,7 +86,7 @@ public class BookingController {
             @ApiResponse(responseCode = "403", description = "Access denied or booking does not belong to user")
     })
     @PutMapping("/cancel-my-booking/{bookingId}")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cancelBooking(@PathVariable Long bookingId) {
         bookingService.cancelMyBooking(bookingId, SecurityHelper.getUserConnected().getUsername());
@@ -98,7 +98,7 @@ public class BookingController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @GetMapping("/my-bookings/upcoming")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public List<MyBookingResponse> getMyUpcomingBookings(
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") @Max(100) int size) {
@@ -111,7 +111,7 @@ public class BookingController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @GetMapping("/my-bookings/past")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public List<MyBookingResponse> getMyPastBookings(
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") @Max(100) int size) {

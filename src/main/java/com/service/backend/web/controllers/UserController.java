@@ -35,7 +35,7 @@ public class UserController {
     })
     @PutMapping("/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public void updatePassword(@RequestBody @Valid PasswordUpdateRequest user) {
         userService.updatePassword(user, SecurityHelper.getUserConnected());
     }

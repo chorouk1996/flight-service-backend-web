@@ -32,3 +32,25 @@ com.service.backend.web ├── config ├── controller ├── dto ├�
    ```bash
    git clone https://github.com/your-username/flight-service-backend-web.git
    cd flight-service-backend-web
+   ```
+
+3. **Build the project:**
+   ```bash
+   mvn clean install
+   ```
+
+4. **Configure environment variables:**
+   - `DB_URL`
+   - `DB_USERNAME`
+   - `DB_PASSWORD`
+   - `SECRET_KEY`
+
+5. **Run the application:**
+   ```bash
+   mvn spring-boot:run
+   ```
+
+6. **Run tests:**
+   ```bash
+   mvn test
+   ```

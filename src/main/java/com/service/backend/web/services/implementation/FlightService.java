@@ -97,7 +97,7 @@ public class FlightService implements IFlightService {
 
     @Override
     public List<FlightDto> getAllFlight() {
-        return Collections.emptyList();
+        return flightRepository.findAll().stream().map(FlightMapper::mapFlightEntityToDto).toList();
     }
 
     @Override

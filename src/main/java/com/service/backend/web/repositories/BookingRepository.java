@@ -3,6 +3,7 @@ package com.service.backend.web.repositories;
 import com.service.backend.web.models.entities.Booking;
 import com.service.backend.web.models.entities.User;
 import com.service.backend.web.models.enumerators.BookingStatusEnum;
+import com.service.backend.web.models.enumerators.FlightStatusEnum;
 import com.service.backend.web.models.responses.IBookingByMonthResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,4 +45,6 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
             "GROUP BY to_char(b.booking_date,'YYYY/MM')"
             , nativeQuery = true)
     List<IBookingByMonthResponse> getBookingsByMonth();
+
+    List<Booking> findByStatusIn(List<FlightStatusEnum> departed);
 }

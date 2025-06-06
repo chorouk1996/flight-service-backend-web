@@ -25,8 +25,6 @@ public interface IBookingService {
 
     List<MyBookingResponse> getPastBooking(String username, int page, int size);
 
-    List<BookingDto> getConfirmedAndDepartedBooking();
-
     void cancelMyBooking(Long booking, String username);
 
     void confirmBooking(Long booking);

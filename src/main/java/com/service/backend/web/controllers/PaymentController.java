@@ -33,7 +33,7 @@ public class PaymentController {
             @ApiResponse(responseCode = "500", description = "Payment processing failed")
     })
     @PutMapping("{bookingId}/pay")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<PaymentResponse> pay(@PathVariable Long bookingId) {
         return new ResponseEntity<>(
                 paymentService.pay(bookingId, SecurityHelper.getUserConnected().getUsername()),

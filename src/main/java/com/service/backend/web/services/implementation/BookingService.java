@@ -164,11 +164,6 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public List<BookingDto> getConfirmedAndDepartedBooking() {
-        return Collections.emptyList();
-    }
-
-    @Override
     public void cancelBooking(Long booking) {
         bookingRepository.findByIdAndStatusNot(booking, BookingStatusEnum.CANCELLED).ifPresentOrElse(
                 myBooking -> {

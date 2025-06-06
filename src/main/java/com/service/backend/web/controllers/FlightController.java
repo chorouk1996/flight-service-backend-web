@@ -32,7 +32,7 @@ public class FlightController {
             @ApiResponse(responseCode = "404", description = "Flight not found")
     })
     @GetMapping("/{flightId}")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<FlightDto> getFlight(@PathVariable Long flightId) {
         return new ResponseEntity<>(flightService.getFlight(flightId), HttpStatus.OK);
     }
@@ -43,7 +43,7 @@ public class FlightController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<List<FlightDto>> getAllFlight() {
         return new ResponseEntity<>(flightService.getAllFlight(), HttpStatus.OK);
     }
@@ -55,7 +55,7 @@ public class FlightController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PostMapping("/search")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public List<FlightDto> searchFlight(@RequestBody @Valid SearchFlightRequest searchCriteria) {
         return flightService.userSearchFlight(searchCriteria);
     }

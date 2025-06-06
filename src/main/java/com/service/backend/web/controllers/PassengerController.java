@@ -33,7 +33,7 @@ public class PassengerController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PostMapping()
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public SavedPassengerDto addSavedPassenger(@RequestBody @Valid CreateSavedPassengerRequest passenger) {
         return passengerService.addSavedPassenger(passenger, SecurityHelper.getUserConnected().getUsername());
     }
@@ -44,7 +44,7 @@ public class PassengerController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public List<SavedPassengerDto> getAllSavedPassenger() {
         return passengerService.getAllSavedPassenger(SecurityHelper.getUserConnected().getUsername());
     }
@@ -56,7 +56,7 @@ public class PassengerController {
             @ApiResponse(responseCode = "404", description = "Passenger not found")
     })
     @GetMapping("/{passengerId}")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public SavedPassengerDto getSavedPassenger(@PathVariable Long passengerId) {
         return passengerService.getSavedPassengerById(SecurityHelper.getUserConnected().getUsername(), passengerId);
     }
@@ -68,7 +68,7 @@ public class PassengerController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PutMapping("/{passengerId}")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     public SavedPassengerDto updateSavedPassenger(
             @PathVariable Long passengerId,
             @RequestBody @Valid UpdateSavedPassengerRequest passenger) {
@@ -82,7 +82,7 @@ public class PassengerController {
             @ApiResponse(responseCode = "404", description = "Passenger not found")
     })
     @DeleteMapping("/{passengerId}")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).USER")
+    @PreAuthorize("hasAuthority('USER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSavedPassenger(@PathVariable Long passengerId) {
         passengerService.deleteSavedPassengerByUser(SecurityHelper.getUserConnected().getUsername(), passengerId);
