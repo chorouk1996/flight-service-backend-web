@@ -49,7 +49,7 @@ public class SavedPassengerService implements ISavedPassengerService {
     private SavedPassenger getSavedPassengerByIdAndUser(String username, Long id) {
         return savedPassengerRepository.findByUserAndId(userService.getUserByEmail(username),id).orElseThrow(
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto("The SavedPassenger doesn't exist or don't belong to this user", HttpStatus.NOT_FOUND));
+                    throw new FunctionalException("The SavedPassenger doesn't exist or don't belong to this user", HttpStatus.NOT_FOUND);
                 }
         );
 

@@ -22,7 +22,7 @@ public final class DateHelper {
             dateTime = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyy")).atTime(23, 59, 59);
         } catch (Exception ex) {
             throw new FunctionalException(
-                    new FunctionalExceptionDto("Invalid date range. Please ensure the dates are properly formatted and logical.", HttpStatus.BAD_REQUEST)
+                   "Invalid date range. Please ensure the dates are properly formatted and logical.", HttpStatus.BAD_REQUEST
             );
         }
         return dateTime;
@@ -35,7 +35,7 @@ public final class DateHelper {
             dateTime = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyy")).atStartOfDay();
         } catch (Exception ex) {
             throw new FunctionalException(
-                    new FunctionalExceptionDto("Invalid date range. Please ensure the dates are properly formatted and logical.", HttpStatus.BAD_REQUEST)
+                    "Invalid date range. Please ensure the dates are properly formatted and logical.", HttpStatus.BAD_REQUEST
             );
         }
         return dateTime;

@@ -1,7 +1,6 @@
 package com.service.backend.web.scheduled;
 
 
-import com.service.backend.web.eventlistener.DelayFlightEventListener;
 import com.service.backend.web.services.interfaces.INotificationService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;

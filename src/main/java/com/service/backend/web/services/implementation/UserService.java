@@ -66,7 +66,7 @@ public class UserService implements IUserService {
     public CreateUserResponse addUser(CreateUserRequest user) {
 
         if (doesUserExist(user.getEmail()))
-            throw new FunctionalException(new FunctionalExceptionDto("This User already exist", HttpStatus.CONFLICT));
+            throw new FunctionalException("This User already exist", HttpStatus.CONFLICT);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return mapEntityToCreateUserResponse(userRepository.save(mapCreateUserRequestToEntity(user)));
     }
@@ -116,7 +116,7 @@ public class UserService implements IUserService {
             }
         } catch (BadCredentialsException e) {
             LOGGER.warn("Authentication failed: bad credentials for user: {}", user.getEmail());
-            throw new FunctionalException(new FunctionalExceptionDto("Bad Credentials", HttpStatus.BAD_REQUEST));
+            throw new FunctionalException("Bad Credentials", HttpStatus.BAD_REQUEST);
         }
 
         LOGGER.warn("Authentication failed for unknown reason for user: {}", user.getEmail());
@@ -132,7 +132,7 @@ public class UserService implements IUserService {
             return new RefreshTokenResponse(jwtService.generateToken(userEmail));
         }
         LOGGER.warn("Refresh token rejected or invalid.");
-        throw new FunctionalException(new FunctionalExceptionDto("You should signin", HttpStatus.UNAUTHORIZED));
+        throw new FunctionalException("You should signin", HttpStatus.UNAUTHORIZED);
     }
 
     @Override
@@ -183,13 +183,13 @@ public class UserService implements IUserService {
     @Override
     public void updatePassword(PasswordUpdateRequest request, UserDetailsImpl user) {
         User currentUser = getUser(request.getEmail()).orElseThrow(() -> {
-            throw new FunctionalException(new FunctionalExceptionDto(ErrorMessages.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED));
+            throw new FunctionalException(ErrorMessages.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED);
         });
 
         if (bCryptPasswordEncoder.matches(request.getOldPassword(), currentUser.getPassword()) && bCryptPasswordEncoder.matches(user.getPassword(), currentUser.getPassword()) && user.getUsername().equalsIgnoreCase(request.getEmail())) {
             currentUser.setPassword(bCryptPasswordEncoder.encode(request.getNewPassword()));
         } else {
-            throw new FunctionalException(new FunctionalExceptionDto(ErrorMessages.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED));
+            throw new FunctionalException(ErrorMessages.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED);
         }
         userRepository.save(currentUser);
     }
@@ -208,7 +208,7 @@ public class UserService implements IUserService {
     @Override
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> {
-            throw new FunctionalException(new FunctionalExceptionDto(ErrorMessages.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED));
+            throw new FunctionalException(ErrorMessages.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED);
         });
 
     }
@@ -222,7 +222,7 @@ public class UserService implements IUserService {
     @Override
     public User getUserById(long id) {
         return userRepository.findById(id).orElseThrow(() -> {
-            throw new FunctionalException(new FunctionalExceptionDto(ErrorMessages.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED));
+            throw new FunctionalException(ErrorMessages.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED);
         });
 
     }

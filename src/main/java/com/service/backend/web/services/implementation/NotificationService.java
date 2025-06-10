@@ -82,7 +82,7 @@ public class NotificationService implements INotificationService {
 
         Notification notification = notificationRepository.findByIdAndUser(id, userService.getUserByEmail(username)).orElseThrow(
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto("This notification doesn't exist", HttpStatus.NOT_FOUND));
+                    throw new FunctionalException("This notification doesn't exist", HttpStatus.NOT_FOUND);
                 }
 
         );

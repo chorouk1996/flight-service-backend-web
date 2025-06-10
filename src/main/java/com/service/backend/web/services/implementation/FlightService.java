@@ -67,7 +67,7 @@ public class FlightService implements IFlightService {
         FlightHelper.updateIfNotNull(oldFlight::setAirlineName, flight::getAirlineName);
         if (flight.getStatus() == FlightStatusEnum.CANCELLED || flight.getStatus() == FlightStatusEnum.DELAYED || (flight.getDepartureTime() != null && flight.getDepartureTime().isAfter(oldFlight.getDepartureTime()))) {
             if (!StringUtils.hasText(flight.getDelayReason()))
-                throw new FunctionalException(new FunctionalExceptionDto("Delay reason must be provided when status is DELAYED or CANCELLED", HttpStatus.BAD_REQUEST));
+                throw new FunctionalException("Delay reason must be provided when status is DELAYED or CANCELLED", HttpStatus.BAD_REQUEST);
             oldFlight.setDelayReason(flight.getDelayReason());
             oldFlight.setFlightStatus(flight.getStatus() != null ? flight.getStatus() : FlightStatusEnum.DELAYED);
             if (oldFlight.getFlightStatus() == FlightStatusEnum.DELAYED)
@@ -90,7 +90,7 @@ public class FlightService implements IFlightService {
 
     private void checkIfReasonExist(FlightStatusEnum status, String delayReason) {
         if ((status == FlightStatusEnum.CANCELLED || status == FlightStatusEnum.DELAYED) && !StringUtils.hasText(delayReason)) {
-            throw new FunctionalException(new FunctionalExceptionDto("Delay reason must be provided when status is DELAYED or CANCELLED", HttpStatus.BAD_REQUEST));
+            throw new FunctionalException("Delay reason must be provided when status is DELAYED or CANCELLED", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -104,7 +104,7 @@ public class FlightService implements IFlightService {
     public Flight getFlightById(Long id) {
         return flightRepository.getFlightById(id).orElseThrow(
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto("Flight not found", HttpStatus.NOT_FOUND));
+                    throw new FunctionalException("Flight not found", HttpStatus.NOT_FOUND);
                 }
 
         );
@@ -113,7 +113,7 @@ public class FlightService implements IFlightService {
     public Flight getAvailableFlightById(Long id) {
         return flightRepository.getFlightByIdAndFlightStatusNotAndDepartureTimeAfter(id, FlightStatusEnum.CANCELLED, LocalDateTime.now()).orElseThrow(
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto("Flight not found , departed or cancelled", HttpStatus.NOT_FOUND));
+                    throw new FunctionalException("Flight not found , departed or cancelled", HttpStatus.NOT_FOUND);
                 }
 
         );
@@ -144,9 +144,9 @@ public class FlightService implements IFlightService {
     public void decreaseSeat(Long flightId, int seat) {
         Flight flight = getFlightById(flightId);
         if (flight.getFlightStatus().equals(FlightStatusEnum.CANCELLED))
-            throw new FunctionalException(new FunctionalExceptionDto("Flight was Cancelled", HttpStatus.NOT_FOUND));
+            throw new FunctionalException("Flight was Cancelled", HttpStatus.NOT_FOUND);
         if (flight.getSeats() < seat)
-            throw new FunctionalException(new FunctionalExceptionDto("Seats available are insufficient", HttpStatus.CONFLICT));
+            throw new FunctionalException("Seats available are insufficient", HttpStatus.CONFLICT);
 
         flight.setSeats(flight.getSeats() - seat);
         flightRepository.save(flight);
@@ -166,7 +166,7 @@ public class FlightService implements IFlightService {
     @Override
     public List<FlightDto> userSearchFlight(SearchFlightRequest criteria) {
         if (criteria.getStatus() == FlightStatusEnum.CANCELLED || criteria.getStatus() == FlightStatusEnum.DEPARTED)
-            throw new FunctionalException(new FunctionalExceptionDto("Users are not allowed to access cancelled flight", HttpStatus.FORBIDDEN));
+            throw new FunctionalException("Users are not allowed to access cancelled flight", HttpStatus.FORBIDDEN);
         return searchFlight(criteria);
     }
 

@@ -134,7 +134,7 @@ public class AuthenticationController {
         return cookie.orElseThrow(() -> {
             LOGGER.warn("Missing refresh token in cookie");
             throw new FunctionalException(
-                    new FunctionalExceptionDto("the refresh token is mandatory", HttpStatus.BAD_REQUEST)
+                    "the refresh token is mandatory", HttpStatus.BAD_REQUEST
             );
         }).getValue();
     }

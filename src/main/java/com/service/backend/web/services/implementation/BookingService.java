@@ -83,8 +83,8 @@ public class BookingService implements IBookingService {
 
     private void validatePassengers(CreateBookingRequest booking) {
         if (booking.getPassengerIds().isEmpty() && booking.getPassengers().isEmpty()) {
-            throw new FunctionalException(new FunctionalExceptionDto(
-                    "A booking must contain at least one passenger.", HttpStatus.BAD_REQUEST));
+            throw new FunctionalException(
+                    "A booking must contain at least one passenger.", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -101,8 +101,8 @@ public class BookingService implements IBookingService {
         List<Passenger> passengers = new ArrayList<>();
 
         if (booking.getPassengers().isEmpty() && booking.getPassengerIds().isEmpty())
-            throw new FunctionalException(new FunctionalExceptionDto(
-                    "A booking must contain at least one passenger.", HttpStatus.BAD_REQUEST));
+            throw new FunctionalException(
+                    "A booking must contain at least one passenger.", HttpStatus.BAD_REQUEST);
 
         if (!booking.getPassengerIds().isEmpty()) {
             booking.getPassengerIds().forEach(id -> {
@@ -168,7 +168,7 @@ public class BookingService implements IBookingService {
         bookingRepository.findByIdAndStatusNot(booking, BookingStatusEnum.CANCELLED).ifPresentOrElse(
                 myBooking -> {
                     if (!(myBooking.getStatus().equals(BookingStatusEnum.PENDING_PAYMENT) || myBooking.getStatus().equals(BookingStatusEnum.CONFIRMED)))
-                        throw new FunctionalException(new FunctionalExceptionDto("Only pending payment bookings can be cancelled manually", HttpStatus.CONFLICT));
+                        throw new FunctionalException("Only pending payment bookings can be cancelled manually", HttpStatus.CONFLICT);
                     flightService.increaseSeat(myBooking.getFlight().getId(), myBooking.getPassengers().size());
                     BookingStatusEnum oldStatus = myBooking.getStatus();
                     myBooking.setStatus(BookingStatusEnum.CANCELLED);
@@ -178,7 +178,7 @@ public class BookingService implements IBookingService {
                 },
 
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto(ALREADY_CANCELED_BOOKING, HttpStatus.NOT_FOUND));
+                    throw new FunctionalException(ALREADY_CANCELED_BOOKING, HttpStatus.NOT_FOUND);
                 }
         );
 
@@ -199,7 +199,7 @@ public class BookingService implements IBookingService {
                 },
 
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto("You are not authorized to cancel this booking.", HttpStatus.FORBIDDEN));
+                    throw new FunctionalException("You are not authorized to cancel this booking.", HttpStatus.FORBIDDEN);
                 }
         );
 
@@ -217,7 +217,7 @@ public class BookingService implements IBookingService {
                 },
 
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto("Only pending payment bookings can be confirmed manually", HttpStatus.CONFLICT));
+                    throw new FunctionalException("Only pending payment bookings can be confirmed manually", HttpStatus.CONFLICT);
                 }
         );
 
@@ -232,7 +232,7 @@ public class BookingService implements IBookingService {
     public BookingDto getBookingByIdandUser(Long id, String username) {
         return BookingMapper.mapBookingEntityToDto(bookingRepository.findByIdAndStatusAndUser(id, BookingStatusEnum.PENDING_PAYMENT, userService.getUserByEmail(username)).orElseThrow(
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto(ALREADY_CANCELED_BOOKING, HttpStatus.NOT_FOUND));
+                    throw new FunctionalException(ALREADY_CANCELED_BOOKING, HttpStatus.NOT_FOUND);
                 }
         ));
     }
@@ -241,7 +241,7 @@ public class BookingService implements IBookingService {
     public BookingDto getBookingById(Long id) {
         return BookingMapper.mapBookingEntityToDto(bookingRepository.findById(id).orElseThrow(
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto(ALREADY_CANCELED_BOOKING, HttpStatus.NOT_FOUND));
+                    throw new FunctionalException(ALREADY_CANCELED_BOOKING, HttpStatus.NOT_FOUND);
                 }
         ));
     }
@@ -286,7 +286,7 @@ public class BookingService implements IBookingService {
             StatefulBeanToCsv<BookingCSV> writer = new StatefulBeanToCsvBuilder<BookingCSV>(response.getWriter()).withSeparator(ICSVWriter.DEFAULT_SEPARATOR).build();
             writer.write(bookings);
         } catch (Exception ex) {
-            throw new FunctionalException(new FunctionalExceptionDto("can't export cvs, try later", HttpStatus.SERVICE_UNAVAILABLE));
+            throw new FunctionalException("can't export cvs, try later", HttpStatus.SERVICE_UNAVAILABLE);
         }
 
     }

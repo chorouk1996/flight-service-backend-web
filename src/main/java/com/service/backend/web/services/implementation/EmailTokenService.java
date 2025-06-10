@@ -33,12 +33,11 @@ public class EmailTokenService implements IEmailTokenService {
     @Override
     public EmailToken isResetTokenValid(ResetPasswordRequest resetToken) {
         Optional<EmailToken> emailToken = emailTokenRepository.findByTokenAndUsedAndExpireAtAfterAndType(resetToken.getToken(), Boolean.FALSE, LocalDateTime.now(), TypeTokenEnum.RESET_TOKEN);
-        EmailToken token = emailToken.orElseThrow(
+        return emailToken.orElseThrow(
                 () -> {
-                    throw new FunctionalException(new FunctionalExceptionDto("Your token is not valid", HttpStatus.NOT_FOUND));
+                    throw new FunctionalException("Your token is not valid", HttpStatus.NOT_FOUND);
                 }
         );
-        return token;
     }
 
     @Override

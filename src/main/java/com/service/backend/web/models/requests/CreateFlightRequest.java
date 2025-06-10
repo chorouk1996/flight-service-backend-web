@@ -12,15 +12,15 @@ import java.time.LocalDateTime;
 @Schema(name = "CreateFlightRequest", description = "DTO for creating a new flight in the system.")
 public class CreateFlightRequest {
 
-    @NotBlank
+    @NotBlank(message = "flightNumber must not be blank or empty")
     @Schema(description = "Unique flight number identifier", example = "AA1234", required = true)
     private String flightNumber;
 
-    @NotBlank
+    @NotBlank(message = "Origin must not be blank or empty")
     @Schema(description = "Origin city or airport code", example = "JFK", required = true)
     private String origin;
 
-    @NotBlank
+    @NotBlank(message = "Destination must not be blank or empty")
     @Schema(description = "Destination city or airport code", example = "LAX", required = true)
     private String destination;
 
@@ -40,11 +40,11 @@ public class CreateFlightRequest {
     @Schema(description = "Total number of available seats", example = "180", required = true)
     private Integer seats;
 
-    @NotBlank
+    @NotBlank(message = "Airline name must not be blank or empty")
     @Schema(description = "Airline name operating the flight", example = "Delta Airlines", required = true)
     private String airlineName;
 
-    @NotBlank
+    @NotBlank(message = "Aircraft model must not be blank or empty")
     @Schema(description = "Aircraft model or type", example = "Boeing 737", required = true)
     private String aircraftType;
 
