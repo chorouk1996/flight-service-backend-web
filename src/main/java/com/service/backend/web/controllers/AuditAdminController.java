@@ -36,7 +36,7 @@ public class AuditAdminController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping("/logs")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public List<AuditLogDto> getAuditLog(@RequestBody @Valid SearchAuditRequest req) {
         return auditLogService.getAuditByCriteria(req);
     }

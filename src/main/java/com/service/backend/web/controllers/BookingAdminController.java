@@ -37,7 +37,7 @@ public class BookingAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @GetMapping("/{bookingId}")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public BookingDto getBooking(@PathVariable Long bookingId) {
         return bookingService.getBookingById(bookingId);
     }
@@ -48,7 +48,7 @@ public class BookingAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public ResponseEntity<List<BookingDto>> getAllBooking(
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size) {
@@ -62,7 +62,7 @@ public class BookingAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PostMapping()
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public CreateBookingResponse addBooking(@RequestBody @Valid CreateBookingRequest booking) {
         return bookingService.addBooking(booking, SecurityHelper.getUserConnected().getUsername());
     }
@@ -74,7 +74,7 @@ public class BookingAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PutMapping()
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public ResponseEntity<BookingDto> updateBooking(@RequestBody @Valid BookingDto booking) {
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
@@ -86,7 +86,7 @@ public class BookingAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PutMapping("/cancel/{bookingId}")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cancelBooking(@PathVariable Long bookingId) {
         bookingService.cancelBooking(bookingId);
@@ -99,7 +99,7 @@ public class BookingAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PutMapping("/confirm/{bookingId}")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void confirmBooking(@PathVariable Long bookingId) {
         bookingService.confirmBooking(bookingId);
@@ -112,7 +112,7 @@ public class BookingAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PostMapping("/search")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public List<SearchBookingResponse> searchBooking(@RequestBody @Valid SearchBookingRequest request){
         return bookingService.searchBooking(request);
     }
@@ -123,7 +123,7 @@ public class BookingAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @GetMapping("/export")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void exportBooking(HttpServletResponse response){
         bookingService.exportAllBookingto(response);

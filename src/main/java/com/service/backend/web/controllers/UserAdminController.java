@@ -38,7 +38,7 @@ public class UserAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied — admin only")
     })
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public List<CreateUserResponse> getAllUser() {
         return userService.getAllUsers();
     }
@@ -50,7 +50,7 @@ public class UserAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PostMapping()
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public CreateUserResponse addUser(@RequestBody @Valid CreateUserRequest user) {
         return userService.addUser(user);
     }
@@ -61,7 +61,7 @@ public class UserAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @GetMapping
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public UserPaginationResponse getAllUser(
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") @Max(100) int size) {
@@ -75,7 +75,7 @@ public class UserAdminController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @PutMapping("/{userId}/block")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void blockUser(@PathVariable long userId) {
         LOGGER.info("Admin {} blocked user {}", SecurityHelper.getUserConnected().getUsername(), userId);
@@ -89,7 +89,7 @@ public class UserAdminController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @PutMapping("/{userId}/unblock")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unBlockUser(@PathVariable long userId) {
         LOGGER.info("Admin {} unblocked user {}", SecurityHelper.getUserConnected().getUsername(), userId);

@@ -34,7 +34,7 @@ public class StatsAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied — admin only")
     })
     @GetMapping("/flights-by-airline")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public List<FlightByAirlineResponse> getFlightsByAirline() {
         return flightService.getFlightsByAirline();
     }
@@ -48,7 +48,7 @@ public class StatsAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied — admin only")
     })
     @GetMapping("/bookings-by-month")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public List<BookingByMonthResponse> getBookingsByMonth() {
         return bookingService.getBookingsByMonth();
     }

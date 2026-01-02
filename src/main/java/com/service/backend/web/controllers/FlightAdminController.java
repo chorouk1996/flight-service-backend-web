@@ -39,7 +39,7 @@ public class FlightAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PostMapping
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public CreateFlightResponse addFlight(@RequestBody @Valid CreateFlightRequest flight) {
         return flightService.addFlight(flight);
     }
@@ -52,7 +52,7 @@ public class FlightAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PutMapping("/{flightId}")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public CreateFlightResponse updateFlight(
             @PathVariable Long flightId,
             @RequestBody @Valid UpdateFlightRequest flight) {
@@ -67,7 +67,7 @@ public class FlightAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PutMapping("/{flightId}/status")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     public CreateFlightResponse updateFlightStatus(
             @PathVariable Long flightId,
             @RequestBody @Valid UpdateFlightStatusRequest request) {
@@ -83,7 +83,7 @@ public class FlightAdminController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @DeleteMapping("/{flightId}")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFlight(@PathVariable Long flightId)
     {

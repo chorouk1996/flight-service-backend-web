@@ -31,7 +31,7 @@ public class DashboardController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("overview")
-    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN")
+    @PreAuthorize("hasAuthority(T(com.service.backend.web.constantes.Role).ADMIN))")
     public DashboardResponse getDashboardOverview() {
         return dashboardService.getOverview();
     }
